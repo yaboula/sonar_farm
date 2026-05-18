@@ -1,0 +1,18 @@
+node_modules
+dist
+build
+coverage
+*.min.*
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Lua handled by selene + stylua (future), not prettier.
+*.lua
+
+# Legacy archive — keep as-is, never reformat.
+docs/_archive/
+
+# Auto-generated FiveM artifacts.
+cache/
+server-data/

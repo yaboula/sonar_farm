@@ -1,0 +1,52 @@
+{
+    "$schema": "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json",
+    "runtime.version": "Lua 5.4",
+    "runtime.special": {
+        "AddEventHandler": "require",
+        "RegisterNetEvent": "require",
+        "TriggerEvent": "require",
+        "TriggerServerEvent": "require",
+        "TriggerClientEvent": "require"
+    },
+    "diagnostics.globals": [
+        "Config",
+        "Sonar",
+        "Locales",
+        "lib",
+        "locale",
+        "AddEventHandler",
+        "RegisterNetEvent",
+        "TriggerEvent",
+        "TriggerServerEvent",
+        "TriggerClientEvent",
+        "RemoveEventHandler",
+        "CreateThread",
+        "Wait",
+        "Citizen",
+        "GetCurrentResourceName",
+        "GetResourceState",
+        "GetResourceMetadata",
+        "GetNumResourceMetadata",
+        "GetConvar",
+        "GetConvarInt",
+        "SetConvar",
+        "GetPlayerName",
+        "GetPlayerIdentifiers",
+        "source"
+    ],
+    "diagnostics.disable": [
+        "lowercase-global"
+    ],
+    "workspace.library": [],
+    "workspace.ignoreDir": [
+        ".git",
+        "node_modules",
+        "**/dist",
+        "**/build",
+        "docs/_archive"
+    ],
+    "files.associations": {
+        "*.lua": "lua"
+    },
+    "telemetry.enable": false
+}

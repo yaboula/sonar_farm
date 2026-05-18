@@ -1,0 +1,102 @@
+---
+# ============================================================
+# Farm Sonar — selene custom stdlib for FiveM natives + lifecycle.
+# Declares globals provided by the FiveM Lua runtime so selene does not
+# flag them as undefined.
+# ============================================================
+
+base: lua53
+
+globals:
+  # ---- Lifecycle ----
+  AddEventHandler:
+    args:
+      - type: string
+      - type: function
+  RegisterNetEvent:
+    args:
+      - type: string
+      - { type: function, required: false }
+  TriggerEvent:
+    args:
+      - type: string
+      - { type: any, required: false }
+  TriggerServerEvent:
+    args:
+      - type: string
+      - { type: any, required: false }
+  TriggerClientEvent:
+    args:
+      - type: string
+      - type: any
+      - { type: any, required: false }
+  RemoveEventHandler:
+    args:
+      - type: any
+  CreateThread:
+    args:
+      - type: function
+  Wait:
+    args:
+      - type: number
+  Citizen:
+    any: true
+
+  # ---- Resource introspection ----
+  GetCurrentResourceName: { args: [] }
+  GetResourceState:
+    args:
+      - type: string
+  GetResourceMetadata:
+    args:
+      - type: string
+      - type: string
+      - { type: number, required: false }
+  GetNumResourceMetadata:
+    args:
+      - type: string
+      - type: string
+
+  # ---- Convars ----
+  GetConvar:
+    args:
+      - type: string
+      - { type: string, required: false }
+  GetConvarInt:
+    args:
+      - type: string
+      - { type: number, required: false }
+  SetConvar:
+    args:
+      - type: string
+      - type: string
+
+  # ---- Player / source helpers (server) ----
+  GetPlayerName:
+    args:
+      - type: any
+  GetPlayerIdentifiers:
+    args:
+      - type: any
+  source: { property: read-only }
+
+  # ---- NUI bridge ----
+  SendNUIMessage:
+    args:
+      - type: table
+  RegisterNUICallback:
+    args:
+      - type: string
+      - type: function
+  SetNuiFocus:
+    args:
+      - type: bool
+      - { type: bool, required: false }
+  SetNuiFocusKeepInput:
+    args:
+      - type: bool
+
+  # ---- Print / debug ----
+  print:
+    args:
+      - type: any

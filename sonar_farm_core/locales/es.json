@@ -1,0 +1,5 @@
+{
+    "boot": {
+        "ready": "Farm Sonar core arrancado (v%s)"
+    }
+}

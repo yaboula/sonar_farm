@@ -1,0 +1,21 @@
+---
+# ============================================================
+# Farm Sonar — selene custom stdlib for project-wide globals.
+# ============================================================
+#
+# Declared here:
+#   - `Sonar`     namespace root (e.g. Sonar.Farm.Version).
+#   - `Config`    runtime-tunable values (loaded from config*.lua).
+#   - `Locales`   legacy key (kept for compat with QBCore-style usage).
+#
+# These globals are intentional — they are the documented public surface
+# of the resource (Bible §9 + naming rule §02). Selene's `unscoped_variables`
+# would otherwise flag every usage.
+# ============================================================
+
+base: lua53+fivem+oxlib
+
+globals:
+  Sonar: { any: true }
+  Config: { any: true }
+  Locales: { any: true }

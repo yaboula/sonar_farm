@@ -1,0 +1,32 @@
+std = "lua53+fivem+oxlib+sonar"
+
+# Exclude FiveM resource manifests — they use a metadata DSL, not runtime Lua.
+exclude = [
+    "**/fxmanifest.lua",
+    "**/__resource.lua",
+]
+
+# ============================================================
+# Farm Sonar — selene Lua linter config
+# ============================================================
+#
+# Custom stdlib at .selene/fivem.yml + oxlib.yml (committed alongside
+# this file) declares FiveM natives and ox_lib globals so selene does
+# not flag them as undefined.
+# ============================================================
+
+# Lint severity overrides (string = "allow" | "warn" | "deny").
+[lints]
+shadowing = "allow"
+mixed_table = "allow"
+empty_if = "warn"
+multiple_statements = "deny"
+unused_variable = "warn"
+global_usage = "warn"
+
+# Per-lint config passes (struct configs go in [config.<lint>] tables).
+[config.unused_variable]
+allow_unused_self = true
+
+[config.global_usage]
+ignore_pattern = "^(Config|Sonar|Locales|lib|locale)$"

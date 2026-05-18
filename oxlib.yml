@@ -1,0 +1,13 @@
+---
+# ============================================================
+# Farm Sonar — selene custom stdlib for ox_lib globals.
+# ============================================================
+
+base: lua53+fivem
+
+globals:
+  lib: { any: true }
+  locale:
+    args:
+      - type: string
+      - { type: any, required: false }

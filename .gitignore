@@ -78,6 +78,10 @@ desktop.ini
 .windsurf/local/
 .windsurf/cache/
 
+# ---- Local tools (selene binary downloaded by setup, etc.) ----
+tools/
+.bin/
+
 # ---- Backup files ----
 *.bak
 *.orig

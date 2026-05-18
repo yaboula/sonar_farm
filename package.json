@@ -1,0 +1,44 @@
+{
+    "name": "sonar_farm",
+    "private": true,
+    "version": "0.0.1",
+    "description": "Farm Sonar — premium farming simulation script for FiveM (QBox + QBCore). Workspace root.",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/yaboula/sonar_farm.git"
+    },
+    "license": "UNLICENSED",
+    "author": "Yahya Boula <yaboula@alumno.upv.es>",
+    "packageManager": "pnpm@9.15.0",
+    "engines": {
+        "node": ">=20.10.0",
+        "pnpm": ">=9.0.0"
+    },
+    "scripts": {
+        "dev": "pnpm --filter @sonar/farm-tablet-web dev",
+        "build": "pnpm --filter @sonar/farm-tablet-web build",
+        "lint:lua": "node scripts/run-selene.mjs sonar_farm_core sonar_farm_tablet",
+        "lint:ts": "pnpm --filter @sonar/farm-tablet-web lint",
+        "lint": "pnpm run lint:lua && pnpm run lint:ts",
+        "format": "prettier --write \"**/*.{ts,tsx,json,md,css}\" --ignore-path .gitignore",
+        "format:check": "prettier --check \"**/*.{ts,tsx,json,md,css}\" --ignore-path .gitignore",
+        "type-check": "pnpm --filter @sonar/farm-tablet-web type-check",
+        "prepare": "husky"
+    },
+    "devDependencies": {
+        "husky": "^9.1.7",
+        "lint-staged": "^15.2.11",
+        "prettier": "^3.4.2"
+    },
+    "lint-staged": {
+        "*.lua": [
+            "selene"
+        ],
+        "sonar_farm_tablet/web/**/*.{ts,tsx}": [
+            "pnpm --filter @sonar/farm-tablet-web exec eslint --fix --max-warnings 0"
+        ],
+        "*.{ts,tsx,json,md,css}": [
+            "prettier --write"
+        ]
+    }
+}

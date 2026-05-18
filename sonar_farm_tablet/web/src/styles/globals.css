@@ -1,0 +1,68 @@
+/* ============================================================
+ * Farm Sonar — Global base styles
+ * ============================================================
+ *
+ * Loaded after theme.css (which already imports tailwindcss).
+ * Use this file for: resets, font wiring, cross-cutting base
+ * styles. NEVER for component-specific styles (those live with
+ * their components or in @utility blocks).
+ * ============================================================ */
+
+@layer base {
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
+    html,
+    body,
+    #root {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    html {
+        font-family: var(--font-sans);
+        background: transparent; /* FiveM NUI is transparent by default */
+        color: var(--color-fs-fg);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+    }
+
+    body {
+        /* When the NUI is opened the active app paints its own surface.
+         * The splash sets bg-fs-nav explicitly. */
+        overflow: hidden;
+    }
+
+    /* Mono utility class for IDs / batch_ids / IBANs / dates per Bible §1.1 */
+    .fs-mono {
+        font-family: var(--font-mono);
+        font-feature-settings:
+            'tnum' 1,
+            'zero' 1;
+        letter-spacing: 0.01em;
+    }
+}
+
+/* Subtle pulse animation for the splash accent dot. */
+@keyframes fs-pulse {
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.55;
+        transform: scale(0.92);
+    }
+}
+
+@layer utilities {
+    .fs-pulse {
+        animation: fs-pulse 1.6s var(--ease-out-fs) infinite;
+    }
+}

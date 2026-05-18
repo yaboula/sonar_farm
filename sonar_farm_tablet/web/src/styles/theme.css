@@ -1,0 +1,61 @@
+/* ============================================================
+ * Farm Sonar — Canonical theme tokens
+ * ============================================================
+ *
+ * Source of truth: docs/00_BIBLE.md §1.1 — SaaS Agritech palette.
+ * Anti-pattern §3 (no hardcoded values): every other component MUST
+ * consume these tokens via Tailwind utilities (e.g. `bg-fs-bg`,
+ * `text-fs-accent`) or via `var(--fs-*)` in custom CSS.
+ *
+ * Tailwind v4 syntax: tokens live inside `@theme` and become
+ * utilities automatically (e.g. `--color-fs-accent` →  bg-fs-accent).
+ * ============================================================ */
+
+@import 'tailwindcss';
+
+@theme {
+    /* ---- Surface palette ---- */
+    --color-fs-bg: #eef4eb; /* mint background — Manager Panel canvas */
+    --color-fs-nav: #0a0e0a; /* charcoal — sidebars, splash, dark panels */
+    --color-fs-fg: #1a1f1a; /* deep green-black — primary text on light bg */
+    --color-fs-fg-inverse: #f5f9f3; /* near-white — text on charcoal */
+    --color-fs-card-bg: rgb(255 255 255 / 0.7); /* glassmorphism card */
+    --color-fs-card-border: rgb(255 255 255 / 0.3);
+
+    /* ---- Signal accent (use sparingly per Bible §15) ---- */
+    --color-fs-accent: #ccff00; /* lime neon — CTAs, success, ready-to-harvest, S/A quality */
+    --color-fs-accent-hover: #b8e600;
+
+    /* ---- Quality color scale (Bible §1.1) ---- */
+    --color-fs-quality-s: #ccff00; /* same as accent — premium signal */
+    --color-fs-quality-a: #ccff00;
+    --color-fs-quality-b: #f5f9f3;
+    --color-fs-quality-c: #f5b942; /* amber */
+    --color-fs-quality-d: #e84545; /* red */
+
+    /* ---- Status semantics ---- */
+    --color-fs-success: #ccff00;
+    --color-fs-warning: #f5b942;
+    --color-fs-danger: #e84545;
+    --color-fs-info: #5b8def;
+
+    /* ---- Typography ---- */
+    --font-sans: 'Geist', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+
+    /* ---- Motion ---- */
+    --ease-out-fs: cubic-bezier(0.22, 1, 0.36, 1);
+    --duration-fs-fast: 150ms;
+    --duration-fs-base: 250ms;
+    --duration-fs-slow: 400ms;
+
+    /* ---- Radii ---- */
+    --radius-fs-sm: 0.5rem;
+    --radius-fs-md: 0.75rem;
+    --radius-fs-lg: 1rem;
+    --radius-fs-xl: 1.5rem;
+
+    /* ---- Shadows (subtle, never aggressive) ---- */
+    --shadow-fs-card: 0 1px 3px rgb(10 14 10 / 0.08), 0 1px 2px rgb(10 14 10 / 0.04);
+    --shadow-fs-glow: 0 0 24px rgb(204 255 0 / 0.35);
+}

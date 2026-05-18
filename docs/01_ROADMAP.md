@@ -107,7 +107,10 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 
 ---
 
-### S0 — Workspace skeleton 🧱 · Complejidad: S
+### S0 — Workspace skeleton 🧱 · Complejidad: S · **Estado: `IN_REVIEW`** (2026-05-18)
+
+> Mini-brief: [`docs/slices/S0_workspace_skeleton.md`](./slices/S0_workspace_skeleton.md).
+> Pendiente para `DONE`: smoke `start sonar_farm_core` + `start sonar_farm_tablet` en server QBox y QBCore del founder (§10 secciones C+E del mini-brief).
 
 **Scope.** Bootstrap del repo FiveM. `fxmanifest.lua` configurado. Estructura estándar (`server/`, `client/`, `shared/`, `web/`, `locales/`, `config/`, `database/migrations/`). NUI Vite + React 18 + TS strict + Tailwind v4 con tokens del Bible §1.1.
 
