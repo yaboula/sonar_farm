@@ -1,5 +1,16 @@
 {
     "boot": {
-        "ready": "Farm Sonar core booted (v%s)"
+        "ready": "Farm Sonar core booted (v%s)",
+        "bridge_initialized": "Bridge initialized → framework: %s",
+        "framework_unsupported": "Farm Sonar requires QBox or QBCore. ESX bridge planned for wave 2+."
+    },
+    "bridge": {
+        "test": {
+            "header": "═══ Farm Sonar Bridge Test ═══",
+            "framework": "Framework: %s",
+            "no_player": "No player found for source %s",
+            "player_line": "  %s: %s",
+            "footer": "═══════════════════════════════"
+        }
     }
 }

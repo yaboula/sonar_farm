@@ -9,5 +9,5 @@
 // Bumped at every /end-slice closure that ships user-visible changes.
 // ============================================================
 
-export const VERSION = '0.0.1' as const;
+export const VERSION = '0.1.0' as const;
 export const CODENAME = 'foundation' as const;

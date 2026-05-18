@@ -28,21 +28,24 @@ if (files.length === 0) {
     process.exit(0);
 }
 
+// Resolve eslint binary directly from the workspace's node_modules.
+// Avoids `pnpm --filter` which spawns extra shell layers and obscures
+// failure output.
+const webRoot = join(repoRoot, 'sonar_farm_tablet', 'web');
+const eslintBin = join(
+    webRoot,
+    'node_modules',
+    '.bin',
+    process.platform === 'win32' ? 'eslint.cmd' : 'eslint'
+);
+
 const result = spawnSync(
-    process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm',
-    [
-        '--filter',
-        '@sonar/farm-tablet-web',
-        'exec',
-        'eslint',
-        '--fix',
-        '--max-warnings',
-        '0',
-        ...files,
-    ],
+    eslintBin,
+    ['--fix', '--max-warnings', '0', ...files],
     {
         stdio: 'inherit',
-        cwd: repoRoot,
+        cwd: webRoot,
+        shell: process.platform === 'win32',
     }
 );
 

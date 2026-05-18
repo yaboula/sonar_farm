@@ -4,7 +4,7 @@ lua54 'yes'
 
 name        'sonar_farm_tablet'
 author      'Gusto (Farm Sonar)'
-version     '0.0.1'
+version     '0.1.0'
 description 'Farm Sonar — NUI Tablet/Laptop app (React + Tailwind v4 + shadcn/ui).'
 repository  'https://github.com/yaboula/sonar_farm'
 

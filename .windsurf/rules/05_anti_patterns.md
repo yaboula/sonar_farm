@@ -9,6 +9,7 @@ These are forbidden in Farm Sonar code. If a sub-agent suggests one, refuse and 
 ## 1. Direct calls between resources
 
 **Forbidden:**
+
 ```lua
 exports['some_other_resource']:DoThing()
 ```
@@ -30,6 +31,7 @@ exports['some_other_resource']:DoThing()
 ## 4. Polling per-frame for stage transitions
 
 **Forbidden:**
+
 ```lua
 CreateThread(function()
   while true do
@@ -57,7 +59,7 @@ end)
 
 **Forbidden:** `QBCore.Functions.GetPlayer(src):PlayerData.money.bank`.
 
-**Correct:** `Bridge.GetPlayer(src):GetMoney('bank')`. Always go through the bridge.
+**Correct:** `Sonar.Farm.Bridge.GetMoney(src, 'bank')`. Always go through the bridge (POJO + global functions, never wrapper methods). See ADR-005.
 
 ## 8. Lineage chain mutation
 

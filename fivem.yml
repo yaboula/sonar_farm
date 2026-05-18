@@ -80,6 +80,28 @@ globals:
       - type: any
   source: { property: read-only }
 
+  # ---- Server / client side detection ----
+  IsDuplicityVersion: { args: [] }
+
+  # ---- Exports (resource interop) ----
+  exports: { any: true }
+
+  # ---- Commands ----
+  RegisterCommand:
+    args:
+      - type: string
+      - type: function
+      - { type: bool, required: false }
+  ExecuteCommand:
+    args:
+      - type: string
+
+  # ---- ACE permissions ----
+  IsPlayerAceAllowed:
+    args:
+      - type: any
+      - type: string
+
   # ---- NUI bridge ----
   SendNUIMessage:
     args:

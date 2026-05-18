@@ -5,7 +5,7 @@ use_experimental_fxv2_oal 'yes'
 
 name        'sonar_farm_core'
 author      'Gusto (Farm Sonar)'
-version     '0.0.1'
+version     '0.1.0'
 description 'Farm Sonar — premium farming simulation core (server + client logic). Part of the Sonar product family.'
 repository  'https://github.com/yaboula/sonar_farm'
 
@@ -26,6 +26,11 @@ dependencies {
 shared_scripts {
     '@ox_lib/init.lua',
     'shared/version.lua',
+    -- Bridge: adapters MUST load before init.lua (init picks one).
+    'shared/bridge/qbox.lua',
+    'shared/bridge/qbcore.lua',
+    'shared/bridge/_unsupported.lua',
+    'shared/bridge/init.lua',
     'config.lua',
 }
 
@@ -34,6 +39,7 @@ shared_scripts {
 -- ============================================================
 server_scripts {
     'server/main.lua',
+    'server/admin/bridge_test_command.lua',
 }
 
 -- ============================================================

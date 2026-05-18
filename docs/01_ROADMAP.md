@@ -137,7 +137,9 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 
 ---
 
-### S1 — Bridge layer (QBox + QBCore) 🧱🔓 · Complejidad: M
+### S1 — Bridge layer (QBox + QBCore) 🧱🔓 · Complejidad: M · **Estado: `ACTIVE`** (2026-05-19)
+
+> Mini-brief: [`docs/slices/S1_bridge_layer.md`](./slices/S1_bridge_layer.md).
 
 **Scope.** Capa `bridge/` con interfaz común para QBox y QBCore. Cualquier slice posterior consume `Bridge.GetPlayer(src)`, `Bridge.AddMoney(src, amount, account)`, `Bridge.Notify(src, msg, type)`, `Bridge.RegisterUsableItem(item, cb)`, `Bridge.GetPlayerJob(src)`, etc. Detección automática del framework activo en boot.
 

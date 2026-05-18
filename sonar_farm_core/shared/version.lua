@@ -9,5 +9,5 @@
 Sonar = Sonar or {}
 Sonar.Farm = Sonar.Farm or {}
 
-Sonar.Farm.Version = '0.0.1'
+Sonar.Farm.Version = '0.1.0'
 Sonar.Farm.Codename = 'foundation'
