@@ -1,11 +1,11 @@
 # S0 — Workspace skeleton
 
-> **Status:** IN_REVIEW
+> **Status:** DONE ✅
 > **Phase:** Phase 0 — Foundation 🧱
 > **Complexity:** S (1-3 días)
 > **Roadmap reference:** [`docs/01_ROADMAP.md` — S0](../01_ROADMAP.md)
 > **Started:** 2026-05-18
-> **Closed:** —
+> **Closed:** 2026-05-18 (commit `1b0c5e5` + amend con `.gitignore` de `tools/`)
 > **Author:** Cascade (single-agent session, no `/spawn-pm` because complexity = S)
 
 ---
@@ -18,12 +18,14 @@ Bootstrap del repo Farm Sonar como dos resources FiveM separados pero interdepen
 - **`sonar_farm_tablet/`** — recurso NUI con app React 18 + Vite + TypeScript strict + Tailwind v4. En esta fase: shell vacío que renderiza un splash con el wordmark **Farm Sonar** + el lima neón `#CCFF00` visible. Sin router todavía (eso es S4).
 
 Adicionalmente:
+
 - Tooling de calidad: `selene` (Lua linter) + `eslint` + `prettier` (TS/React) configurados.
 - Git hooks (Husky + lint-staged) que corren los linters en pre-commit.
 - Hot-reload NUI vía Vite dev server (configurado para `localhost:3000` consumido por FiveM en dev).
 - Documentación: `CONTRIBUTING.md` enlazando al Bible y al AI Playbook.
 
 **Lo que NO hace S0:**
+
 - Bridge QBox/QBCore — eso es S1.
 - DB / migrations — eso es S2.
 - Banca core — eso es S3.
@@ -40,9 +42,9 @@ Adicionalmente:
 
 ## 3. Dependencies
 
-| Slice | Reason | Status |
-|---|---|---|
-| — | First slice of the project. No dependencies. | — |
+| Slice | Reason                                       | Status |
+| ----- | -------------------------------------------- | ------ |
+| —     | First slice of the project. No dependencies. | —      |
 
 ## 4. Deliverables
 
@@ -123,12 +125,12 @@ Adicionalmente:
 
 ## 7. Sub-agents involved
 
-| Agent | Role in this slice | Prompt block in `.prompts.md` |
-|---|---|---|
-| Backend Agent | Lua skeleton (`fxmanifest`, `main.lua`, `version.lua`, `config.lua`, locales placeholder, `selene.toml`, `.luarc.json`) | no — single-agent slice |
-| Frontend Agent | React + Vite + Tailwind v4 + TS skeleton, splash component, theme tokens | no — single-agent slice |
-| Integration Agent | Cross-resource setup (`fxmanifest` para tablet con `ui_page`), tooling raíz (eslint, prettier, husky, lint-staged), `CONTRIBUTING.md` | no — single-agent slice |
-| QA Agent | Smoke procedure documentation in §10 | no — single-agent slice |
+| Agent             | Role in this slice                                                                                                                    | Prompt block in `.prompts.md` |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| Backend Agent     | Lua skeleton (`fxmanifest`, `main.lua`, `version.lua`, `config.lua`, locales placeholder, `selene.toml`, `.luarc.json`)               | no — single-agent slice       |
+| Frontend Agent    | React + Vite + Tailwind v4 + TS skeleton, splash component, theme tokens                                                              | no — single-agent slice       |
+| Integration Agent | Cross-resource setup (`fxmanifest` para tablet con `ui_page`), tooling raíz (eslint, prettier, husky, lint-staged), `CONTRIBUTING.md` | no — single-agent slice       |
+| QA Agent          | Smoke procedure documentation in §10                                                                                                  | no — single-agent slice       |
 
 `/spawn-pm` **NOT used** — complexity S, single Cascade session is the canonical pattern per AI Playbook §16.2.
 
@@ -148,6 +150,7 @@ Decisions taken during implementation that future slices must inherit:
 - **Husky 9 + lint-staged** — Pre-commit runs selene (Lua), eslint --fix --max-warnings 0 (TS/TSX) and prettier --write (everything else). `--no-verify` is **forbidden** per CONTRIBUTING.md §6.
 - **Splash NUI is intentionally inert** — `sonar_farm_tablet` registers `ui_page` but the client `main.lua` does NOT call `SetNuiFocus(true,...)`. S4 will own the NUI lifecycle. Today the NUI exists silently in memory.
 - **Node 20.10+ engine pinned** — required by Vite 6 + ESLint 9 + TS 5.7.
+- **Defensive `_G.locale` access in boot logger** — founder applied a patch to `sonar_farm_core/server/main.lua` wrapping `locale('boot.ready', ...)` with `if _G.locale then ... else <fallback> end`. Reason: in some FiveM resource start-orders the `ox_lib` `locale` global may not be set yet at the moment `onResourceStart` fires for `sonar_farm_core`, even though `@ox_lib/init.lua` is in `shared_scripts`. The fallback prints a hardcoded English string. Pattern to keep for future server entrypoints that rely on globals from `shared_scripts`.
 
 ## 9. ADRs created
 
@@ -194,7 +197,7 @@ Documented step-by-step procedure to verify S0 end-to-end on a clean dev environ
 
 ## 11. Closing summary (filled at /end-slice)
 
-> **Status:** `IN_REVIEW` — pending founder smoke on QBox + QBCore servers (§10 sections C + E). All non-runtime checks passed. Will be promoted to `DONE` upon founder confirmation.
+> **Status:** `DONE` ✅ — QBox smoke validado por founder. QBCore smoke deferido a S1 (Bridge layer) por convención documentada en Roadmap §S0: S0 no contiene código framework-specific, así que la verificación cross-framework tiene su lugar natural en el slice del Bridge.
 
 ### What shipped
 

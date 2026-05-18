@@ -4,7 +4,7 @@ lua54 'yes'
 use_experimental_fxv2_oal 'yes'
 
 name        'sonar_farm_core'
-author      'Yahya Boula (Farm Sonar)'
+author      'Gusto (Farm Sonar)'
 version     '0.0.1'
 description 'Farm Sonar — premium farming simulation core (server + client logic). Part of the Sonar product family.'
 repository  'https://github.com/yaboula/sonar_farm'

@@ -8,6 +8,9 @@ importers:
 
   .:
     devDependencies:
+      '@overextended/ox_lib':
+        specifier: ^3.33.1
+        version: 3.33.1
       husky:
         specifier: ^9.1.7
         version: 9.1.7
@@ -387,6 +390,17 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+
+  '@nativewrappers/fivem@0.0.103':
+    resolution: {integrity: sha512-x0W00Mx9ZN/rTS9XZc5Kf1hjahqRmlo9sPiuJP4kCYeQG4LDJyglXCsHcfNfygGq6WEblG1W2FLgm4MGDn/wHA==}
+
+  '@overextended/core@0.2.5':
+    resolution: {integrity: sha512-0YRi2zB1UQf4FRUfsrP2QG8btQ/P/1BuN0zmBo3F/qX0+RFZuJO3Soze7pd2uwuPteuVB6Drg+nGbTcjN9EiZQ==}
+    peerDependencies:
+      typescript: ^5.8.3
+
+  '@overextended/ox_lib@3.33.1':
+    resolution: {integrity: sha512-l7+CWfL4Qh3ZuZ4HxX4OoE2rILK3W+W6CXRXYmscPXzW9XJkI6O8aLlE4LkOGeRe0axlm8oPXg311XBaUomWuQ==}
 
   '@rolldown/pluginutils@1.0.0-beta.27':
     resolution: {integrity: sha512-+d0F4MKMCbeVUJwG96uQ4SgAznZNSq93I3V+9NHA4OpvqG8mRCpGdKmK8l/dl02h2CCDHwW2FqilnTyDcAnqjA==}
@@ -931,6 +945,10 @@ packages:
 
   fast-levenshtein@2.0.6:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
+
+  fast-printf@1.6.10:
+    resolution: {integrity: sha512-GwTgG9O4FVIdShhbVF3JxOgSBY2+ePGsu2V/UONgoCPzF9VY6ZdBMKsHKCYQHZwNk3qNouUolRDsgVxcVA5G1w==}
+    engines: {node: '>=10.0'}
 
   fdir@6.5.0:
     resolution: {integrity: sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg==}
@@ -1774,6 +1792,20 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
+  '@nativewrappers/fivem@0.0.103': {}
+
+  '@overextended/core@0.2.5(typescript@5.9.3)':
+    dependencies:
+      typescript: 5.9.3
+
+  '@overextended/ox_lib@3.33.1':
+    dependencies:
+      '@nativewrappers/fivem': 0.0.103
+      '@overextended/core': 0.2.5(typescript@5.9.3)
+      csstype: 3.2.3
+      fast-printf: 1.6.10
+      typescript: 5.9.3
+
   '@rolldown/pluginutils@1.0.0-beta.27': {}
 
   '@rollup/rollup-android-arm-eabi@4.60.4':
@@ -2309,6 +2341,8 @@ snapshots:
   fast-json-stable-stringify@2.1.0: {}
 
   fast-levenshtein@2.0.6: {}
+
+  fast-printf@1.6.10: {}
 
   fdir@6.5.0(picomatch@4.0.4):
     optionalDependencies:

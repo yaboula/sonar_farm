@@ -3,7 +3,7 @@ game 'gta5'
 lua54 'yes'
 
 name        'sonar_farm_tablet'
-author      'Yahya Boula (Farm Sonar)'
+author      'Gusto (Farm Sonar)'
 version     '0.0.1'
 description 'Farm Sonar — NUI Tablet/Laptop app (React + Tailwind v4 + shadcn/ui).'
 repository  'https://github.com/yaboula/sonar_farm'

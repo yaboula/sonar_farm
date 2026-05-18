@@ -26,7 +26,12 @@ AddEventHandler('onResourceStart', function(resource_name)
 
     -- ox_lib's `locale()` helper resolves keys from locales/*.json
     -- according to the active server locale (config: ox:locale convar).
-    local boot_message = locale('boot.ready', Sonar.Farm.Version)
+    local boot_message
+    if _G.locale then
+        boot_message = locale('boot.ready', Sonar.Farm.Version)
+    else
+        boot_message = ('Farm Sonar core booted (v%s)'):format(Sonar.Farm.Version)
+    end
 
     log_info(boot_message)
 

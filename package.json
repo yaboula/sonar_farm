@@ -8,7 +8,7 @@
         "url": "https://github.com/yaboula/sonar_farm.git"
     },
     "license": "UNLICENSED",
-    "author": "Yahya Boula <yaboula@alumno.upv.es>",
+    "author": "Gusto <yaboula@alumno.upv.es>",
     "packageManager": "pnpm@9.15.0",
     "engines": {
         "node": ">=20.10.0",
@@ -26,19 +26,14 @@
         "prepare": "husky"
     },
     "devDependencies": {
+        "@overextended/ox_lib": "^3.33.1",
         "husky": "^9.1.7",
         "lint-staged": "^15.2.11",
         "prettier": "^3.4.2"
     },
     "lint-staged": {
-        "*.lua": [
-            "selene"
-        ],
-        "sonar_farm_tablet/web/**/*.{ts,tsx}": [
-            "pnpm --filter @sonar/farm-tablet-web exec eslint --fix --max-warnings 0"
-        ],
-        "*.{ts,tsx,json,md,css}": [
-            "prettier --write"
-        ]
+        "*.lua": "node scripts/run-selene.mjs",
+        "sonar_farm_tablet/web/**/*.{ts,tsx}": "node scripts/run-eslint-staged.mjs",
+        "*.{ts,tsx,json,md,css,yml,yaml}": "prettier --write --ignore-unknown"
     }
 }

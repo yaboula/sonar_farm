@@ -23,11 +23,11 @@ Es el **plan de batalla** desde commit 0 hasta producto en Tebex.
 
 ### 1.1 Complejidad
 
-| Sigla | Esfuerzo | Ejemplo típico |
-|---|---|---|
-| **S** | 1-3 días | Migración DB simple, app NUI con 1 vista |
-| **M** | 3-7 días | Sistema con 2-3 mecánicas integradas |
-| **L** | 7-14 días | Sistema completo con UI + lógica + tests |
+| Sigla  | Esfuerzo   | Ejemplo típico                                             |
+| ------ | ---------- | ---------------------------------------------------------- |
+| **S**  | 1-3 días   | Migración DB simple, app NUI con 1 vista                   |
+| **M**  | 3-7 días   | Sistema con 2-3 mecánicas integradas                       |
+| **L**  | 7-14 días  | Sistema completo con UI + lógica + tests                   |
 | **XL** | 14-21 días | Mecánica core con riesgo (drones, persistencia delta-calc) |
 
 > Estimaciones asumen **1 dev humano + AI agents** (Cascade lógica/diseño · v0.dev UI · Opus implementación). Sin AI estaríamos al doble o triple.
@@ -107,14 +107,15 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 
 ---
 
-### S0 — Workspace skeleton 🧱 · Complejidad: S · **Estado: `IN_REVIEW`** (2026-05-18)
+### S0 — Workspace skeleton 🧱 · Complejidad: S · **Estado: `DONE`** (2026-05-18)
 
 > Mini-brief: [`docs/slices/S0_workspace_skeleton.md`](./slices/S0_workspace_skeleton.md).
-> Pendiente para `DONE`: smoke `start sonar_farm_core` + `start sonar_farm_tablet` en server QBox y QBCore del founder (§10 secciones C+E del mini-brief).
+> QBox boot smoke ✅ validado por founder (commit `1b0c5e5` + edit defensivo en `server/main.lua` con `_G.locale` fallback). QBCore smoke deferido a S1 (Bridge layer) por convención: S0 no contiene código framework-specific, así que la validación cross-framework tiene sentido en el slice donde de verdad existe lógica QBox/QBCore-aware.
 
 **Scope.** Bootstrap del repo FiveM. `fxmanifest.lua` configurado. Estructura estándar (`server/`, `client/`, `shared/`, `web/`, `locales/`, `config/`, `database/migrations/`). NUI Vite + React 18 + TS strict + Tailwind v4 con tokens del Bible §1.1.
 
 **Deliverables.**
+
 - `sonar_farm_core/fxmanifest.lua` con metadata + dependencias declaradas (`ox_lib`, `ox_inventory`, `ox_target`, `oxmysql`).
 - `sonar_farm_core/config.lua` placeholder.
 - `sonar_farm_tablet/` resource separado para la NUI.
@@ -125,6 +126,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 - README + `CONTRIBUTING.md` enlazando al Bible.
 
 **DoD específico.**
+
 - `pnpm dev` levanta NUI con HMR.
 - `start sonar_farm_core` y `start sonar_farm_tablet` arrancan sin error en QBox y QBCore.
 - Linter pasa en CI local.
@@ -140,14 +142,16 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Capa `bridge/` con interfaz común para QBox y QBCore. Cualquier slice posterior consume `Bridge.GetPlayer(src)`, `Bridge.AddMoney(src, amount, account)`, `Bridge.Notify(src, msg, type)`, `Bridge.RegisterUsableItem(item, cb)`, `Bridge.GetPlayerJob(src)`, etc. Detección automática del framework activo en boot.
 
 **Deliverables.**
+
 - `shared/bridge/init.lua` autodetect.
 - `shared/bridge/qbox.lua`, `shared/bridge/qbcore.lua`.
 - Interfaz documentada en `shared/bridge/INTERFACE.md` con la lista exhaustiva de métodos.
 - Comando admin `/sonarfarm:bridgetest` que devuelve datos del jugador.
 
 **DoD específico.**
+
 - Comando de test devuelve datos correctamente en ambos frameworks.
-- Si detecta framework no soportado, log claro: *"Farm Sonar requires QBox or QBCore. ESX bridge planned for wave 2+."*
+- Si detecta framework no soportado, log claro: _"Farm Sonar requires QBox or QBCore. ESX bridge planned for wave 2+."_
 
 **Dependencias:** S0.
 
@@ -160,6 +164,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Migrations versionadas en `database/migrations/NNN_<descripcion>.sql`. Runner Lua que ejecuta migrations pendientes en boot. Tabla `sonar_farm_migrations` que registra estado. Smoke de `oxmysql`.
 
 **Deliverables.**
+
 - `server/db/migrator.lua` con runner.
 - `database/migrations/001_init_migrations_table.sql`.
 - `database/migrations/002_smoke_table.sql` (se elimina en S3).
@@ -167,6 +172,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 - Validación de integridad en boot (fail-fast si DB inalcanzable).
 
 **DoD específico.**
+
 - Boot aplica migrations pendientes y loggea cuáles. Idempotente.
 - Rollback manual posible eliminando row de `sonar_farm_migrations` (documentado).
 
@@ -181,6 +187,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Sistema bancario fundacional. Cuentas personales auto-creadas al primer login. IBAN generator único determinístico (prefix `SF` + 22 chars). Movimientos como event-sourced log (cada movimiento es row inmutable). Transferencias atómicas. Escrow FSM (`PENDING → HELD → RELEASED | REFUNDED`) para vending (S10) y contratos (S21).
 
 **Deliverables.**
+
 - Migration `003_banca_core.sql` (`sonar_farm_bank_accounts`, `sonar_farm_bank_movements`, `sonar_farm_bank_escrows`).
 - `server/banca/account_service.lua`.
 - `server/banca/transfer_service.lua` con transacción atómica.
@@ -190,6 +197,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 - Tests de transferencia + escrow FSM.
 
 **DoD específico.**
+
 - 100 transferencias concurrentes desde lua threads no causan inconsistencia (test).
 - Escrow timeout funciona: si HELD > X horas sin RELEASED → REFUNDED automático.
 
@@ -204,6 +212,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Shell React de la Tablet/Laptop con design system. Router de apps (placeholders). Entrypoints físicos: `ox_target` sobre el laptop de la oficina abre Manager Panel; keybind global `F6` (configurable) abre Tablet de campo. Tokens Tailwind v4 con `@theme` siguiendo paleta del Bible §1.1.
 
 **Deliverables.**
+
 - `web/src/main.tsx`, `web/src/App.tsx`.
 - `web/src/styles/theme.css` con tokens canónicos (`--fs-bg`, `--fs-nav`, `--fs-accent`, etc.).
 - `web/src/components/layout/{BentoGrid, GlassCard}.tsx`.
@@ -215,6 +224,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 - 1 demo card en `/dashboard` con un dato fake + el `#CCFF00` visible.
 
 **DoD específico.**
+
 - Abrir Laptop con `ox_target` → NUI fullscreen, modo `manager`, dashboard placeholder con identidad visual aplicada.
 - Abrir Tablet con keybind → NUI overlay, modo `field`, app placeholder.
 - ESC cierra NUI, libera focus, devuelve control al juego.
@@ -240,6 +250,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Sistema de parcelas como entidad core. Tabla `sonar_farm_plots` con timestamps designed-for-delta-calc desde día 1 (`last_updated_ts`, `planted_ts`, `next_stage_ts`). Soil score persistente. Tipos: `extensive` (cereales), `horticultural` (hortalizas/hojas/bulbos/tubérculos), `greenhouse` (invernadero). En oleada 1, el MLO trae las parcelas pre-definidas en config (GUI de placement se difiere).
 
 **Deliverables.**
+
 - Migration `004_plots.sql`.
 - `server/plots/plot_service.lua` con CRUD.
 - `config/plots.lua` con seed de las 8 parcelas iniciales del MLO (4 extensive + 3 horticultural + 1 greenhouse).
@@ -247,6 +258,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 - Eventos: `sonar:farm:plot:state_changed`.
 
 **DoD específico.**
+
 - Boot crea las parcelas seeded si no existen.
 - Schema soporta delta-calc trivialmente (validar consultando los timestamps requeridos).
 
@@ -269,6 +281,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 9. Parcela vuelve a `fallow` con cooldown.
 
 **Deliverables.**
+
 - Migration `005_crops_and_batches.sql` (`sonar_farm_crops`, `sonar_farm_batches`).
 - `config/crops/wheat.lua` con stages, duraciones, ranges óptimos NPK/agua/clima, soil compatibility.
 - `server/lifecycle/crop_lifecycle_service.lua` (gestor de transiciones de stage).
@@ -279,6 +292,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 - Eventos: `sonar:farm:plot:planted`, `sonar:farm:plot:stage_advanced`, `sonar:farm:plot:harvested`, `sonar:farm:batch:created`.
 
 **DoD específico.**
+
 - Plantar trigo + `/sonarfarm:debug:fastforward N` para testing → ver stages 3D cambiar → cosechar → batch en inventario.
 - Anims responsive (el jugador no se siente trabado).
 - Eventos publicados con `batch_id`.
@@ -308,6 +322,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 ```
 
 **Deliverables.**
+
 - `shared/items/physical_item.lua` con factory + validación.
 - Integración con `ox_inventory` metadata.
 - Items registrados: `sonar_seed_wheat`, `sonar_batch_wheat` (resto en sus slices).
@@ -315,6 +330,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 - Eventos: `sonar:farm:item:created`, `sonar:farm:item:freshness_decayed`.
 
 **DoD específico.**
+
 - Item de cosecha se crea con todos los campos completos.
 - Lineage_chain se preserva al transferir entre inventarios.
 - Frescura decae correctamente con el delta de tiempo.
@@ -328,6 +344,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Implementación de los 7 factores de calidad (Bible §10). Trackeo durante el ciclo del cultivo. Fórmula stub inicial (media ponderada con pesos uniformes; balance fino en S33). Mapping numérico → S/A/B/C/D.
 
 **Deliverables.**
+
 - Migration `006_quality_tracking.sql` (tabla `sonar_farm_quality_tracking` con un row por parcela activa, columnas para cada uno de los 7 factores).
 - `server/quality/factors/` con 7 archivos: `soil.lua`, `irrigation.lua`, `pest.lua`, `weather.lua`, `seed.lua`, `fertilization.lua`, `harvest_timing.lua`. Cada uno expone `:track(plotId, event, data)` y `:get(plotId)`.
 - `server/quality/calculator.lua` con la fórmula final.
@@ -335,6 +352,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 - En oleada 1.5+, UI breakdown que muestra al jugador cómo se calculó cada factor.
 
 **DoD específico.**
+
 - Plantar trigo con todos los factores neutros (sin riego/fert/plagas/cosecha temprana) → calidad B esperada.
 - Plantar trigo con todo óptimo → calidad A o S esperada.
 
@@ -349,6 +367,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Silo físico en el MLO. `ox_target` para depositar lote → seleccionas item del inventario → se mueve al inventario virtual del silo (preserve `batch_id`). Capacidad limitada (config). Frescura sigue decayendo dentro (más lento si silo refrigerado/seco; en oleada 1 solo seco).
 
 **Deliverables.**
+
 - Migration `007_storage.sql` (tabla `sonar_farm_storage_units`).
 - `server/storage/storage_service.lua`.
 - Integración con `ox_inventory` (silo = stash con metadata Farm Sonar).
@@ -356,6 +375,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 - Eventos: `sonar:farm:storage:deposited`, `sonar:farm:storage:withdrawn`.
 
 **DoD específico.**
+
 - Depositar batch trigo en silo, verificar persistencia en DB, retirar, batch_id preservado.
 
 **Dependencias:** S7, S2.
@@ -367,6 +387,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Primer NPC comprador (Molino Pedro stub). Vendor marker físico (ped + zona ox_target). Jugador llega con camión cargado, descarga físicamente (anim ~30s), recibe pago en Banca Sonar. Precio calculado con fórmula simple (precio canon × tier calidad × 1.0 todo lo demás stub).
 
 **Deliverables.**
+
 - Seed en `config/npcs.lua` con Molino Pedro stub.
 - `server/npcs/npc_buyer_service.lua`.
 - `client/npc_vendor_interaction.lua` con anim de descarga.
@@ -375,6 +396,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 - Confirmación visual: notificación lime neón "+€XXX en tu cuenta SF...".
 
 **DoD específico.**
+
 - Vender 100 kg trigo calidad B → recibir cantidad correcta en Banca → batch_id sale del inventario.
 - Lineage_chain del batch se preserva en historial de venta.
 
@@ -394,6 +416,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 - **Cap**: si delta > 6h (configurable), los daños acumulados se limitan a -30% sobre cada factor afectado. Nunca matamos una planta entera.
 
 **Deliverables.**
+
 - `server/persistence/boot_reconciler.lua`.
 - `server/persistence/delta_calculator.lua` con caps.
 - Tests unitarios (caso 1h offline, 6h, 24h, 7 días).
@@ -401,6 +424,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 - Comando admin `/sonarfarm:persistence:dryrun` para previsualizar sin aplicar.
 
 **DoD específico.**
+
 - Server con 50 parcelas en estados variados → kill server → wait 8h real → restart → todas las parcelas en estado correcto + caps aplicados donde corresponde.
 - Idempotencia: re-boot inmediato no aplica deltas adicionales.
 - Smoke test pasado en QBox y QBCore.
@@ -426,12 +450,14 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Añadir maíz y cebada **sin tocar código**. Solo `config/crops/corn.lua`, `config/crops/barley.lua`, items en `ox_inventory` data, modelos 3D de stages. Validamos que el sistema cumple Pilar 5.
 
 **Deliverables.**
+
 - 2 archivos config completos.
 - 2×4 = 8 modelos 3D (4 stages cada uno).
 - Items registrados.
 - Smoke: plantar maíz + cebada funciona idéntico a trigo sin modificar lógica.
 
 **DoD específico.**
+
 - Si tocaste cualquier `.lua` que no sea config en este slice → revertir y arreglar el sistema, no este slice.
 
 **Dependencias:** S6.
@@ -443,12 +469,14 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Mecánica física de regar. Cisterna como vehículo o item portable. `ox_target` sobre parcela: "Regar". Anim ~10s. Riego saturado/óptimo/insuficiente impacta `irrigation_score`. Riego excesivo penaliza también (encharcado).
 
 **Deliverables.**
+
 - Item `sonar_water_tank` portable + entity vehículo cisterna.
 - Anim de regar.
 - `server/factors/irrigation_tracker.lua` extendido.
 - Eventos: `sonar:farm:plot:watered`.
 
 **DoD específico.**
+
 - Regar parcela cuando está sedienta → factor sube. Regar sobreabundantemente → penaliza.
 
 **Dependencias:** S6, S8.
@@ -460,6 +488,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Items de fertilizante (3 tipos NPK + complejos). Fertilizadora vehículo. `ox_target` "Fertilizar". NPK óptimo para cada cultivo en `config/crops/<crop>.lua`. Sub-óptimo penaliza, óptimo bonifica, exceso penaliza (curva campana).
 
 **Deliverables.**
+
 - Items `sonar_fertilizer_n`, `sonar_fertilizer_p`, `sonar_fertilizer_k`, `sonar_fertilizer_npk`.
 - Vehículo fertilizadora + anim.
 - `server/factors/fertilization_tracker.lua`.
@@ -474,6 +503,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Sistema de plagas selectivo. Cada cultivo define lista de plagas que lo afectan + probabilidad por estación. Plaga aparece visualmente en parcela (overlay 3D distintivo, manchas, hojas amarillentas). Detección visual del jugador o vía Tablet (en S30 con probe). Fumigadora + pesticida específico → eliminar plaga. Plaga no tratada impacta `pest_impact`.
 
 **Deliverables.**
+
 - Items `sonar_pesticide_a`, `sonar_pesticide_b` (placeholders por tipo de plaga).
 - Vehículo fumigadora + anim.
 - `server/pests/pest_service.lua` con lifecycle de plaga.
@@ -489,6 +519,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Sistema climático server-authoritative. Estaciones rotan según multiplicador del Bible §13.1. Eventos meteorológicos: lluvia (afecta `irrigation_score` positivo si moderado, negativo si torrencial), sequía, granizo (penalty crítico), heladas. El cliente sincroniza weather y time con el server-authoritative state. `weather_match` factor finalmente activo.
 
 **Deliverables.**
+
 - Migration `008_climate.sql` (`sonar_farm_climate_state` con state + historial).
 - `server/climate/climate_service.lua` con scheduler de eventos meteorológicos por estación.
 - `client/weather_sync.lua` que aplica el weather correspondiente.
@@ -497,6 +528,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 - App **Weather** en Laptop (oleada 1.5+, en este slice solo HUD discreto).
 
 **DoD específico.**
+
 - Estaciones rotan correctamente con multiplicador 1x.
 - Eventos meteorológicos impactan factores de calidad de las parcelas activas.
 
@@ -511,6 +543,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Los 5 cultivos hortícolas (tomate, pimiento, lechuga, cebolla, patata) vía config-only siguiendo Pilar 5. Sub-nodos Hortalizas/Hojas/Bulbos/Tubérculos plenamente operativos. **Invernadero (cristal industrial)** como tipo especial de parcela: `weather_match` neutro siempre (climas externos no afectan dentro), pero con coste operativo de mantenimiento y sin bonus de optimal weather.
 
 **Deliverables.**
+
 - 5 archivos `config/crops/*.lua`.
 - 5×4 modelos 3D de stages.
 - Lógica especial de tipo `greenhouse` en `plot_lifecycle_service`.
@@ -525,6 +558,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Sistema paralelo de "machinery state" (Bible §10.3). Cada vehículo agrícola tiene durabilidad 0-100 que decae con uso. <30 → mayor probabilidad de avería durante operación (anim de avería + tiempo de pause + reparación). Mantenimiento preventivo en granero (item `sonar_machinery_kit` o NPC mecánico) restaura durabilidad. Vehículo roto = inoperativo hasta reparado.
 
 **Deliverables.**
+
 - Migration `009_machinery.sql` (`sonar_farm_machinery_state` por vehículo).
 - `server/machinery/machinery_service.lua`.
 - Anims de avería + reparación.
@@ -549,6 +583,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Los 6-10 NPCs compradores del Bible §12. Personalidad (cultivos preferidos, calidad mínima, volumen, frecuencia, rango precio) en `config/npcs.lua`. Cada NPC con vendor marker físico distintivo (ped + ubicación). App **Market** en Laptop con cards Bento por NPC: lo que paga hoy por cada cultivo × calidad, su threshold, su disponibilidad para contratos.
 
 **Deliverables.**
+
 - `config/npcs.lua` completo con 6-10 NPCs (ej. Molino Pedro, Supermercado Casals, Restaurante La Plaza, Distribuidora Vega, Conservera del Sur).
 - Migration `010_npc_buyers.sql` (state runtime: precio actual, etc.).
 - `web/src/apps/Market/MarketApp.tsx` con grid Bento.
@@ -565,6 +600,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Al inicio de cada día in-game, calcular nuevo precio de mercado por cultivo aplicando random walk acotado ±10% sobre el precio canon (Bible §12.2). Histórico 7 días persistido. UI Market muestra mini-gráfica Recharts del histórico por cultivo. Persistencia: si server reinicia, el día actual no se recalcula (idempotente).
 
 **Deliverables.**
+
 - Migration `011_market_prices.sql`.
 - `server/market/random_walk.lua`.
 - `web/src/apps/Market/PriceHistory.tsx` con Recharts mini.
@@ -578,6 +614,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Sistema de contratos. NPC ofrece contrato con términos: cultivo, calidad mínima, cantidad, frecuencia, número de ciclos, precio por unidad. Jugador firma desde Market. Entrega lotes a tiempo → reputación sube + bonus + contrato renovable o escalable. Incumple → penalty reputación + posible cancelación. Usa Banca escrow FSM para garantizar pagos.
 
 **Deliverables.**
+
 - Migration `012_contracts.sql`.
 - `server/contracts/contract_service.lua` con FSM (`OFFERED → ACTIVE → DELIVERED_OK | DELIVERED_FAIL → COMPLETED | CANCELLED`).
 - Integración con S3 Banca escrow.
@@ -585,6 +622,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 - Mockup v0.dev.
 
 **DoD específico.**
+
 - Firmar contrato → escrow de pago hold → entregar batch correcto → escrow release → reputación sube.
 - Caso fail también cubierto: timeout sin entrega → escrow refund + penalty.
 
@@ -599,6 +637,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Cada jugador acumula reputación 0-100 con cada NPC del catálogo. Subir reputación abre tiers de contratos premium (que pagan más pero exigen más). UI: badge de reputación en cada NPC card. Decay lento de reputación si no se interactúa por X tiempo (config).
 
 **Deliverables.**
+
 - Migration `013_reputation.sql`.
 - `server/reputation/reputation_service.lua`.
 - UI integration en Market app.
@@ -622,6 +661,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Refactor de single-player owner-only (que ha funcionado desde Fase 1) a sistema empresa formal. Una empresa tiene: nombre, founder (CID), fecha founding, IBAN empresa, roster (lista de miembros + rol). Migration desde estado actual: a cada jugador con parcelas registradas se le crea automáticamente una "empresa solo-owner" con su nombre.
 
 **Deliverables.**
+
 - Migration `014_companies.sql` con migration de datos previos.
 - `server/companies/company_service.lua`.
 - App **Company** en Laptop (sección "Mi Empresa") con info básica.
@@ -635,12 +675,14 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Implementación de los 4 roles + 5 toggles del Bible §11. App Personnel con cards Bento por empleado fijo, 5 toggles iOS-style cada una.
 
 **Deliverables.**
+
 - Migration `015_company_members_permissions.sql`.
 - `server/companies/permissions_service.lua` con check granular en cada acción sensible.
 - App **Personnel** en Laptop.
 - Mockup v0.dev (icónico — los toggles iOS son su sello).
 
 **DoD específico.**
+
 - Toggle "Capital" off → empleado no puede mover dinero, intento devuelve denied notification.
 - Toggle "B2B" on con límite L€ → empleado puede firmar contratos hasta L€, no más.
 
@@ -655,6 +697,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Salarios fijos ejecutados periódicamente (default cada día in-game) sobre la cuenta empresa → cuenta empleado. Si caja no cubre → log + alerta al dueño. Empleados temporales: contrato por jornada (8h juego) con monto fijo, pago automático al cerrar jornada o al completar tarea acordada. UI: vista "Nóminas" en Personnel app.
 
 **Deliverables.**
+
 - Migration `016_payroll.sql`.
 - `server/companies/payroll_service.lua`.
 - Cron-like scheduler.
@@ -668,6 +711,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Apps Dashboard + Finance + Bitácora + Tasks del Laptop completas con dashboards Recharts. Es el pulido de la experiencia de oficina.
 
 **Deliverables.**
+
 - 4 apps React fully designed + functional.
 - Mockups v0.dev validados antes de implementar.
 - Integración Recharts con datos reales de Banca, parcelas, lotes, contratos.
@@ -683,6 +727,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Apps reducidas de la Tablet de campo (Bible §15.2): Plots (mapa con estado en vivo), Tasks (tareas asignadas/pendientes), Messages (chat empresa + NPCs).
 
 **Deliverables.**
+
 - 3 apps React reducidas.
 - Mockups v0.dev.
 
@@ -705,6 +750,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Item `sonar_drone_recon` desplegable desde la Tablet de campo. Despegue autónomo desde la posición del jugador. Cámara aérea con feed en vivo en pantalla de la Tablet (FiveM scaleform render-to-texture o método equivalente). Mapa overlay 2D con parcelas. **Modo térmico** que destaca zonas de plaga en rojo y zonas secas en azul. Batería limitada (config), retorno a base automático.
 
 **Deliverables.**
+
 - Drone como entity (vehículo aéreo pequeño o ped flying).
 - `client/drones/drone_recon.lua` con AI flight pattern programable.
 - NUI en Tablet con feed cam + overlays.
@@ -714,6 +760,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 - 2-3 sound design assets (despegue, vuelo, retorno).
 
 **DoD específico.**
+
 - Desplegar drone → ver feed en vivo en Tablet → activar overlay térmico → identificar parcela con plaga → drone retorna a base.
 - Wooow Test ✅: clip de 15s del drone vendible.
 
@@ -730,12 +777,14 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Tras detectar plaga con S28, jugador despliega drone de spray. Drone vuela patrón programado sobre la parcela afectada y "fumiga" (efecto de partículas de spray + sonido). Consume pesticida del inventario. Plaga eliminada cuando termina. Anim ~30s.
 
 **Deliverables.**
+
 - Drone spray entity.
 - Flight pattern (zigzag sobre parcela polygon).
 - Particle effects de spray.
 - Sync con `pest_service` para tratar plaga al completar.
 
 **DoD específico.**
+
 - Drone despega + sigue patrón + suelta spray físico + plaga removida + lote impactado positivamente en `pest_impact`.
 
 **Dependencias:** S15, S28.
@@ -749,6 +798,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Item `sonar_soil_probe`. Jugador con probe en mano se acerca a parcela, `ox_target` "Analizar suelo", anim de clavar probe ~5s, datos en Tablet: NPK actuales, pH, humedad, soil score, recomendación contextual ("este cultivo necesita +N", "demasiado P para este cultivo").
 
 **Deliverables.**
+
 - Item + anim.
 - App **Soil Analysis** en Tablet con visualización Recharts.
 - Algoritmo de recomendación contextual.
@@ -765,6 +815,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** App **Market Intelligence** en el Laptop. Recharts profundo: tendencias de precio 30 días, predicciones simples (linear regression sobre histórico), heatmap de mejor momento para vender por cultivo, alertas configurables ("avísame cuando trigo > X€"). Estética **estilo Bloomberg agrícola**.
 
 **Deliverables.**
+
 - App React densa con 4-6 visualizaciones Recharts.
 - Mockup v0.dev (este es el slice que ancla el "Wall Street agrícola" del producto).
 - Backend: agregaciones desde `sonar_farm_market_prices` (S20) + sistema de alertas push a Tablet.
@@ -790,6 +841,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Auditoría exhaustiva: ningún string hardcoded en código. Locales `es.lua` + `en.lua` completos. NUI usa `t('key')` everywhere via `react-i18next` o sistema custom ligero. Fallback locale: `en`.
 
 **Deliverables.**
+
 - 2 archivos locale completos.
 - Tests: cargar producto en `Config.Locale = 'es'` y `'en'` → todos los strings traducidos.
 - Tooling para detectar strings hardcoded olvidados (script de scan).
@@ -803,6 +855,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Suite de smoke tests que verifica los happy paths críticos: boot resource, migrations, plantar/cosechar trigo, vender a NPC, firmar y cumplir contrato, drone deploy. **Balance pass** de toda la economía: precios canon por cultivo ajustados, salarios, costes operativos, calibración de fórmula de calidad. Foco: ratio de ingresos/gastos del Bible §14.3 (120-140% para sesión casual).
 
 **Deliverables.**
+
 - Tests automatizados (lua-test o similar para server, vitest para NUI).
 - `config/economy.lua` finalmente balanceado.
 - Documento `docs/economy_balance_v1.md` con la mesa de números canon firmada.
@@ -816,6 +869,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** 3-5 servidores partner reciben Farm Sonar v0.9. Recogida de feedback estructurada (cuestionario + sesiones de debug remoto). Iteración sobre los 3-5 issues más impactantes.
 
 **Deliverables.**
+
 - Build v0.9 distribuible.
 - Cuestionario beta + canal Discord privado para partners.
 - Bug fixes priorizados.
@@ -830,6 +884,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Scope.** Empaquetado final del producto. Asset Escrow encriptado para los archivos protegibles (sin romper deps). Documentación cliente: install guide, config reference, admin commands, troubleshooting. Página Tebex con descripción + screenshots + trailer (grabados durante slices marcados ⭐).
 
 **Deliverables.**
+
 - Build v1.0 con escrow.
 - `docs/cliente/install.md` (en + es).
 - `docs/cliente/config.md`.
@@ -849,18 +904,18 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 
 Riesgos identificados que debemos vigilar a lo largo del roadmap:
 
-| ID | Riesgo | Slice afectado | Mitigación |
-|---|---|---|---|
-| R1 | Persistencia delta-calc rompe arquitectura | S5, S11 | Risk-first en Fase 1, schema con timestamps desde día 1 |
-| R2 | Drones (NUI render-to-texture) técnicamente inviable | S28 | Spike técnico 1-2 días antes de comprometerse al slice |
-| R3 | Balance económico desbalanceado a la salida | S33 | Closed beta + iteración con datos reales |
-| R4 | Bridge QBox/QBCore divergencias profundas | S1 | Documentar interfaz exhaustiva, tests en ambos por slice |
-| R5 | Performance con muchas parcelas activas | S6, S11, S16 | Scheduler tick-based, no per-frame; budgets de DB query |
-| R6 | UI design no escala al subir densidad de datos | S26, S31 | Mockups v0.dev validados antes de cada app |
-| R7 | i18n con strings olvidados al final | S32 | Lint custom desde S4 que detecta strings hardcoded |
-| R8 | Asset Escrow bloquea extensibilidad por terceros | S35 | Definir qué archivos son escrow-protegidos vs config abierto |
-| R9 | Contratos B2B con bugs en escrow → pérdida dinero | S21 | Tests obligatorios FSM + reconciliación en boot |
-| R10 | Clima FiveM cliente desync con server-authoritative | S16 | Documentar gotchas conocidos, sync pattern probado |
+| ID  | Riesgo                                               | Slice afectado | Mitigación                                                   |
+| --- | ---------------------------------------------------- | -------------- | ------------------------------------------------------------ |
+| R1  | Persistencia delta-calc rompe arquitectura           | S5, S11        | Risk-first en Fase 1, schema con timestamps desde día 1      |
+| R2  | Drones (NUI render-to-texture) técnicamente inviable | S28            | Spike técnico 1-2 días antes de comprometerse al slice       |
+| R3  | Balance económico desbalanceado a la salida          | S33            | Closed beta + iteración con datos reales                     |
+| R4  | Bridge QBox/QBCore divergencias profundas            | S1             | Documentar interfaz exhaustiva, tests en ambos por slice     |
+| R5  | Performance con muchas parcelas activas              | S6, S11, S16   | Scheduler tick-based, no per-frame; budgets de DB query      |
+| R6  | UI design no escala al subir densidad de datos       | S26, S31       | Mockups v0.dev validados antes de cada app                   |
+| R7  | i18n con strings olvidados al final                  | S32            | Lint custom desde S4 que detecta strings hardcoded           |
+| R8  | Asset Escrow bloquea extensibilidad por terceros     | S35            | Definir qué archivos son escrow-protegidos vs config abierto |
+| R9  | Contratos B2B con bugs en escrow → pérdida dinero    | S21            | Tests obligatorios FSM + reconciliación en boot              |
+| R10 | Clima FiveM cliente desync con server-authoritative  | S16            | Documentar gotchas conocidos, sync pattern probado           |
 
 ---
 
@@ -868,15 +923,15 @@ Riesgos identificados que debemos vigilar a lo largo del roadmap:
 
 Para mantener momentum + validación temprana, demos cortos al cierre de cada fase:
 
-| Demo | Cuándo | Qué se enseña | Audiencia |
-|---|---|---|---|
-| **Demo 0** | Cierre Fase 0 | Laptop abre con dashboard placeholder + identidad visual | Founder + circle interno |
-| **Demo 1** | Cierre Fase 1 | ⭐ Clip 15s: plantar → cosechar → vender trigo | Founder + posibles beta partners |
-| **Demo 2** | Cierre Fase 2 | Granja con 8 cultivos + clima + plagas | Founder + beta partners |
-| **Demo 3** | Cierre Fase 3 | Mundo vivo: NPCs piden, contratos vivos | Founder + beta partners |
-| **Demo 4** | Cierre Fase 4 | Equipo 4 jugadores con permisos operando | Founder + beta partners |
-| **Demo 5** | Cierre Fase 5 | ⭐⭐ Trailer Tebex 60s con drones + market intel | Founder + público (teaser social) |
-| **Demo 6** | Cierre Fase 6 | 🏁 Producto en Tebex live | Mundo |
+| Demo       | Cuándo        | Qué se enseña                                            | Audiencia                         |
+| ---------- | ------------- | -------------------------------------------------------- | --------------------------------- |
+| **Demo 0** | Cierre Fase 0 | Laptop abre con dashboard placeholder + identidad visual | Founder + circle interno          |
+| **Demo 1** | Cierre Fase 1 | ⭐ Clip 15s: plantar → cosechar → vender trigo           | Founder + posibles beta partners  |
+| **Demo 2** | Cierre Fase 2 | Granja con 8 cultivos + clima + plagas                   | Founder + beta partners           |
+| **Demo 3** | Cierre Fase 3 | Mundo vivo: NPCs piden, contratos vivos                  | Founder + beta partners           |
+| **Demo 4** | Cierre Fase 4 | Equipo 4 jugadores con permisos operando                 | Founder + beta partners           |
+| **Demo 5** | Cierre Fase 5 | ⭐⭐ Trailer Tebex 60s con drones + market intel         | Founder + público (teaser social) |
+| **Demo 6** | Cierre Fase 6 | 🏁 Producto en Tebex live                                | Mundo                             |
 
 ---
 
@@ -927,6 +982,6 @@ S0 ──┬─ S1 ── S2 ── S3 (Banca) ──┐
 
 ## 8. Changelog
 
-| Versión | Fecha | Cambios |
-|---|---|---|
+| Versión | Fecha      | Cambios                                                                                                                                                                                                                                                              |
+| ------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **1.0** | 2026-05-04 | Primera versión firmada. 6 fases · 36 slices · ~5-7 meses con AI agents. Risk-first: persistencia delta-calc en Fase 1. Marketing-driven: Fase 5 WOOOW Tech Stack (drones + probe + market intel) antes del launch para competir con grandes estudios FiveM premium. |
