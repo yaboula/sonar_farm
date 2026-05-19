@@ -1,0 +1,95 @@
+{
+    "shell": {
+        "brand": "Farm Sonar",
+        "tagline": "Infraestructura agrícola premium",
+        "close": "Cerrar",
+        "loading": "Cargando…"
+    },
+    "mode": {
+        "manager": "Gerencia",
+        "field": "Campo"
+    },
+    "nav": {
+        "dashboard": "Panel",
+        "plots": "Parcelas",
+        "batches": "Lotes",
+        "market": "Mercado",
+        "contracts": "Contratos",
+        "personnel": "Personal",
+        "finance": "Finanzas",
+        "log": "Bitácora",
+        "tasks": "Tareas",
+        "messages": "Mensajes"
+    },
+    "page": {
+        "dashboard": {
+            "title": "Panel",
+            "subtitle": "Vista en vivo de la operación de la granja.",
+            "greeting": "Bienvenido de vuelta"
+        },
+        "plots": {
+            "title": "Parcelas",
+            "subtitle": "Mapa y estado de cultivos."
+        },
+        "batches": {
+            "title": "Lotes",
+            "subtitle": "Inventario, calidad y trazabilidad."
+        },
+        "market": {
+            "title": "Mercado",
+            "subtitle": "Catálogo de compradores y precios del día."
+        },
+        "contracts": {
+            "title": "Contratos",
+            "subtitle": "Acuerdos B2B activos e históricos."
+        },
+        "personnel": {
+            "title": "Personal",
+            "subtitle": "Plantilla, roles y permisos."
+        },
+        "finance": {
+            "title": "Finanzas",
+            "subtitle": "Banca Sonar, libro mayor y movimientos."
+        },
+        "log": {
+            "title": "Bitácora",
+            "subtitle": "Registro auditable de acciones críticas."
+        },
+        "tasks": {
+            "title": "Tareas",
+            "subtitle": "Asignaciones y progreso."
+        },
+        "messages": {
+            "title": "Mensajes",
+            "subtitle": "Chat de empresa y mensajes con NPCs."
+        }
+    },
+    "state": {
+        "loading": {
+            "title": "Cargando"
+        },
+        "empty": {
+            "title": "Aún no hay nada por aquí",
+            "body": "Esta zona se ilumina cuando empiezas a cultivar.",
+            "cta": "Empezar"
+        },
+        "error": {
+            "title": "Algo se torció",
+            "body": "No pudimos cargar esta vista.",
+            "retry": "Reintentar"
+        }
+    },
+    "demo": {
+        "dashboard": {
+            "harvestReady": "Listos para cosechar",
+            "harvestReadyValue": "3 parcelas",
+            "activeContracts": "Contratos activos",
+            "activeContractsValue": "2",
+            "freshBatches": "Lotes frescos",
+            "freshBatchesValue": "12",
+            "cashBalance": "Caja",
+            "demoCallout": "Esta es una tarjeta placeholder. Los datos reales aparecen en slices posteriores.",
+            "sampleBatchHint": "Chip de lote de ejemplo"
+        }
+    }
+}

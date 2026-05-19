@@ -1,0 +1,95 @@
+{
+    "shell": {
+        "brand": "Farm Sonar",
+        "tagline": "Premium farming infrastructure",
+        "close": "Close",
+        "loading": "Loading…"
+    },
+    "mode": {
+        "manager": "Manager",
+        "field": "Field"
+    },
+    "nav": {
+        "dashboard": "Dashboard",
+        "plots": "Plots",
+        "batches": "Batches",
+        "market": "Market",
+        "contracts": "Contracts",
+        "personnel": "Personnel",
+        "finance": "Finance",
+        "log": "Log",
+        "tasks": "Tasks",
+        "messages": "Messages"
+    },
+    "page": {
+        "dashboard": {
+            "title": "Dashboard",
+            "subtitle": "Live overview of your farm operation.",
+            "greeting": "Welcome back"
+        },
+        "plots": {
+            "title": "Plots",
+            "subtitle": "Field map and crop state."
+        },
+        "batches": {
+            "title": "Batches",
+            "subtitle": "Inventory, quality and lineage."
+        },
+        "market": {
+            "title": "Market",
+            "subtitle": "Buyer catalog and daily prices."
+        },
+        "contracts": {
+            "title": "Contracts",
+            "subtitle": "Active and historic B2B deals."
+        },
+        "personnel": {
+            "title": "Personnel",
+            "subtitle": "Roster, roles and permissions."
+        },
+        "finance": {
+            "title": "Finance",
+            "subtitle": "Sonar bank, ledger and movements."
+        },
+        "log": {
+            "title": "Log",
+            "subtitle": "Audit trail of critical actions."
+        },
+        "tasks": {
+            "title": "Tasks",
+            "subtitle": "Assignments and progress."
+        },
+        "messages": {
+            "title": "Messages",
+            "subtitle": "Company chat and NPC threads."
+        }
+    },
+    "state": {
+        "loading": {
+            "title": "Loading"
+        },
+        "empty": {
+            "title": "Nothing here yet",
+            "body": "This area lights up when you start farming.",
+            "cta": "Get started"
+        },
+        "error": {
+            "title": "Something went sideways",
+            "body": "We could not load this view.",
+            "retry": "Try again"
+        }
+    },
+    "demo": {
+        "dashboard": {
+            "harvestReady": "Harvest ready",
+            "harvestReadyValue": "3 plots",
+            "activeContracts": "Active contracts",
+            "activeContractsValue": "2",
+            "freshBatches": "Fresh batches",
+            "freshBatchesValue": "12",
+            "cashBalance": "Cash balance",
+            "demoCallout": "This is a placeholder card. Real data lights up in later slices.",
+            "sampleBatchHint": "Sample batch chip"
+        }
+    }
+}

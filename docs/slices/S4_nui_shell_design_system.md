@@ -35,50 +35,66 @@ If S0 regresses from `DONE`, do not implement S4 — escalate to founder.
 
 ## 4. Deliverables
 
-### React / NUI shell
+### React / NUI shell (Frontend — Phase B, shipped 2026-05-19)
 
-- [ ] `sonar_farm_tablet/web/src/main.tsx` — still mounts the React app cleanly.
-- [ ] `sonar_farm_tablet/web/src/App.tsx` — replace S0 splash with NUI shell lifecycle and app mode rendering.
-- [ ] `sonar_farm_tablet/web/src/router/AppRouter.tsx` — routes/placeholders: `/dashboard`, `/plots`, `/batches`, `/market`, `/contracts`, `/personnel`, `/finance`, `/log`, `/tasks`, `/messages`.
-- [ ] `sonar_farm_tablet/web/src/types/nui.ts` — typed NUI inbound/outbound message contracts.
-- [ ] `sonar_farm_tablet/web/src/hooks/useNuiMessages.ts` — receive `sonar:farm:nui:open` / `sonar:farm:nui:close` style messages.
-- [ ] `sonar_farm_tablet/web/src/i18n/*` or equivalent lightweight i18n module — `t('key.path')` available to components.
-- [ ] `sonar_farm_tablet/web/src/locales/en.json` and `sonar_farm_tablet/web/src/locales/es.json` — shell and placeholder strings.
+- [x] `sonar_farm_tablet/web/src/main.tsx` — mounts React app, loads `theme.css` + `globals.css`.
+- [x] `sonar_farm_tablet/web/src/App.tsx` — replaces S0 splash with hidden-by-default NUI shell lifecycle, mode-aware (`manager` ↔ `field`).
+- [x] `sonar_farm_tablet/web/src/router/AppRouter.tsx` — `MemoryRouter` (CEF has no URL bar) hosting `/dashboard`, `/plots`, `/batches`, `/market`, `/contracts`, `/personnel`, `/finance`, `/log`, `/tasks`, `/messages`.
+- [x] `sonar_farm_tablet/web/src/router/routes.ts` — typed route catalog with per-mode visibility and Lucide icon mapping.
+- [x] `sonar_farm_tablet/web/src/types/nui.ts` — typed NUI inbound/outbound message contracts + type guards.
+- [x] `sonar_farm_tablet/web/src/hooks/useNuiMessages.ts` — typed `window.message` listener.
+- [x] `sonar_farm_tablet/web/src/hooks/useNuiVisibility.ts` — visibility/mode/route state machine (`useReducer`).
+- [x] `sonar_farm_tablet/web/src/hooks/useEscapeClose.ts` — global Escape→close binding gated by shell visibility.
+- [x] `sonar_farm_tablet/web/src/lib/env.ts` — `isFiveM()`, `isDev()`, `getResourceName()`.
+- [x] `sonar_farm_tablet/web/src/lib/nui.ts` — safe `fetchNui<TResponse, TPayload>(callback, data, fallback)`.
+- [x] `sonar_farm_tablet/web/src/i18n/` — `I18nProvider`, `useI18n`, separate `context.ts` for HMR safety.
+- [x] `sonar_farm_tablet/web/src/locales/en.json` + `es.json` — shell + nav + page + state + demo namespaces.
 
-### Design system components
+### Design system primitives (Frontend — Phase B)
 
-- [ ] `sonar_farm_tablet/web/src/components/layout/BentoGrid.tsx` — `BentoGrid` + `BentoGrid.Item` API signed in this slice.
-- [ ] `sonar_farm_tablet/web/src/components/ui/Card.tsx` or equivalent local primitive — flat minimalista card style per ADR-006.
-- [ ] `sonar_farm_tablet/web/src/components/ui/BatchChip.tsx` — future-ready batch chip using mono typography.
-- [ ] `sonar_farm_tablet/web/src/components/ui/LimePulse.tsx` — calm lime pulse, respects reduced motion.
-- [ ] `sonar_farm_tablet/web/src/components/typography/Heading.tsx`.
-- [ ] `sonar_farm_tablet/web/src/components/typography/Body.tsx`.
-- [ ] `sonar_farm_tablet/web/src/components/typography/Mono.tsx`.
-- [ ] `sonar_farm_tablet/web/src/styles/theme.css` — verify tokens still match Bible §1.1 and UI Playbook v1; add only justified shell tokens.
+- [x] `sonar_farm_tablet/web/src/styles/theme.css` — v2 tokens: status `-bg/-fg` pairs, spacing scale `fs-1..fs-16`, focus ring token, viewport/shell chrome tokens, typography scale.
+- [x] `sonar_farm_tablet/web/src/styles/globals.css` — focus-visible canon, `prefers-reduced-motion`/`prefers-contrast` guards, motion keyframes (`fs-pulse`, `fs-fade-in`, `fs-slide-up`, `fs-skeleton`).
+- [x] `sonar_farm_tablet/web/src/components/typography/{Heading,Body,Mono}.tsx` — Playbook v2 §4.2 scale.
+- [x] `sonar_farm_tablet/web/src/components/ui/Card.tsx` — flat minimalista (ADR-006) with `Card.Header/Body/Footer`.
+- [x] `sonar_farm_tablet/web/src/components/ui/Button.tsx` — 4 variants × 3 sizes, loading state, focus ring.
+- [x] `sonar_farm_tablet/web/src/components/ui/Icon.tsx` — Lucide wrapper enforcing stroke 1.5 + canonical size scale.
+- [x] `sonar_farm_tablet/web/src/components/ui/Skeleton.tsx` — `text/card/circle/rect` variants, reduced-motion safe.
+- [x] `sonar_farm_tablet/web/src/components/ui/EmptyState.tsx` — Playbook v2 §11.2.
+- [x] `sonar_farm_tablet/web/src/components/ui/ErrorState.tsx` — Playbook v2 §11.3.
+- [x] `sonar_farm_tablet/web/src/components/ui/BatchChip.tsx` — quality dot + mono ID + freshness tag, truncates IDs > 12 chars.
+- [x] `sonar_farm_tablet/web/src/components/ui/LimePulse.tsx` — calm lime, CSS-only, respects reduced motion.
+- [x] `sonar_farm_tablet/web/src/components/layout/BentoGrid.tsx` — `BentoGrid` + `BentoGrid.Item` (gap sm/md/lg, columns 8|12, span number).
 
-### Client / FiveM integration
+### Shell layouts (Frontend — Phase B)
+
+- [x] `sonar_farm_tablet/web/src/shell/ShellTopBar.tsx` — 64px (manager) / 56px (tablet) variants.
+- [x] `sonar_farm_tablet/web/src/shell/ShellSidebar.tsx` — 240px Manager sidebar driven by route catalog.
+- [x] `sonar_farm_tablet/web/src/shell/ShellContent.tsx` — padded scroll container, max-width per viewport.
+- [x] `sonar_farm_tablet/web/src/shell/ManagerShell.tsx` — Laptop fullscreen (TopBar + Sidebar + Content).
+- [x] `sonar_farm_tablet/web/src/shell/TabletShell.tsx` — 1280×800 centered overlay with inline tab nav.
+
+### Pages (Frontend — Phase B)
+
+- [x] `sonar_farm_tablet/web/src/pages/DashboardPage.tsx` — only page with demo data (KPI bento + BatchChip showcase). Demo strings under `demo.dashboard.*`.
+- [x] 9 placeholder pages (`Plots/Batches/Market/Contracts/Personnel/Finance/Log/Tasks/Messages`) backed by a shared `_PagePlaceholder` consuming `EmptyState`.
+
+### Client / FiveM integration (Integration Agent — pending)
 
 - [ ] `sonar_farm_tablet/client/main.lua` — NUI lifecycle coordinator or imports new client modules.
 - [ ] `sonar_farm_tablet/client/laptop_interaction.lua` — office laptop `ox_target` entrypoint opens NUI mode `manager`.
 - [ ] `sonar_farm_tablet/client/tablet_interaction.lua` — configurable keybind opens NUI mode `field`.
-- [ ] `sonar_farm_tablet/config.lua` — interaction/keybind settings if needed; no magic values in client code.
+- [ ] `sonar_farm_tablet/config.lua` — interaction/keybind settings; no magic values in client code.
 - [ ] `sonar_farm_tablet/fxmanifest.lua` — load new client/config files and include NUI build files correctly.
-- [ ] NUI close callback or message bridge — ESC closes UI, calls Lua, clears focus.
-
-### Demo / placeholders
-
-- [ ] `/dashboard` includes one premium demo card with fake data and visible but restrained `#B6FB63` accent.
-- [ ] `manager` mode shows manager-appropriate nav placeholders.
-- [ ] `field` mode shows field/tablet-appropriate nav placeholders.
-- [ ] Empty/loading/error placeholder states exist for the shell level.
+- [ ] NUI close callback wiring on the Lua side (`RegisterNUICallback('close', ...)` → `SetNuiFocus(false, false)`).
 
 ### Tests / verification
 
-- [ ] `pnpm lint` passes.
-- [ ] `pnpm build` passes.
-- [ ] Manual browser smoke via Vite dev mode.
-- [ ] QBox in-game smoke for laptop/tablet open/close.
-- [ ] QBCore in-game smoke before close, or explicit blocker/ADR if unavailable.
+- [x] `pnpm --filter @sonar/farm-tablet-web lint` passes (0 warnings, 0 errors).
+- [x] `pnpm --filter @sonar/farm-tablet-web type-check` passes (strict + `noUncheckedIndexedAccess` + `exactOptionalPropertyTypes`).
+- [x] `pnpm --filter @sonar/farm-tablet-web build` passes (208 KB JS / 67 KB gzip, 17 KB CSS / 4.4 KB gzip).
+- [x] Manual browser smoke via Vite dev mode (shell visible by default; route nav works; close button returns to hidden).
+- [ ] QBox in-game smoke for laptop/tablet open/close (blocked on Integration Agent).
+- [ ] QBCore in-game smoke (blocked on Integration Agent).
 
 ## 5. Universal DoD checklist
 
@@ -122,29 +138,134 @@ Prompts file: `docs/slices/S4_nui_shell_design_system.prompts.md`.
 
 ## 8. Architecture notes
 
-Initial PM guidance before implementation:
+Authoritative visual sources: Bible §1.1, Bible §15, **UI Playbook v2** (signed 2026-05-19), ADR-006.
 
-- Authoritative visual sources: Bible §1.1, Bible §15, UI Playbook v1, ADR-006.
-- S4 should not add gameplay backend, DB migrations or real plot/batch/company state.
-- Frontend and Integration must agree on the NUI message contract before coding deeply.
-- Suggested inbound NUI messages:
-  - `{ action: 'sonar:farm:nui:open', payload: { mode: 'manager' | 'field', route?: string } }`
-  - `{ action: 'sonar:farm:nui:close' }`
-- Suggested NUI callback from React to Lua:
-  - `sonar_farm_tablet:close` or equivalent fetch callback, then Lua calls `SetNuiFocus(false, false)`.
-- Keep existing S0 safety invariant: NUI must render nothing in-game until explicitly opened.
-- Browser dev mode may default visible for designer productivity, but in FiveM the UI must stay hidden until Lua opens it.
-- If shadcn/ui is not physically installed yet, implement local minimal primitives with shadcn-compatible styling. Do not add a large component catalog in S4.
-- Do not install Framer Motion by default. Use CSS transitions/pulse only unless the founder explicitly approves motion scope.
+### 8.1 Signed NUI message contracts
 
-Contracts to fill during implementation:
+Inbound (Lua → React, via `SendNUIMessage`):
 
-- `BentoGrid` props.
-- `BatchChip` props.
-- `LimePulse` props and reduced-motion behavior.
-- NUI message interfaces.
-- Locale key namespaces.
-- Config keys for keybind and laptop target coordinates/model.
+```ts
+type NuiInboundMessage =
+  | { action: 'sonar:farm:nui:open'; payload: { mode: 'manager' | 'field'; route?: NuiRoute } }
+  | { action: 'sonar:farm:nui:close' };
+
+type NuiRoute =
+  | '/dashboard'
+  | '/plots'
+  | '/batches'
+  | '/market'
+  | '/contracts'
+  | '/personnel'
+  | '/finance'
+  | '/log'
+  | '/tasks'
+  | '/messages';
+```
+
+Both sides defensively parse incoming messages: React via `isNuiInboundMessage()` in `src/types/nui.ts`; Lua MUST mirror the same guard before any side effect.
+
+Outbound (React → Lua, via `fetch('https://${resource}/<callback>')`):
+
+| Endpoint | Payload | Expected response                              | When                                                                                                                        |
+| -------- | ------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `close`  | `{}`    | `{ ok: true } \| { ok: false, error: string }` | User presses Escape or clicks the topbar close button. Lua must call `SetNuiFocus(false, false)` and return `{ ok: true }`. |
+
+In browser dev (`isFiveM() === false`), `fetchNui` short-circuits to the supplied fallback and never hits the network, so designers can preview the shell in a Vite tab.
+
+### 8.2 Signed component APIs (Playbook v2 §10)
+
+#### BentoGrid (`components/layout/BentoGrid.tsx`)
+
+```ts
+<BentoGrid gap="sm" | "md" | "lg" columns={8 | 12}>
+  <BentoGrid.Item span={number | { laptop: number; tablet?: number }}>...</BentoGrid.Item>
+</BentoGrid>
+```
+
+- Default: `gap="md"` (16 px), `columns=12`.
+- Item default `span={12}`.
+- Spans rendered via inline `grid-column: span N / span N` so `noUncheckedIndexedAccess` cannot bite.
+- Items expose `data-fs-bento-span` for QA tooling.
+
+#### Card (`components/ui/Card.tsx`)
+
+```ts
+<Card padding="compact" | "comfortable" | "lg" interactive={boolean}>
+  <Card.Header>…</Card.Header>
+  <Card.Body>…</Card.Body>
+  <Card.Footer>…</Card.Footer>
+</Card>
+```
+
+- `interactive` adds `role="button" tabIndex={0}` plus focus ring (inherited from global `:focus-visible`).
+- Style canon: `bg-fs-surface`, `border border-fs-border`, `rounded-2xl`, `shadow-none`.
+
+#### BatchChip (`components/ui/BatchChip.tsx`)
+
+```ts
+<BatchChip
+  batchId="b_8f3a4e2c91d0"
+  quality?={'S' | 'A' | 'B' | 'C' | 'D' | null}
+  freshness?={number | null}   // 0..100 — < 30 shows a danger marker
+  onClick?={() => void}
+  aria-label?={string}
+/>
+```
+
+- IDs > 12 chars truncate to `b_8f3a4e…` (mono).
+- Quality dot uses `--color-fs-quality-*` tokens.
+- When clickable, renders as a `<button>` for keyboard accessibility.
+
+#### LimePulse (`components/ui/LimePulse.tsx`)
+
+```ts
+<LimePulse size="sm" | "md" | "lg" label?={string} />
+```
+
+- Drives `.fs-pulse` from `globals.css`; goes static automatically under `prefers-reduced-motion`.
+- When `label` is supplied, sets `role="status"` + `aria-label` for screen readers; otherwise `aria-hidden`.
+
+#### Other primitives
+
+- `Heading` (level: display/h1/h2/h3, optional `as`: h1-h4|span).
+- `Body` (size: default/small/micro, `muted` boolean, optional `as`: p/span/div).
+- `Mono` (size: default/small) — uses `.fs-mono` for `tnum`/`zero` features.
+- `Button` (variant: primary/secondary/ghost/destructive, size: sm/md/lg, `loading`, `leftIcon`, `rightIcon`).
+- `Icon` (Lucide wrapper, sizes xs/sm/md/lg/xl, stroke 1.5, auto `aria-hidden` when no label).
+- `Skeleton` (variant: text/card/circle/rect, `lines` for text, reduced-motion safe).
+- `EmptyState` / `ErrorState` (icon + heading + body + optional action button).
+
+### 8.3 Shell anatomy (Playbook v2 §12)
+
+- Manager: `--fs-topbar-h-manager` (64 px) + `--fs-sidebar-w-manager` (240 px).
+- Tablet: `--fs-topbar-h-tablet` (56 px), no sidebar; tab nav inline on top of content.
+- Both shells render the `AppRouter` mounted with `initialRoute` so Lua-driven deep-links land on the right page on open.
+- Switching mode remounts the active shell (React `key="manager"` vs `key="field"`), which resets the in-memory router history.
+
+### 8.4 i18n key namespaces
+
+- `shell.*` — brand, tagline, close, loading.
+- `mode.*` — `manager`, `field` labels.
+- `nav.*` — one key per route (matches `routes.ts:labelKey`).
+- `page.<route-key>.title` / `.subtitle` — per-page chrome.
+- `page.dashboard.greeting` — hero greeting on dashboard.
+- `state.loading.*`, `state.empty.*`, `state.error.*` — canonical UI states.
+- `demo.dashboard.*` — placeholder strings used ONLY by `DashboardPage`. Will be deleted slice-by-slice as real data lights up.
+
+### 8.5 Invariants preserved from S0
+
+- React renders `null` when shell is hidden; body/html stay `background: transparent` so the FiveM canvas shows through.
+- In Vite dev (`import.meta.env.DEV`), the shell starts visible in manager mode for designer productivity.
+- In FiveM CEF (detected via `window.GetParentResourceName`), shell starts hidden and only `sonar:farm:nui:open` flips it visible.
+
+### 8.6 Pending Integration contracts
+
+Integration Agent owns:
+
+- Choosing the laptop prop model + target coordinates → `Config.LaptopTarget` (no magic numbers).
+- Choosing the tablet keybind → `Config.TabletKeybind` (`ox_lib` `lib.addKeybind` recommended).
+- Lua `SendNUIMessage` payloads MUST match the contracts in §8.1 byte-for-byte.
+- `RegisterNUICallback('close', ...)` MUST respond with `{ ok = true }` and call `SetNuiFocus(false, false)`.
 
 ## 9. ADRs created
 

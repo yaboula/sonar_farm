@@ -3,9 +3,15 @@
  * ============================================================
  *
  * Loaded after theme.css (which already imports tailwindcss).
- * Use this file for: resets, font wiring, cross-cutting base
- * styles. NEVER for component-specific styles (those live with
- * their components or in @utility blocks).
+ * Scope:
+ *  - CSS reset essentials
+ *  - Font wiring
+ *  - Focus ring canon (Playbook v2 §15.3)
+ *  - Motion keyframes + presets (Playbook v2 §14)
+ *  - prefers-reduced-motion guard (Playbook v2 §14.5)
+ *  - prefers-contrast guard (Playbook v2 §15.5)
+ *
+ * NEVER use this file for component-specific styles.
  * ============================================================ */
 
 @layer base {
@@ -23,14 +29,14 @@
         padding: 0;
         /* CRITICAL: must stay transparent so the FiveM game canvas
          * shows through when the React tree renders `null`. The
-         * active UI (splash, tablet shell, etc.) paints its own
-         * opaque surface only when it is actually mounted. */
+         * active UI paints its own opaque surface only when mounted. */
         background: transparent;
     }
 
     html {
         font-family: var(--font-sans);
         color: var(--color-fs-fg);
+        font-size: 16px; /* Laptop root (Playbook v2 §6.1) */
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         text-rendering: optimizeLegibility;
@@ -40,7 +46,19 @@
         overflow: hidden;
     }
 
-    /* Mono utility class for IDs / batch_ids / IBANs / dates per Bible §1.1 */
+    /* Focus ring canon — lime 2px offset (Playbook v2 §15.3).
+     * Applied to anything tab-focusable. */
+    :focus-visible {
+        outline: 2px solid var(--color-fs-focus);
+        outline-offset: 2px;
+        border-radius: inherit;
+    }
+}
+
+/* ------------------------------------------------------------
+ * Mono utility class (for batch IDs, IBANs, timestamps).
+ * ------------------------------------------------------------ */
+@layer utilities {
     .fs-mono {
         font-family: var(--font-mono);
         font-feature-settings:
@@ -50,7 +68,9 @@
     }
 }
 
-/* Subtle pulse animation for the splash accent dot. */
+/* ------------------------------------------------------------
+ * Motion keyframes (Playbook v2 §14.4).
+ * ------------------------------------------------------------ */
 @keyframes fs-pulse {
     0%,
     100% {
@@ -63,8 +83,89 @@
     }
 }
 
+@keyframes fs-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fs-slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fs-skeleton {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
 @layer utilities {
     .fs-pulse {
         animation: fs-pulse 1.6s var(--ease-out-fs) infinite;
+    }
+
+    .fs-fade-in {
+        animation: fs-fade-in var(--duration-fs-base) var(--ease-out-fs) both;
+    }
+
+    .fs-slide-up {
+        animation: fs-slide-up var(--duration-fs-base) var(--ease-out-fs) both;
+    }
+
+    .fs-skeleton {
+        background-image: linear-gradient(
+            90deg,
+            rgb(150 156 156 / 0.1) 0%,
+            rgb(150 156 156 / 0.25) 50%,
+            rgb(150 156 156 / 0.1) 100%
+        );
+        background-size: 200% 100%;
+        animation: fs-skeleton 1.5s var(--ease-in-out-fs) infinite;
+    }
+}
+
+/* ------------------------------------------------------------
+ * prefers-reduced-motion (Playbook v2 §14.5).
+ * Kills all decorative animation. Cards/skeletons still render
+ * but stay static. Transitions become instantaneous.
+ * ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+    .fs-pulse,
+    .fs-fade-in,
+    .fs-slide-up,
+    .fs-skeleton {
+        animation: none !important;
+    }
+
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
+
+/* ------------------------------------------------------------
+ * prefers-contrast (Playbook v2 §15.5).
+ * Bumps border opacity so cards become more visible against bg.
+ * ------------------------------------------------------------ */
+@media (prefers-contrast: more) {
+    :root {
+        --color-fs-border: rgb(150 156 156 / 0.5);
+        --color-fs-card-border: rgb(150 156 156 / 0.5);
     }
 }

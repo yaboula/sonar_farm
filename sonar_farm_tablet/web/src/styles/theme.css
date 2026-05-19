@@ -2,52 +2,90 @@
  * Farm Sonar — Canonical theme tokens
  * ============================================================
  *
- * Source of truth: docs/00_BIBLE.md §1.1 — AgriSphere Light Mode.
+ * Source of truth: docs/00_BIBLE.md §1.1 + docs/04_UI_PLAYBOOK.md v2.
  * Anti-pattern §3 (no hardcoded values): every other component MUST
  * consume these tokens via Tailwind utilities (e.g. `bg-fs-bg`,
  * `text-fs-accent`) or via `var(--fs-*)` in custom CSS.
  *
  * Tailwind v4 syntax: tokens live inside `@theme` and become
- * utilities automatically (e.g. `--color-fs-accent` →  bg-fs-accent).
+ * utilities automatically (e.g. `--color-fs-accent` → bg-fs-accent).
+ *
+ * v2 additions (S4 Phase B):
+ *  - status pairs (-bg + -fg) per UI Playbook §2.3
+ *  - quality tiers per §2.4
+ *  - spacing scale 4px-base per §7
+ *  - focus ring token per §15.3
+ *  - viewport/shell chrome tokens per §12
+ *  - typography scale per §4.2
  * ============================================================ */
 
 @import 'tailwindcss';
 
 @theme {
-    /* ---- Surface palette ---- */
-    --color-fs-bg: #d9eae3; /* mint/sage background — Manager Panel canvas */
-    --color-fs-nav: #050505; /* near-black — nav, pill menu, dark contrast blocks */
-    --color-fs-fg: #050505; /* near-black — primary text on light bg */
-    --color-fs-fg-muted: #969c9c; /* green-gray — secondary text and inactive icons */
-    --color-fs-fg-inverse: #ffffff; /* white — text on nav */
-    --color-fs-surface: #ffffff; /* flat card/panel surface */
-    --color-fs-card-bg: #ffffff; /* backwards-compatible card token */
+    /* ---- Surface palette (Bible §1.1) ---- */
+    --color-fs-bg: #d9eae3; /* mint/sage background */
+    --color-fs-nav: #050505; /* near-black nav / pill menu */
+    --color-fs-fg: #050505; /* primary text on light bg */
+    --color-fs-fg-muted: #969c9c; /* secondary text / inactive icons */
+    --color-fs-fg-inverse: #ffffff; /* text on dark nav */
+    --color-fs-surface: #ffffff; /* flat card / panel surface */
+    --color-fs-card-bg: #ffffff; /* backwards-compatible alias */
     --color-fs-border: rgb(150 156 156 / 0.2);
     --color-fs-card-border: rgb(150 156 156 / 0.2);
 
     /* ---- Signal accent (use sparingly per Bible §15) ---- */
-    --color-fs-accent: #b6fb63; /* lime Calm-Tech — CTAs, success, ready-to-harvest, S/A quality */
+    --color-fs-accent: #b6fb63; /* lime Calm-Tech */
     --color-fs-accent-hover: #a6f24f;
 
-    /* ---- Quality color scale (Bible §1.1) ---- */
+    /* ---- Focus ring (Playbook v2 §15.3) ---- */
+    --color-fs-focus: #b6fb63;
+
+    /* ---- Quality color scale (Playbook v2 §2.4) ---- */
     --color-fs-quality-s: #b6fb63; /* same as accent — premium signal */
     --color-fs-quality-a: #b6fb63;
     --color-fs-quality-b: #eef7ef;
-    --color-fs-quality-c: #fff1c2; /* pastel amber */
-    --color-fs-quality-d: #ffe0e0; /* pastel red */
+    --color-fs-quality-c: #fff4d6;
+    --color-fs-quality-d: #fde3e3;
 
-    /* ---- Status semantics ---- */
-    --color-fs-success: #e8ffd5;
-    --color-fs-warning: #fff1c2;
-    --color-fs-danger: #ffe0e0;
-    --color-fs-info: #e3f0ff;
+    /* ---- Status pairs — bg + fg AA-verified (Playbook v2 §2.3) ---- */
+    --color-fs-success-bg: #e8f7e0;
+    --color-fs-success-fg: #2f6b1f;
+    --color-fs-warning-bg: #fff4d6;
+    --color-fs-warning-fg: #7a5200;
+    --color-fs-danger-bg: #fde3e3;
+    --color-fs-danger-fg: #8a1f1f;
+    --color-fs-info-bg: #e3eef9;
+    --color-fs-info-fg: #1f3f6b;
+
+    /* ---- Legacy status aliases (kept for backwards-compat with S0) ---- */
+    --color-fs-success: #e8f7e0;
+    --color-fs-warning: #fff4d6;
+    --color-fs-danger: #fde3e3;
+    --color-fs-info: #e3eef9;
 
     /* ---- Typography ---- */
     --font-sans: 'Geist', system-ui, -apple-system, sans-serif;
     --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
 
+    /* ---- Typography scale (Playbook v2 §4.2) ---- */
+    --text-fs-display: 2.5rem; /* 40px — hero greeting */
+    --text-fs-display--line-height: 1.1;
+    --text-fs-h1: 2rem; /* 32px — page title */
+    --text-fs-h1--line-height: 1.15;
+    --text-fs-h2: 1.5rem; /* 24px — section heading */
+    --text-fs-h2--line-height: 1.2;
+    --text-fs-h3: 1.25rem; /* 20px — KPI label */
+    --text-fs-h3--line-height: 1.3;
+    --text-fs-body: 1rem; /* 16px — body default */
+    --text-fs-body--line-height: 1.55;
+    --text-fs-small: 0.875rem; /* 14px — captions */
+    --text-fs-small--line-height: 1.45;
+    --text-fs-micro: 0.75rem; /* 12px — badges, labels */
+    --text-fs-micro--line-height: 1.4;
+
     /* ---- Motion ---- */
     --ease-out-fs: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-in-out-fs: cubic-bezier(0.65, 0, 0.35, 1);
     --duration-fs-fast: 150ms;
     --duration-fs-base: 250ms;
     --duration-fs-slow: 400ms;
@@ -61,4 +99,24 @@
     /* ---- Shadows (subtle, never aggressive) ---- */
     --shadow-fs-card: none;
     --shadow-fs-glow: 0 0 24px rgb(182 251 99 / 0.35);
+
+    /* ---- Spacing scale (Playbook v2 §7, 4px base) ---- */
+    --spacing-fs-1: 0.25rem; /* 4 */
+    --spacing-fs-2: 0.5rem; /* 8 */
+    --spacing-fs-3: 0.75rem; /* 12 */
+    --spacing-fs-4: 1rem; /* 16 — Bento gap canonical */
+    --spacing-fs-6: 1.5rem; /* 24 — card padding comfortable */
+    --spacing-fs-8: 2rem; /* 32 — page padding manager */
+    --spacing-fs-12: 3rem; /* 48 */
+    --spacing-fs-16: 4rem; /* 64 — manager top-bar height */
+
+    /* ---- Shell chrome (Playbook v2 §12) ---- */
+    --fs-topbar-h-manager: 4rem; /* 64px */
+    --fs-topbar-h-tablet: 3.5rem; /* 56px */
+    --fs-sidebar-w-manager: 15rem; /* 240px */
+
+    /* ---- Viewport targets (Playbook v2 §6) ---- */
+    --fs-viewport-laptop-max: 1440px;
+    --fs-viewport-tablet-w: 1280px;
+    --fs-viewport-tablet-h: 800px;
 }

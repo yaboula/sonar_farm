@@ -7,9 +7,7 @@ import '@/styles/globals.css';
 const rootElement = document.getElementById('root');
 
 if (!rootElement) {
-    throw new Error(
-        '[sonar_farm_tablet] #root not found. Check index.html.'
-    );
+    throw new Error('[sonar_farm_tablet] #root not found. Check index.html.');
 }
 
 createRoot(rootElement).render(
