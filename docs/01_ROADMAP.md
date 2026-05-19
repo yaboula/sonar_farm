@@ -137,16 +137,17 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 
 ---
 
-### S1 — Bridge layer (QBox + QBCore) 🧱🔓 · Complejidad: M · **Estado: `ACTIVE`** (2026-05-19)
+### S1 — Bridge layer (QBox + QBCore) 🧱🔓 · Complejidad: M · **Estado: `DONE`** (2026-05-19, closure commit pending)
 
 > Mini-brief: [`docs/slices/S1_bridge_layer.md`](./slices/S1_bridge_layer.md).
 
-**Scope.** Capa `bridge/` con interfaz común para QBox y QBCore. Cualquier slice posterior consume `Bridge.GetPlayer(src)`, `Bridge.AddMoney(src, amount, account)`, `Bridge.Notify(src, msg, type)`, `Bridge.RegisterUsableItem(item, cb)`, `Bridge.GetPlayerJob(src)`, etc. Detección automática del framework activo en boot.
+**Scope.** Capa `bridge/` con interfaz común para QBox y QBCore. Cualquier slice posterior consume `Sonar.Farm.Bridge.GetPlayer(src)`, `Sonar.Farm.Bridge.GetMoney(src, account)`, `Sonar.Farm.Bridge.AddMoney(src, account, amount, reason)`, `Sonar.Farm.Bridge.RemoveMoney(src, account, amount, reason)` y `Sonar.Farm.Bridge.Notify(src, msg, type)`. Detección automática del framework activo en boot.
 
 **Deliverables.**
 
 - `shared/bridge/init.lua` autodetect.
 - `shared/bridge/qbox.lua`, `shared/bridge/qbcore.lua`.
+- `shared/bridge/_unsupported.lua` fallback inerte para frameworks no soportados.
 - Interfaz documentada en `shared/bridge/INTERFACE.md` con la lista exhaustiva de métodos.
 - Comando admin `/sonarfarm:bridgetest` que devuelve datos del jugador.
 

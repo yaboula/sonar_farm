@@ -4,8 +4,13 @@
         "bridge_initialized": "Bridge inicializado → framework: %s",
         "framework_unsupported": "Farm Sonar requiere QBox o QBCore. Bridge ESX planificado para wave 2+."
     },
+    "ui": {
+        "brand_name": "Farm Sonar"
+    },
     "bridge": {
         "test": {
+            "ace_required": "[Farm Sonar] permiso ACE requerido: sonar.farm.admin",
+            "usage": "[Farm Sonar] uso: sonarfarm:bridgetest <player_source>",
             "header": "═══ Test de Bridge Farm Sonar ═══",
             "framework": "Framework: %s",
             "no_player": "No se encontró jugador con source %s",

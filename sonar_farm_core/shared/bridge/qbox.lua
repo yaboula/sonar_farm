@@ -209,7 +209,7 @@ function adapter.Notify(src, message, notify_type)
     end
 
     TriggerClientEvent('ox_lib:notify', src, {
-        title       = 'Farm Sonar',
+        title       = locale('ui.brand_name'),
         description = message,
         type        = ox_type,
     })

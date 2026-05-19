@@ -18,3 +18,6 @@ Config.Farm.Locale = 'en'
 
 -- Debug flag: toggles verbose logs and admin commands. NEVER true in production.
 Config.Farm.Debug = false
+
+Config.Farm.Chat = Config.Farm.Chat or {}
+Config.Farm.Chat.BrandColor = { 182, 251, 99 }

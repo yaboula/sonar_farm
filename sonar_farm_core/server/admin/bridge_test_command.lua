@@ -18,8 +18,8 @@
 -- ============================================================
 
 local function t(key, ...)
-    -- `locale()` is guaranteed available because `shared/init.lua`
-    -- called `lib.locale()` during resource boot. If it's not, that
+    -- `locale()` is guaranteed available because fxmanifest.lua
+    -- declares `ox_lib 'locale'` during resource boot. If it's not, that
     -- is a real bug — fail loud rather than silently fall back.
     return locale(key, ...)
 end
@@ -31,8 +31,8 @@ local function log_line(target_src, line)
         print(line)
     else
         TriggerClientEvent('chat:addMessage', target_src, {
-            color = { 200, 255, 0 },
-            args  = { 'Farm Sonar', line },
+            color = Config.Farm.Chat.BrandColor,
+            args  = { t('ui.brand_name'), line },
         })
     end
 end
@@ -70,7 +70,7 @@ RegisterCommand('sonarfarm:bridgetest', function(source, args)
 
     -- ACE check (skip for console which is always implicitly allowed).
     if caller_src > 0 and not IsPlayerAceAllowed(caller_src, 'sonar.farm.admin') then
-        log_line(caller_src, '[Farm Sonar] ACE permission required: sonar.farm.admin')
+        log_line(caller_src, t('bridge.test.ace_required'))
         return
     end
 
@@ -83,7 +83,7 @@ RegisterCommand('sonarfarm:bridgetest', function(source, args)
     end
 
     if not target_src or target_src <= 0 then
-        log_line(caller_src, '[Farm Sonar] usage: sonarfarm:bridgetest <player_source>')
+        log_line(caller_src, t('bridge.test.usage'))
         return
     end
 
