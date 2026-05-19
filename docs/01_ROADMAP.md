@@ -103,7 +103,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 
 **Duración estimada:** 2-3 semanas.
 
-**Milestone de fase:** abrir el Laptop en la oficina del MLO devuelve un dashboard React vacío (skeleton) con la paleta + tipografía aplicadas. El primer `#CCFF00` aparece en pantalla.
+**Milestone de fase:** abrir el Laptop en la oficina del MLO devuelve un dashboard React vacío (skeleton) con la paleta + tipografía aplicadas. El primer `#B6FB63` aparece en pantalla.
 
 ---
 
@@ -217,13 +217,14 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 
 - `web/src/main.tsx`, `web/src/App.tsx`.
 - `web/src/styles/theme.css` con tokens canónicos (`--fs-bg`, `--fs-nav`, `--fs-accent`, etc.).
-- `web/src/components/layout/{BentoGrid, GlassCard}.tsx`.
+- `web/src/components/layout/{BentoGrid}.tsx` + shadcn/ui `Card` styled per `docs/04_UI_PLAYBOOK.md`.
+- `web/src/components/ui/{BatchChip,LimePulse}.tsx`.
 - `web/src/components/typography/{Heading, Body, Mono}.tsx`.
 - `web/src/router/AppRouter.tsx` con rutas placeholder: `/dashboard`, `/plots`, `/batches`, `/market`, `/contracts`, `/personnel`, `/finance`, `/log`, `/tasks`, `/messages`.
 - `client/laptop_interaction.lua` (anim sentarse + ox_target + abrir NUI mode `manager`).
 - `client/tablet_interaction.lua` (keybind + abrir NUI mode `field`).
 - Bridge NUI ↔ server (mensajes tipados, callbacks ox_lib).
-- 1 demo card en `/dashboard` con un dato fake + el `#CCFF00` visible.
+- 1 demo card en `/dashboard` con un dato fake + el `#B6FB63` visible.
 
 **DoD específico.**
 

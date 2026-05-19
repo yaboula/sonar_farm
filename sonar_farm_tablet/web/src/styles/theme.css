@@ -2,7 +2,7 @@
  * Farm Sonar — Canonical theme tokens
  * ============================================================
  *
- * Source of truth: docs/00_BIBLE.md §1.1 — SaaS Agritech palette.
+ * Source of truth: docs/00_BIBLE.md §1.1 — AgriSphere Light Mode.
  * Anti-pattern §3 (no hardcoded values): every other component MUST
  * consume these tokens via Tailwind utilities (e.g. `bg-fs-bg`,
  * `text-fs-accent`) or via `var(--fs-*)` in custom CSS.
@@ -15,29 +15,32 @@
 
 @theme {
     /* ---- Surface palette ---- */
-    --color-fs-bg: #eef4eb; /* mint background — Manager Panel canvas */
-    --color-fs-nav: #0a0e0a; /* charcoal — sidebars, splash, dark panels */
-    --color-fs-fg: #1a1f1a; /* deep green-black — primary text on light bg */
-    --color-fs-fg-inverse: #f5f9f3; /* near-white — text on charcoal */
-    --color-fs-card-bg: rgb(255 255 255 / 0.7); /* glassmorphism card */
-    --color-fs-card-border: rgb(255 255 255 / 0.3);
+    --color-fs-bg: #d9eae3; /* mint/sage background — Manager Panel canvas */
+    --color-fs-nav: #050505; /* near-black — nav, pill menu, dark contrast blocks */
+    --color-fs-fg: #050505; /* near-black — primary text on light bg */
+    --color-fs-fg-muted: #969c9c; /* green-gray — secondary text and inactive icons */
+    --color-fs-fg-inverse: #ffffff; /* white — text on nav */
+    --color-fs-surface: #ffffff; /* flat card/panel surface */
+    --color-fs-card-bg: #ffffff; /* backwards-compatible card token */
+    --color-fs-border: rgb(150 156 156 / 0.2);
+    --color-fs-card-border: rgb(150 156 156 / 0.2);
 
     /* ---- Signal accent (use sparingly per Bible §15) ---- */
-    --color-fs-accent: #ccff00; /* lime neon — CTAs, success, ready-to-harvest, S/A quality */
-    --color-fs-accent-hover: #b8e600;
+    --color-fs-accent: #b6fb63; /* lime Calm-Tech — CTAs, success, ready-to-harvest, S/A quality */
+    --color-fs-accent-hover: #a6f24f;
 
     /* ---- Quality color scale (Bible §1.1) ---- */
-    --color-fs-quality-s: #ccff00; /* same as accent — premium signal */
-    --color-fs-quality-a: #ccff00;
-    --color-fs-quality-b: #f5f9f3;
-    --color-fs-quality-c: #f5b942; /* amber */
-    --color-fs-quality-d: #e84545; /* red */
+    --color-fs-quality-s: #b6fb63; /* same as accent — premium signal */
+    --color-fs-quality-a: #b6fb63;
+    --color-fs-quality-b: #eef7ef;
+    --color-fs-quality-c: #fff1c2; /* pastel amber */
+    --color-fs-quality-d: #ffe0e0; /* pastel red */
 
     /* ---- Status semantics ---- */
-    --color-fs-success: #ccff00;
-    --color-fs-warning: #f5b942;
-    --color-fs-danger: #e84545;
-    --color-fs-info: #5b8def;
+    --color-fs-success: #e8ffd5;
+    --color-fs-warning: #fff1c2;
+    --color-fs-danger: #ffe0e0;
+    --color-fs-info: #e3f0ff;
 
     /* ---- Typography ---- */
     --font-sans: 'Geist', system-ui, -apple-system, sans-serif;
@@ -56,6 +59,6 @@
     --radius-fs-xl: 1.5rem;
 
     /* ---- Shadows (subtle, never aggressive) ---- */
-    --shadow-fs-card: 0 1px 3px rgb(10 14 10 / 0.08), 0 1px 2px rgb(10 14 10 / 0.04);
-    --shadow-fs-glow: 0 0 24px rgb(204 255 0 / 0.35);
+    --shadow-fs-card: none;
+    --shadow-fs-glow: 0 0 24px rgb(182 251 99 / 0.35);
 }

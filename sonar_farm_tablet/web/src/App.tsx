@@ -10,8 +10,9 @@ import { VERSION } from '@/lib/version';
 // theme tokens). It is NOT the final UI shell — that lives in S4.
 //
 // Wooow Test (Bible §4): when the founder runs `pnpm dev` they
-// must immediately recognize the brand language: charcoal canvas,
-// Geist Sans wordmark, lima neón #CCFF00 pulsing dot, mono footer.
+// must immediately recognize the brand language: high-contrast
+// nav surface, Geist Sans wordmark, lima Calm-Tech #B6FB63
+// pulsing dot, mono footer.
 //
 // IN-GAME VISIBILITY (S1 fix):
 // The NUI iframe is always rendered by FiveM. To avoid the splash

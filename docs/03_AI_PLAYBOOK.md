@@ -40,13 +40,13 @@ Hemos activado el conjunto completo de capacidades de Cascade para este proyecto
 
 Reglas siempre activas, leídas automáticamente en cada sesión:
 
-| Archivo | Qué impone |
-|---|---|
-| `01_farm_sonar_context.md` | Identidad del proyecto + orden de lectura de foundation docs + perfil del founder. |
-| `02_naming_conventions.md` | DB `sonar_farm_*`, eventos `sonar:farm:*`, archivos snake/PascalCase, etc. |
-| `03_languages.md` | Inglés en código, español sólo en docs founder-facing, i18n obligatorio en strings UI. |
-| `04_dod_universal.md` | Los 12 checks universales antes de cerrar slice. |
-| `05_anti_patterns.md` | 10 anti-patrones técnicos prohibidos (no llamadas directas entre resources, server-auth, etc.). |
+| Archivo                    | Qué impone                                                                                      |
+| -------------------------- | ----------------------------------------------------------------------------------------------- |
+| `01_farm_sonar_context.md` | Identidad del proyecto + orden de lectura de foundation docs + perfil del founder.              |
+| `02_naming_conventions.md` | DB `sonar_farm_*`, eventos `sonar:farm:*`, archivos snake/PascalCase, etc.                      |
+| `03_languages.md`          | Inglés en código, español sólo en docs founder-facing, i18n obligatorio en strings UI.          |
+| `04_dod_universal.md`      | Los 12 checks universales antes de cerrar slice.                                                |
+| `05_anti_patterns.md`      | 10 anti-patrones técnicos prohibidos (no llamadas directas entre resources, server-auth, etc.). |
 
 **Estas reglas se aplican a TODO agente Cascade del proyecto sin excepción.** Si un sub-agent las viola, el founder debe rechazarlo.
 
@@ -54,14 +54,14 @@ Reglas siempre activas, leídas automáticamente en cada sesión:
 
 Comandos slash invocables por el founder o por Cascade en cualquier momento:
 
-| Workflow | Cuándo usarlo |
-|---|---|
-| `/start-slice <SXX>` | Al arrancar un slice. Lee contexto, crea mini-brief, planifica todo list. |
-| `/spawn-pm` | Cuando un slice es complejo (L o XL). Cascade adopta rol PM y genera prompts para sub-agents. |
-| `/end-slice <SXX>` | Antes de marcar un slice DONE. Verifica DoD universal + específico, actualiza Roadmap, registra ADR. |
-| `/spike <topic>` | Cuando hay incógnita técnica time-boxed (ej. R2 drones NUI viability). |
-| `/research <topic>` | Cuando necesitas docs externas (QBox/QBCore/ox_lib/cfx-re/shadcn). Sale reporte con citas. |
-| `/ui-design <app>` | Antes de implementar una app NUI. Genera brief para v0.dev + review checklist. |
+| Workflow             | Cuándo usarlo                                                                                        |
+| -------------------- | ---------------------------------------------------------------------------------------------------- |
+| `/start-slice <SXX>` | Al arrancar un slice. Lee contexto, crea mini-brief, planifica todo list.                            |
+| `/spawn-pm`          | Cuando un slice es complejo (L o XL). Cascade adopta rol PM y genera prompts para sub-agents.        |
+| `/end-slice <SXX>`   | Antes de marcar un slice DONE. Verifica DoD universal + específico, actualiza Roadmap, registra ADR. |
+| `/spike <topic>`     | Cuando hay incógnita técnica time-boxed (ej. R2 drones NUI viability).                               |
+| `/research <topic>`  | Cuando necesitas docs externas (QBox/QBCore/ox_lib/cfx-re/shadcn). Sale reporte con citas.           |
+| `/ui-design <app>`   | Antes de implementar una app NUI. Genera brief para v0.dev + review checklist.                       |
 
 ### 2.3 Tools (built-in de Cascade)
 
@@ -79,11 +79,11 @@ Cascade tiene acceso nativo a:
 
 ### 2.4 Skills externas
 
-| Tool | Para qué | Cuándo |
-|---|---|---|
-| **v0.dev** | UI mockups React + Tailwind + shadcn. | Antes de cualquier slice con UI nueva. Workflow `/ui-design` lo coordina. |
-| **Claude Opus** (sesión separada) | Implementación profunda de slices grandes (XL). | Cuando PM Agent decide que un sub-agent backend o frontend necesita un modelo más potente para una sub-tarea concreta. |
-| **Figma** (opcional, fase 2+) | Wireframes de flujos completos (no por componente). | Cuando v0.dev no basta para diseñar un flujo multi-pantalla. |
+| Tool                              | Para qué                                            | Cuándo                                                                                                                 |
+| --------------------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **v0.dev**                        | UI mockups React + Tailwind + shadcn.               | Antes de cualquier slice con UI nueva. Workflow `/ui-design` lo coordina.                                              |
+| **Claude Opus** (sesión separada) | Implementación profunda de slices grandes (XL).     | Cuando PM Agent decide que un sub-agent backend o frontend necesita un modelo más potente para una sub-tarea concreta. |
+| **Figma** (opcional, fase 2+)     | Wireframes de flujos completos (no por componente). | Cuando v0.dev no basta para diseñar un flujo multi-pantalla.                                                           |
 
 ---
 
@@ -144,21 +144,21 @@ Cuando se invoca `/spawn-pm`, **Cascade adopta el rol de PM Agent en esa sesión
 
 ### 4.2 Las 4 especialidades fijas
 
-| Sub-agent | Owns |
-|---|---|
-| **Backend Agent** | Lua server-side, DB migrations, services, FSMs, eventos `sonar:farm:*`, validaciones server-authoritative, lógica económica. |
-| **Frontend Agent** | React 18 + TS strict + Tailwind v4 + shadcn + Framer Motion, NUI shell, Bento apps, Recharts. |
+| Sub-agent             | Owns                                                                                                                                                 |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Backend Agent**     | Lua server-side, DB migrations, services, FSMs, eventos `sonar:farm:*`, validaciones server-authoritative, lógica económica.                         |
+| **Frontend Agent**    | React 18 + TS strict + Tailwind v4 + shadcn + Framer Motion, NUI shell, Bento apps, Recharts.                                                        |
 | **Integration Agent** | Capa `Bridge.*`, integración con `ox_inventory`/`ox_target`/`ox_lib`/`oxmysql`, anims, props, vehículos, `fxmanifest.lua`, mensajería client↔server. |
-| **QA Agent** | Tests automatizados (lua-test server, Vitest NUI), smoke tests manuales, balance numérico, verificación de DoD. |
+| **QA Agent**          | Tests automatizados (lua-test server, Vitest NUI), smoke tests manuales, balance numérico, verificación de DoD.                                      |
 
 ### 4.3 Cuándo spawnear cada uno
 
-| Slice complexity | Sub-agents típicos |
-|---|---|
-| **S** (1-3 días) | Ninguno — sesión Cascade única basta. |
-| **M** (3-7 días) | 1-2 (típicamente Backend + Integration, o Frontend + Integration). |
-| **L** (7-14 días) | 2-3 (Backend + Frontend + Integration / + QA si tests críticos). |
-| **XL** (14-21 días) | 3-4 (los cuatro suelen entrar). |
+| Slice complexity    | Sub-agents típicos                                                 |
+| ------------------- | ------------------------------------------------------------------ |
+| **S** (1-3 días)    | Ninguno — sesión Cascade única basta.                              |
+| **M** (3-7 días)    | 1-2 (típicamente Backend + Integration, o Frontend + Integration). |
+| **L** (7-14 días)   | 2-3 (Backend + Frontend + Integration / + QA si tests críticos).   |
+| **XL** (14-21 días) | 3-4 (los cuatro suelen entrar).                                    |
 
 ### 4.4 Orden: paralelo vs secuencial
 
@@ -188,6 +188,7 @@ PM Agent usa estos templates como base. Personaliza el bloque **`## Slice-specif
 You are the **Backend Agent** for Farm Sonar slice **<SXX> — <name>**.
 
 ## Read first (in this exact order)
+
 1. `docs/00_BIBLE.md` — full.
 2. `docs/01_ROADMAP.md` — find slice <SXX>, read its full block.
 3. `docs/03_AI_PLAYBOOK.md` §4 (your role) and §6 (DoD enforcement).
@@ -197,6 +198,7 @@ You are the **Backend Agent** for Farm Sonar slice **<SXX> — <name>**.
 7. `docs/slices/<SXX>_<name>.prompts.md` — coordination contract with other sub-agents.
 
 ## Your scope
+
 - Lua server-side logic only (`server/` folder of `sonar_farm_core`).
 - DB migrations (`database/migrations/NNN_<desc>.sql`).
 - Service modules (`<domain>_service.lua`).
@@ -205,23 +207,28 @@ You are the **Backend Agent** for Farm Sonar slice **<SXX> — <name>**.
 - Event publishing on the `sonar:farm:*` bus.
 
 ## Slice-specific scope
+
 - <PM Agent fills this>
 
 ## Out of scope (do NOT touch)
+
 - React / NUI / Tailwind / shadcn — Frontend Agent.
 - `ox_inventory` / `ox_target` / `ox_lib` integration glue — Integration Agent.
 - Anims, props, vehicles — Integration Agent.
 - Tests (you may write minimal sanity asserts but full test suite is QA Agent).
 
 ## Deliverables
+
 - <PM Agent fills explicit list with file paths>
 
 ## Interface contracts (events you emit / consume)
+
 - Emits: <PM fills>
 - Consumes: <PM fills>
 - Shared types exposed: <PM fills>
 
 ## DoD specific to your work
+
 - All DB writes in transactions where applicable.
 - All hot paths async (no `MySQL.Sync.fetchAll` blocking).
 - All state changes publish a `sonar:farm:*` event.
@@ -229,6 +236,7 @@ You are the **Backend Agent** for Farm Sonar slice **<SXX> — <name>**.
 - No hardcoded numbers — use `Config.*`.
 
 ## On completion
+
 1. Update mini-brief §8 "Architecture notes" with chosen schema + FSM states + event payload shapes.
 2. Mark your deliverables as done in mini-brief §4.
 3. Report to founder in chat: 3 lines (what shipped, what discovered, blockers).
@@ -240,6 +248,7 @@ You are the **Backend Agent** for Farm Sonar slice **<SXX> — <name>**.
 You are the **Frontend Agent** for Farm Sonar slice **<SXX> — <name>**.
 
 ## Read first (in this exact order)
+
 1. `docs/00_BIBLE.md` — full, with extra attention to §1.1 (palette) + §15 (UI paradigm).
 2. `docs/01_ROADMAP.md` — find slice <SXX>, read its full block.
 3. `docs/03_AI_PLAYBOOK.md` §4 (your role).
@@ -251,42 +260,49 @@ You are the **Frontend Agent** for Farm Sonar slice **<SXX> — <name>**.
 9. `docs/slices/<SXX>_<name>.prompts.md` — coordination contract.
 
 ## Your scope
+
 - React 18 + TS strict + Tailwind v4 + shadcn/ui inside `sonar_farm_tablet/web/`.
-- Bento grid layouts using `BentoGrid` and `GlassCard` primitives.
-- Framer Motion 11 for entrance, hover, exit, success/error micro-interactions.
+- Bento grid layouts using `BentoGrid`, `BentoGrid.Item`, shadcn/ui `Card`, and signature components documented in `docs/04_UI_PLAYBOOK.md`.
+- Motion only when justified by the slice. Do not install Framer Motion by default; UI Playbook v1 keeps motion canon as TBD.
 - Recharts for any data visualization.
 - React Context + useReducer for app-local state (NO Zustand, NO Redux).
 
 ## Slice-specific scope
+
 - <PM Agent fills this>
 
 ## Out of scope (do NOT touch)
+
 - Any `.lua` file — Backend Agent.
 - NUI ↔ server message wire format (you consume the spec, you do not define it) — Integration Agent.
 - ox_inventory item rendering (custom render is in `sonar_farm_core` data) — Integration Agent.
 - Tests — QA Agent (you may write minimal Vitest snapshots).
 
 ## Deliverables
+
 - <PM Agent fills explicit list with paths>
 
 ## Interface contracts
+
 - NUI messages consumed: <PM fills>
 - Locale keys added: `locales/{es,en}.lua` paths <PM fills>
 - Custom hooks exposed: <PM fills>
 
 ## DoD specific to your work
+
 - Uses Farm Sonar palette tokens from `web/src/styles/theme.css` (no random hex).
 - Uses Geist Sans + JetBrains Mono only.
 - Uses shadcn primitives where applicable.
 - Bento grid where multiple data clusters coexist.
-- Glassmorphism on cards (`rgba(255,255,255,0.7)` + backdrop blur).
-- Lime neón `#CCFF00` used sparingly (key actions, focal data).
+- Flat minimalista cards (`#FFFFFF`, no shadow, 1px subtle border) per ADR-006.
+- Lime Calm-Tech `#B6FB63` used sparingly (key actions, focal data).
 - Quality letters S/A/B/C/D color-coded per Bible §1.1.
 - Mono font for IDs (batch_id, IBAN, dates).
 - No hardcoded strings — all via `t('key.path')`.
 - Loading + empty + error states designed and implemented.
 
 ## On completion
+
 1. Update mini-brief §8 with component structure + key hooks + locale keys added.
 2. Mark deliverables as done in §4.
 3. Report to founder: 3 lines (what shipped, what discovered, blockers).
@@ -298,6 +314,7 @@ You are the **Frontend Agent** for Farm Sonar slice **<SXX> — <name>**.
 You are the **Integration Agent** for Farm Sonar slice **<SXX> — <name>**.
 
 ## Read first (in this exact order)
+
 1. `docs/00_BIBLE.md` — full.
 2. `docs/01_ROADMAP.md` — find slice <SXX>.
 3. `docs/03_AI_PLAYBOOK.md` §4.
@@ -307,6 +324,7 @@ You are the **Integration Agent** for Farm Sonar slice **<SXX> — <name>**.
 7. `docs/slices/<SXX>_<name>.prompts.md` coordination contract.
 
 ## Your scope
+
 - `Bridge.*` glue between QBox/QBCore and Farm Sonar logic.
 - `ox_inventory` items registration + custom metadata + custom inventory render hooks.
 - `ox_target` zones for plots, silos, NPCs, vehicles.
@@ -318,23 +336,28 @@ You are the **Integration Agent** for Farm Sonar slice **<SXX> — <name>**.
 - NUI ↔ server message wire format definition.
 
 ## Slice-specific scope
+
 - <PM Agent fills this>
 
 ## Out of scope (do NOT touch)
+
 - Internal Lua services (`server/<domain>/<domain>_service.lua`) — Backend Agent.
 - React components — Frontend Agent.
 - Test files — QA Agent.
 
 ## Deliverables
+
 - <PM Agent fills explicit list>
 
 ## Interface contracts
+
 - ox_inventory items registered: <PM fills>
 - ox_target zones added: <PM fills>
 - Animations registered: <PM fills>
 - NUI message types defined: <PM fills>
 
 ## DoD specific to your work
+
 - All cross-resource interactions go through events or `Bridge.*` (no `exports[...]:` direct calls).
 - Anims have cancelable progress bars where they last >5s.
 - ox_target zones are unregistered on resource stop.
@@ -342,6 +365,7 @@ You are the **Integration Agent** for Farm Sonar slice **<SXX> — <name>**.
 - All animations are loaded with `RequestAnimDict` + freed afterwards.
 
 ## On completion
+
 1. Update mini-brief §8 with item registrations + zone catalog + message types.
 2. Update `shared/bridge/INTERFACE.md` if new bridge methods were added.
 3. Report to founder: 3 lines.
@@ -353,6 +377,7 @@ You are the **Integration Agent** for Farm Sonar slice **<SXX> — <name>**.
 You are the **QA Agent** for Farm Sonar slice **<SXX> — <name>**.
 
 ## Read first
+
 1. `docs/00_BIBLE.md`.
 2. `docs/01_ROADMAP.md` — find slice <SXX>.
 3. `docs/03_AI_PLAYBOOK.md` §4.
@@ -361,6 +386,7 @@ You are the **QA Agent** for Farm Sonar slice **<SXX> — <name>**.
 6. `docs/slices/<SXX>_<name>.prompts.md`.
 
 ## Your scope
+
 - Server-side Lua tests (`tests/server/*_spec.lua` using lua-test or similar).
 - NUI tests (`web/tests/*.test.tsx` using Vitest).
 - Smoke test scripts (manual, documented step-by-step in mini-brief §10).
@@ -368,24 +394,29 @@ You are the **QA Agent** for Farm Sonar slice **<SXX> — <name>**.
 - Balance numérico checks for economic logic.
 
 ## Slice-specific scope
+
 - <PM Agent fills test cases>
 
 ## Out of scope
+
 - Production code (you propose tests, others write production).
 - UI design.
 - Architectural decisions.
 
 ## Deliverables
+
 - Test files: <PM fills>
 - Smoke test procedure (in mini-brief §10): <PM fills>
 - DoD verification report (in mini-brief §11 closing summary): <PM fills>
 
 ## DoD specific to your work
+
 - Critical paths covered: 100% of FSMs, 100% of formulas (quality, price, NPK match), 100% of Banca transfers.
 - Edge cases tested: offline reconciliation (1h, 6h, 24h, 7d), concurrent transfers, escrow timeout.
 - Smoke test reproducible by founder following only the §10 procedure.
 
 ## On completion
+
 1. Update mini-brief §11 with DoD verification status (each universal + specific item: PASS/FAIL/N/A).
 2. If anything fails, list blockers explicitly.
 3. Report to founder: 3 lines (test coverage, results, blockers).
@@ -395,15 +426,15 @@ You are the **QA Agent** for Farm Sonar slice **<SXX> — <name>**.
 
 ## 6. Cuándo usar búsqueda web vs codebase context
 
-| Necesidad | Herramienta | Cuándo |
-|---|---|---|
-| Saber cómo funciona un native FiveM | `/research <native-name>` | Antes de usarlo si no es trivial. |
-| Saber API de `ox_inventory` metadata, callbacks, hooks | `/research ox_inventory <topic>` | Antes de definir un schema custom de items. |
-| Patrón ya implementado en este proyecto | `code_search` | Antes de reinventar lógica. Si existe en bigproject legacy, `find_by_name` en `_archive/`. |
-| Decisión que se tomó hace tiempo | `read_file` en `docs/02_DECISIONS.md` | Ante cualquier "¿por qué hicimos X así?". |
-| Última versión de shadcn / Tailwind v4 syntax | `/research` con domain `tailwindcss.com` o `ui.shadcn.com` | Cuando una clase no funciona como esperabas. |
-| Cómo manejar un edge case de QBox vs QBCore | `/research` filtrando GitHub issues | Antes de decidir el shape del Bridge. |
-| Cómo otro recurso popular soluciona un problema | `/research` con domain `forum.cfx.re` o `github.com` | Inspiración técnica, no copia ciega. |
+| Necesidad                                              | Herramienta                                                | Cuándo                                                                                     |
+| ------------------------------------------------------ | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Saber cómo funciona un native FiveM                    | `/research <native-name>`                                  | Antes de usarlo si no es trivial.                                                          |
+| Saber API de `ox_inventory` metadata, callbacks, hooks | `/research ox_inventory <topic>`                           | Antes de definir un schema custom de items.                                                |
+| Patrón ya implementado en este proyecto                | `code_search`                                              | Antes de reinventar lógica. Si existe en bigproject legacy, `find_by_name` en `_archive/`. |
+| Decisión que se tomó hace tiempo                       | `read_file` en `docs/02_DECISIONS.md`                      | Ante cualquier "¿por qué hicimos X así?".                                                  |
+| Última versión de shadcn / Tailwind v4 syntax          | `/research` con domain `tailwindcss.com` o `ui.shadcn.com` | Cuando una clase no funciona como esperabas.                                               |
+| Cómo manejar un edge case de QBox vs QBCore            | `/research` filtrando GitHub issues                        | Antes de decidir el shape del Bridge.                                                      |
+| Cómo otro recurso popular soluciona un problema        | `/research` con domain `forum.cfx.re` o `github.com`       | Inspiración técnica, no copia ciega.                                                       |
 
 **Regla operativa**: si la respuesta tarda <10 segundos en encontrarse en codebase, no busques fuera. Si tarda >2 minutos en codebase, busca fuera. Si la respuesta puede ser controversial o version-dependiente, **siempre cita la fuente** en `docs/research/<topic>.md`.
 
@@ -465,13 +496,13 @@ Cada vez que abres Cascade fresca para Farm Sonar, verifica que estos elementos 
 - [ ] Memoria persistente del proyecto presente (decisiones fundacionales).
 - [ ] Si hay slice activo: mini-brief leído.
 
-Si Cascade arranca sin estos elementos, recordárselo con: *"Read docs/00_BIBLE.md, docs/01_ROADMAP.md, docs/03_AI_PLAYBOOK.md before continuing."*
+Si Cascade arranca sin estos elementos, recordárselo con: _"Read docs/00_BIBLE.md, docs/01_ROADMAP.md, docs/03_AI_PLAYBOOK.md before continuing."_
 
 ---
 
 ## 9. Pendientes y próximos refinamientos
 
-- **`docs/04_UI_PLAYBOOK.md`** — sesión dedicada con foco aislado. Definirá: paleta hex final firmada, sistema Bento exacto (gridos, gaps, breakpoints), motion canon Framer Motion, sound moments, catálogo de componentes shadcn obligatorios + custom (`GlassCard`, `BentoGrid`, `BatchChip`, `LimePulse`, etc.), inspiraciones por app, proceso v0.dev detallado.
+- **UI Playbook v2** — cuando S4 empiece a implementar UI real, refinar motion canon (Framer Motion si se justifica), sound moments y breakpoints reales. `docs/04_UI_PLAYBOOK.md` v1 ya firmó paleta, Bento geometry, catálogo shadcn v1 y signature components (`BentoGrid`, `BatchChip`, `LimePulse`).
 - **Lint custom** que detecta strings hardcoded en JSX/Lua → planificado en S4 (NUI shell) o S32 (i18n completo).
 - **Plantilla `.prompts.md`** específica si vemos que los templates §5 generan repetición innecesaria — refinaremos tras los primeros 3 slices que usen `/spawn-pm`.
 - **Métricas de eficiencia AI** — empezar a medir tras cierre de Fase 1 cuántos slices completos vs cuántos sub-agent ciclos, tiempo medio por complejidad, y refinar el sistema basado en datos reales.
@@ -480,6 +511,7 @@ Si Cascade arranca sin estos elementos, recordárselo con: *"Read docs/00_BIBLE.
 
 ## 10. Changelog
 
-| Versión | Fecha | Cambios |
-|---|---|---|
+| Versión | Fecha      | Cambios                                                                                                                                                                                                                                  |
+| ------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **1.0** | 2026-05-04 | Primera versión firmada. Sistema PM + 4 sub-agents (Backend / Frontend / Integration / QA) operativo. 5 rules + 6 workflows + slice template + templates de prompt + best practices del founder. UI Playbook diferido a sesión dedicada. |
+| **1.1** | 2026-05-19 | §9 actualizado tras creación de `docs/04_UI_PLAYBOOK.md` v1. UI Playbook deja de estar pendiente; próximos refinamientos UI quedan limitados a v2 (motion, sound, breakpoints reales) cuando S4 o slices posteriores los justifiquen.    |

@@ -242,3 +242,29 @@ Donde `account ∈ {'cash', 'bank'}` y `type ∈ {'success', 'error', 'info', 'w
 - INTERFACE.md documenta exhaustivamente estos 5 métodos + el contrato del POJO.
 - Slices S2-S5 que necesiten p.ej. `GetIdentifier`, `RegisterUsableItem`, `GetPlayers`, etc. los añadirán con su propio mini-ADR.
 - La regla `02_naming_conventions.md` queda actualizada con `Sonar.Farm.Bridge.PascalCase(args)`.
+
+---
+
+## ADR-006 — Acabado de superficies: Flat Minimalista sobre Glassmorphism
+
+**Fecha:** 2026-05-19
+**Estado:** ACCEPTED
+**Slice origen:** Foundation doc (`04_UI_PLAYBOOK.md` v1)
+**Supersedes:** parcialmente Bible §1 línea 33 (que firmaba "Glassmorphism cards").
+
+**Contexto.** Bible §1 firmó "Glassmorphism cards" como acabado de tarjetas Bento, alineado con Arc Browser y la moda 2023-2024. Al refinar la paleta en sesión dedicada UI (founder + Cascade PM) usando AgriSphere como ancla visual de referencia, surgió un acabado distinto: tarjetas blancas puras flat con borde 1px sutil. Coexistían dos direcciones; había que elegir antes de v0.dev y antes de S4.
+
+**Opciones consideradas:**
+
+- **A** — Mantener glassmorphism (`bg-white/70` + `backdrop-blur-md` + sombra suave). Pros: efecto premium moderno, alineado con Arc/Linear 2023. Contras: en NUI in-game 960×540 el blur lee como "borroso/sucio"; sobre background ya claro (`#D9EAE3`) el contraste es demasiado bajo y los datos densos (Stripe-like) se vuelven ilegibles; degrada la legibilidad de la tipografía Geist 400/500 que es nuestra única jerarquía.
+- **B** — Flat minimalista (`bg-white` puro `#FFFFFF`, `shadow-none`, `border-1` color `#969C9C/20`). Pros: legibilidad máxima sobre menta, encaja con tono "Calm-Tech / iPad-like / AgriSphere", la jerarquía depende del whitespace + contraste con `--fs-nav` negro, escala mejor a densidad de datos. Contras: sacrifica el efecto "wow" de glass que era parte de la identidad propuesta inicialmente.
+
+**Decisión:** **B**. Flat minimalista es la firma de superficies de Farm Sonar a partir de v1.2 del Bible. El "wow" se traslada a otros vectores: pulso lima `#B6FB63` (`<LimePulse>`), micro-motion calm (futuro UI Playbook v2), y composición Bento generosa (gap 16px + rounded-2xl + padding comfortable).
+
+**Consecuencias.**
+
+- Bible §1 línea 33 actualizada: `Glassmorphism cards` → `Flat minimalista cards (white #FFFFFF, 1px border)`.
+- Bible §1.1 actualizada: tabla de paleta pasa de "valor propuesto" a **firmado v1.2** con los hex finales (ver `04_UI_PLAYBOOK.md` para la justificación visual y `00_BIBLE.md §18` para el bump de versión).
+- Componente custom `<GlassCard>` propuesto en sesiones previas queda **descartado**. Los custom signatures firmados son: `<BentoGrid>`, `<BentoGrid.Item>`, `<BatchChip>`, `<LimePulse>`.
+- shadcn/ui `Card` se usa stock con override de estilos (`bg-white border-fs-border/20 shadow-none rounded-2xl p-6`).
+- Cualquier slice futuro que quiera reintroducir blur/shadow debe abrir nuevo ADR superseding este.
