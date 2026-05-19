@@ -2,15 +2,16 @@
 -- Farm Sonar — Bridge fallback adapter for unsupported frameworks.
 -- ============================================================
 --
--- Loaded when neither QBox nor QBCore is detected. All public
--- methods are no-ops that return safe `nil` / `false` / `0`
--- values so callers don't crash.
+-- This file ALWAYS loads as a shared_script (so the table is
+-- registered on Sonar.Farm.Bridge.__unsupported_adapter and
+-- init.lua can pick it). But its error log MUST NOT fire at
+-- top-level — `init.lua` calls `adapter.LogUnsupportedOnce()`
+-- only when this adapter is actually selected.
 --
--- The intent is twofold:
---   1. The resource stays loaded (admins can still see it in
---      `resources` and inspect logs).
---   2. The user-facing error is logged ONCE, clearly, on boot,
---      so the server admin knows what to install.
+-- Intent when activated:
+--   1. The resource stays loaded (admins still see it).
+--   2. A clear, one-time error tells the admin what to install.
+--   3. All public methods are no-ops returning safe nil/false/0.
 -- ============================================================
 
 Sonar = Sonar or {}
@@ -19,9 +20,12 @@ Sonar.Farm.Bridge = Sonar.Farm.Bridge or {}
 
 local adapter = {}
 
--- One-time log on the server side only.
-if IsDuplicityVersion() then
-    print(('[sonar_farm_core][ERROR] %s'):format(locale('boot.framework_unsupported')))
+-- Logger to be invoked by init.lua when (and only when) this
+-- adapter has been picked. Server side only.
+function adapter.LogUnsupportedOnce()
+    if IsDuplicityVersion() then
+        print(('[sonar_farm_core][ERROR] %s'):format(locale('boot.framework_unsupported')))
+    end
 end
 
 -- ---- No-op methods (keep the public surface intact) --------

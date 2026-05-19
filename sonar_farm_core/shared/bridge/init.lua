@@ -72,6 +72,10 @@ elseif detected == 'qbcore' then
     adapter = Sonar.Farm.Bridge.__qbcore_adapter
 else
     adapter = Sonar.Farm.Bridge.__unsupported_adapter
+    -- Now (and only now) tell the admin what they need to install.
+    if adapter and adapter.LogUnsupportedOnce then
+        adapter.LogUnsupportedOnce()
+    end
 end
 
 if not adapter then
