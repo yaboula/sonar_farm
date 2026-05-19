@@ -74,5 +74,23 @@
             "player_line": "  %s: %s",
             "footer": "═════════════════════════════════"
         }
+    },
+    "plots": {
+        "boot": {
+            "started": "Arranque del registro de parcelas iniciado",
+            "ready": "Registro de parcelas listo: %d creadas, %d actualizadas, %d sin cambios, %d omitidas, %d en total",
+            "boot_failed": "Arranque del registro de parcelas fallido: %s",
+            "unavailable": "PlotService no disponible. Revisa el orden de server_scripts en fxmanifest.lua.",
+            "skipped_entries": "El seed de parcelas omitió %d entradas inválidas del config (ver logs [plots][ERROR] arriba)"
+        },
+        "reload": {
+            "ace_required": "[Farm Sonar] permiso ACE requerido: sonar.farm.admin",
+            "unavailable": "[Farm Sonar] PlotService no disponible. Revisa el orden de server_scripts en fxmanifest.lua.",
+            "header": "═══ Recarga de parcelas Farm Sonar ═══",
+            "summary": "Creadas: %d, Actualizadas: %d, Sin cambios: %d, Omitidas: %d (Total: %d)",
+            "skipped_warning": "[WARN] %d entradas de seed inválidas fueron omitidas — revisa la consola del servidor",
+            "failed": "[FAIL] Recarga de parcelas fallida: %s",
+            "footer": "═══════════════════════════════════════"
+        }
     }
 }

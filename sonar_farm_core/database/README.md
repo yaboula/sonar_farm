@@ -44,4 +44,17 @@ After running the SQL above, start `sonar_farm_core` again. The runner should ap
 
 **Warning:** deleting rows from `sonar_farm_finance_movements` is irreversible for audit purposes. Only perform this rollback in development/staging environments, never on live servers with real player data.
 
+For migration 004 (S5 plot system):
+
+```sql
+DELETE FROM `sonar_farm_migrations`
+WHERE `id` = '004';
+
+DROP TABLE IF EXISTS `sonar_farm_plots`;
+```
+
+After running the SQL above, start `sonar_farm_core` again. The runner should re-apply only `004_plots`, and `Sonar.Farm.PlotService.Boot()` will re-seed the 8 MLO plots from `config/plots.lua` with their initial `state` and `soil_score`.
+
+**Warning:** dropping `sonar_farm_plots` discards every persisted gameplay-owned field (`state`, `soil_score`, `planted_ts`, `next_stage_ts`, `last_updated_ts`) for every plot. Only perform this rollback in development/staging environments. On live servers, prefer surgical fixes (per-row `UPDATE`) over a full rollback.
+
 For future migrations, rollback must be documented by the slice that introduces the migration. Do not delete rows from `sonar_farm_migrations` unless the schema/data changes made by that migration have also been safely reverted.

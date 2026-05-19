@@ -74,5 +74,23 @@
             "player_line": "  %s: %s",
             "footer": "═══════════════════════════════"
         }
+    },
+    "plots": {
+        "boot": {
+            "started": "Plot registry boot starting",
+            "ready": "Plot registry ready: %d created, %d updated, %d unchanged, %d skipped, %d total",
+            "boot_failed": "Plot registry boot failed: %s",
+            "unavailable": "PlotService unavailable. Check fxmanifest.lua server_scripts order.",
+            "skipped_entries": "Plot seed sync skipped %d invalid config entries (see [plots][ERROR] logs above)"
+        },
+        "reload": {
+            "ace_required": "[Farm Sonar] ACE permission required: sonar.farm.admin",
+            "unavailable": "[Farm Sonar] PlotService unavailable. Check fxmanifest.lua server_scripts order.",
+            "header": "═══ Farm Sonar Plots Reload ═══",
+            "summary": "Created: %d, Updated: %d, Unchanged: %d, Skipped: %d (Total: %d)",
+            "skipped_warning": "[WARN] %d invalid seed entries were skipped — check server console for details",
+            "failed": "[FAIL] Plot reload failed: %s",
+            "footer": "═══════════════════════════════"
+        }
     }
 }

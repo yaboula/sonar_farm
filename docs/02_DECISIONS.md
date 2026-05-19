@@ -339,3 +339,29 @@ Donde `account ∈ {'cash', 'bank'}` y `type ∈ {'success', 'error', 'info', 'w
 - `docs/slices/S3_finance_compatibility_layer.md` records QBox PASS and QBCore DEFERRED.
 - Before Phase 0 can be considered complete, QBCore smoke must cover S1 Bridge, S2 DB boot and S3 finance credit/debit/idempotency paths.
 - Any QBCore-specific failure found later must be fixed upstream in `Sonar.Farm.Bridge` or the finance adapter contract, not patched downstream in gameplay slices.
+
+---
+
+## ADR-010 — Plot identity as config-owned natural key + idempotent seed sync semantics
+
+**Date:** 2026-05-19
+**Status:** ACCEPTED
+**Origin slice:** S5
+
+**Context.** S5 needs to persist 8 MLO plots that are pre-defined in config (Roadmap S5 defers placement GUI). Two non-obvious decisions had to be made before implementation: (1) the shape of `plot_id` (surrogate auto-increment vs. natural key driven by config), and (2) what happens to a row when the founder edits `config/plots.lua` and runs `/sonarfarm:plots:reload` against a server where `soil_score`, `state`, `planted_ts` or `next_stage_ts` already carry gameplay value.
+
+**Options considered:**
+
+- **A — Surrogate `INT` `plot_id` + separate `config_key`.** Pros: classic relational identity, immutable PK across renames. Cons: every other slice (S6 batches, S7 inventory `origin.plot_id`, S27 tablet routing) would have to join through `config_key` to talk about a plot, and the config still has to provide a stable identifier anyway. Adds a layer with no real benefit for a registry of 8-30 fixed plots.
+- **B — Config-owned `VARCHAR(64)` natural key as PK + reload preserves gameplay-owned columns.** Pros: zero indirection between config and DB; `lineage_chain` and `origin.plot_id` references in future slices stay human-readable; reload is safe to run on live servers because `state`/`soil_score`/`planted_ts`/`next_stage_ts` are never overwritten by config. Cons: renaming a `plot_id` orphans the previous row instead of mutating it in place; documented as a deliberate constraint.
+- **C — Config-owned natural key as PK but reload resets every column from config.** Pros: trivially simple. Cons: `/sonarfarm:plots:reload` would silently destroy `soil_score` progress and reset live planted plots back to `fallow`, which is a footgun and breaks Bible §13.2 "downtime-safe" guarantee.
+
+**Decision:** **B**. `plot_id` is a config-owned `VARCHAR(64)` primary key. `PlotService.SyncSeededPlots` distinguishes config-owned columns (`plot_type`, `display_name_key`, `coords_x`, `coords_y`, `coords_z`, `radius`) from gameplay-owned columns (`state`, `soil_score`, `planted_ts`, `next_stage_ts`, `last_updated_ts`). Reload may update the former and may insert missing rows, but never resets the latter. Renaming a `plot_id` is treated as a deprecation of the old row plus creation of a new row, never an in-place rename.
+
+**Consequences.**
+
+- `sonar_farm_plots.plot_id` is `VARCHAR(64) PRIMARY KEY`; future foreign keys (`sonar_farm_batches.origin_plot_id`, etc.) will use the same shape.
+- `/sonarfarm:plots:reload` is safe to run on a live server.
+- The Backend service exposes `PlotService.UpdatePlotState(plot_id, patch, reason)` with a strict allowlist of patchable fields (`state`, `soil_score`, `planted_ts`, `next_stage_ts`); config-owned columns are unreachable from this entry point on purpose.
+- Removing a plot from `config/plots.lua` does **not** delete the DB row. Cleanup of orphaned plots is deferred to a future admin tool with explicit confirmation.
+- If a future slice ever needs to rename a `plot_id`, the migration must be authored by hand (insert new row with carried-over `soil_score`, then delete old row) and accompanied by a new ADR.

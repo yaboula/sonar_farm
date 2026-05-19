@@ -23,6 +23,15 @@ local function run_finance_boot()
     return Sonar.Farm.Finance.Boot()
 end
 
+local function run_plots_boot()
+    if not Sonar.Farm.Plots or type(Sonar.Farm.Plots.Boot) ~= 'function' then
+        log_error(locale('plots.boot.unavailable'))
+        return false
+    end
+
+    return Sonar.Farm.Plots.Boot()
+end
+
 local function run_persistence_boot()
     if not Sonar.Farm.DB then
         log_error(locale('boot.db_unavailable'))
@@ -72,6 +81,13 @@ AddEventHandler('onResourceStart', function(resource_name)
     -- if it fails, Credit/Debit calls will fail gracefully at runtime
     -- but the rest of the resource (Bridge, DB, future slices) still boots.
     run_finance_boot()
+
+    -- Plot registry boot is also gated on DB success and non-fatal,
+    -- mirroring the finance pattern. If seed sync fails or skips
+    -- invalid entries, PlotService still answers reads and the rest
+    -- of the resource keeps booting; the admin can run
+    -- `/sonarfarm:plots:reload` to retry once the config is fixed.
+    run_plots_boot()
 
     if Config and Config.Farm and Config.Farm.Debug then
         log_info('debug mode ENABLED')

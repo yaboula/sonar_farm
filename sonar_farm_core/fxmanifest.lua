@@ -43,6 +43,7 @@ shared_scripts {
     'shared/bridge/init.lua',
     'config.lua',
     'config/finance.lua',
+    'config/plots.lua',
 }
 
 -- ============================================================
@@ -58,9 +59,15 @@ server_scripts {
     'server/finance/movement_service.lua',
     'server/finance/money_adapter.lua',
     'server/finance/init.lua',
+    -- Plots domain: service first → boot coordinator second.
+    -- Both must load before server/main.lua so it can call
+    -- Sonar.Farm.Plots.Boot() after run_persistence_boot().
+    'server/plots/plot_service.lua',
+    'server/plots/init.lua',
     'server/main.lua',
     'server/admin/bridge_test_command.lua',
     'server/admin/finance_smoke_test.lua',
+    'server/admin/plots_reload_command.lua',
 }
 
 -- ============================================================
@@ -81,6 +88,7 @@ files {
 sonar_farm_migration 'database/migrations/001_init_migrations_table.sql'
 sonar_farm_migration 'database/migrations/002_smoke_table.sql'
 sonar_farm_migration 'database/migrations/003_finance_core.sql'
+sonar_farm_migration 'database/migrations/004_plots.sql'
 
 -- ============================================================
 -- Lua language server: opt-in to safer globals
