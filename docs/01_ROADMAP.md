@@ -254,7 +254,9 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 
 ---
 
-### S5 — Parcela system 🧱🔓 · Complejidad: M
+### S5 — Parcela system 🧱🔓 · Complejidad: M · **Estado: `ACTIVE`** (2026-05-19)
+
+> Mini-brief: [`docs/slices/S5_plot_system.md`](./slices/S5_plot_system.md).
 
 **Scope.** Sistema de parcelas como entidad core. Tabla `sonar_farm_plots` con timestamps designed-for-delta-calc desde día 1 (`last_updated_ts`, `planted_ts`, `next_stage_ts`). Soil score persistente. Tipos: `extensive` (cereales), `horticultural` (hortalizas/hojas/bulbos/tubérculos), `greenhouse` (invernadero). En oleada 1, el MLO trae las parcelas pre-definidas en config (GUI de placement se difiere).
 
