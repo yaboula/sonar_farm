@@ -162,7 +162,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 
 ---
 
-### S2 — DB foundation + sistema de migrations 🧱🔓 · Complejidad: M
+### S2 — DB foundation + sistema de migrations 🧱🔓 · Complejidad: M · **Estado: `ACTIVE`** (2026-05-19)
 
 **Scope.** Migrations versionadas en `database/migrations/NNN_<descripcion>.sql`. Runner Lua que ejecuta migrations pendientes en boot. Tabla `sonar_farm_migrations` que registra estado. Smoke de `oxmysql`.
 
