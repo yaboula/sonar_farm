@@ -502,7 +502,7 @@ Si Cascade arranca sin estos elementos, recordárselo con: _"Read docs/00_BIBLE.
 
 ## 9. Pendientes y próximos refinamientos
 
-- **UI Playbook v2** — cuando S4 empiece a implementar UI real, refinar motion canon (Framer Motion si se justifica), sound moments y breakpoints reales. `docs/04_UI_PLAYBOOK.md` v1 ya firmó paleta, Bento geometry, catálogo shadcn v1 y signature components (`BentoGrid`, `BatchChip`, `LimePulse`).
+- **UI Playbook v2** — **ENTREGADO** el 2026-05-19 antes de S4. `docs/04_UI_PLAYBOOK.md` v2 firma viewports (Laptop 1920×1080 + Tablet 1280×800 overlay), iconografía (Lucide React), spacing scale, status colors, shell anatomy, 4 page templates, motion canon CSS-only, accesibilidad pragmatic (AA + focus ring lima + aria), data viz tokens y MemoryRouter para NUI. Sound moments siguen TBD a propósito; tipos de chart Recharts diferidos a S20. Framer Motion no se instala todavía.
 - **Lint custom** que detecta strings hardcoded en JSX/Lua → planificado en S4 (NUI shell) o S32 (i18n completo).
 - **Plantilla `.prompts.md`** específica si vemos que los templates §5 generan repetición innecesaria — refinaremos tras los primeros 3 slices que usen `/spawn-pm`.
 - **Métricas de eficiencia AI** — empezar a medir tras cierre de Fase 1 cuántos slices completos vs cuántos sub-agent ciclos, tiempo medio por complejidad, y refinar el sistema basado en datos reales.
@@ -511,7 +511,8 @@ Si Cascade arranca sin estos elementos, recordárselo con: _"Read docs/00_BIBLE.
 
 ## 10. Changelog
 
-| Versión | Fecha      | Cambios                                                                                                                                                                                                                                  |
-| ------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1.0** | 2026-05-04 | Primera versión firmada. Sistema PM + 4 sub-agents (Backend / Frontend / Integration / QA) operativo. 5 rules + 6 workflows + slice template + templates de prompt + best practices del founder. UI Playbook diferido a sesión dedicada. |
-| **1.1** | 2026-05-19 | §9 actualizado tras creación de `docs/04_UI_PLAYBOOK.md` v1. UI Playbook deja de estar pendiente; próximos refinamientos UI quedan limitados a v2 (motion, sound, breakpoints reales) cuando S4 o slices posteriores los justifiquen.    |
+| Versión | Fecha      | Cambios                                                                                                                                                                                                                                                                                                                            |
+| ------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.0** | 2026-05-04 | Primera versión firmada. Sistema PM + 4 sub-agents (Backend / Frontend / Integration / QA) operativo. 5 rules + 6 workflows + slice template + templates de prompt + best practices del founder. UI Playbook diferido a sesión dedicada.                                                                                           |
+| **1.1** | 2026-05-19 | §9 actualizado tras creación de `docs/04_UI_PLAYBOOK.md` v1. UI Playbook deja de estar pendiente; próximos refinamientos UI quedan limitados a v2 (motion, sound, breakpoints reales) cuando S4 o slices posteriores los justifiquen.                                                                                              |
+| **1.2** | 2026-05-19 | §9 actualizado: `docs/04_UI_PLAYBOOK.md` v2 entregado antes de S4 con canon AAA completo (viewports, iconografía Lucide, spacing scale, status colors, shell anatomy, 4 page templates, motion CSS-only, a11y pragmatic, data viz tokens, MemoryRouter). Sound y tipos Recharts siguen TBD a propósito. Sin cambios metodológicos. |
