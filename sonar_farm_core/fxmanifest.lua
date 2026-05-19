@@ -25,6 +25,10 @@ dependencies {
 -- ============================================================
 shared_scripts {
     '@ox_lib/init.lua',
+    -- shared/init.lua MUST come right after ox_lib so it can call
+    -- `lib.locale()` to register the global `locale()` function
+    -- before any other script uses it.
+    'shared/init.lua',
     'shared/version.lua',
     -- Bridge: adapters MUST load before init.lua (init picks one).
     'shared/bridge/qbox.lua',

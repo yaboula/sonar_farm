@@ -18,14 +18,10 @@
 -- ============================================================
 
 local function t(key, ...)
-    if _G.locale then
-        return locale(key, ...)
-    end
-    -- Fallback for very early-boot calls before ox_lib is ready.
-    if select('#', ...) > 0 then
-        return ('%s [%s]'):format(key, table.concat({ ... }, ', '))
-    end
-    return key
+    -- `locale()` is guaranteed available because `shared/init.lua`
+    -- called `lib.locale()` during resource boot. If it's not, that
+    -- is a real bug — fail loud rather than silently fall back.
+    return locale(key, ...)
 end
 
 ---@param target_src number     who to log to (0 = server console).

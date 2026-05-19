@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 import { VERSION } from '@/lib/version';
 
 // ============================================================
@@ -10,9 +12,37 @@ import { VERSION } from '@/lib/version';
 // Wooow Test (Bible §4): when the founder runs `pnpm dev` they
 // must immediately recognize the brand language: charcoal canvas,
 // Geist Sans wordmark, lima neón #CCFF00 pulsing dot, mono footer.
+//
+// IN-GAME VISIBILITY (S1 fix):
+// The NUI iframe is always rendered by FiveM. To avoid the splash
+// covering the game canvas, we default to `visible = false` and
+// render nothing. The NUI shows only when:
+//   - We are in Vite dev mode (`pnpm dev` browser preview), OR
+//   - A `sonar:tablet:open` NUI message arrives from Lua (S4 will
+//     own this lifecycle; today no Lua sends it, so the splash
+//     never appears in-game).
 // ============================================================
 
-export function App(): JSX.Element {
+interface NuiMessage {
+    action?: string;
+}
+
+export function App(): JSX.Element | null {
+    const [visible, setVisible] = useState<boolean>(import.meta.env.DEV);
+
+    useEffect(() => {
+        function handler(event: MessageEvent<NuiMessage>) {
+            const data = event.data;
+            if (!data || typeof data !== 'object') return;
+            if (data.action === 'sonar:tablet:open') setVisible(true);
+            if (data.action === 'sonar:tablet:close') setVisible(false);
+        }
+        window.addEventListener('message', handler);
+        return () => window.removeEventListener('message', handler);
+    }, []);
+
+    if (!visible) return null;
+
     return (
         <main
             className="flex h-full w-full flex-col items-center justify-center bg-fs-nav text-fs-fg-inverse"
@@ -42,4 +72,3 @@ export function App(): JSX.Element {
         </main>
     );
 }
-

@@ -21,11 +21,15 @@
         height: 100%;
         margin: 0;
         padding: 0;
+        /* CRITICAL: must stay transparent so the FiveM game canvas
+         * shows through when the React tree renders `null`. The
+         * active UI (splash, tablet shell, etc.) paints its own
+         * opaque surface only when it is actually mounted. */
+        background: transparent;
     }
 
     html {
         font-family: var(--font-sans);
-        background: transparent; /* FiveM NUI is transparent by default */
         color: var(--color-fs-fg);
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
@@ -33,8 +37,6 @@
     }
 
     body {
-        /* When the NUI is opened the active app paints its own surface.
-         * The splash sets bg-fs-nav explicitly. */
         overflow: hidden;
     }
 

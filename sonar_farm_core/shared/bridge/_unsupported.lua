@@ -21,14 +21,7 @@ local adapter = {}
 
 -- One-time log on the server side only.
 if IsDuplicityVersion() then
-    local key = 'boot.framework_unsupported'
-    local message
-    if _G.locale then
-        message = locale(key)
-    else
-        message = 'Farm Sonar requires QBox or QBCore. ESX bridge planned for wave 2+.'
-    end
-    print(('[sonar_farm_core][ERROR] %s'):format(message))
+    print(('[sonar_farm_core][ERROR] %s'):format(locale('boot.framework_unsupported')))
 end
 
 -- ---- No-op methods (keep the public surface intact) --------

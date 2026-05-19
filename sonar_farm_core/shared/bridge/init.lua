@@ -94,12 +94,5 @@ Sonar.Farm.Bridge.framework    = detected
 
 -- For unsupported, the boot ERROR was already logged by _unsupported.lua.
 if detected ~= 'unsupported' then
-    local key = 'boot.bridge_initialized'
-    local message
-    if _G.locale then
-        message = locale(key, detected)
-    else
-        message = ('Bridge initialized → framework: %s'):format(detected)
-    end
-    print(('[sonar_farm_core] %s'):format(message))
+    print(('[sonar_farm_core] %s'):format(locale('boot.bridge_initialized', detected)))
 end
