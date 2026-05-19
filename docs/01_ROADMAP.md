@@ -213,7 +213,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 
 ---
 
-### S4 — NUI shell + design system 🧱🔓 · Complejidad: L
+### S4 — NUI shell + design system 🧱🔓 · Complejidad: L · **Estado: `ACTIVE`** (2026-05-19)
 
 **Scope.** Shell React de la Tablet/Laptop con design system. Router de apps (placeholders). Entrypoints físicos: `ox_target` sobre el laptop de la oficina abre Manager Panel; keybind global `F6` (configurable) abre Tablet de campo. Tokens Tailwind v4 con `@theme` siguiendo paleta del Bible §1.1.
 
