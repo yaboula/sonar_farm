@@ -185,7 +185,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 
 ---
 
-### S3 — Finance compatibility layer 🧱🔓 · Complejidad: L
+### S3 — Finance compatibility layer 🧱🔓 · Complejidad: L · **Estado: `ACTIVE`** (2026-05-19)
 
 **Scope.** Capa financiera fundacional para que Farm Sonar sea independiente y compatible con bancos existentes. Farm Sonar no depende de `sonar_bank` ni asume ser el banco global del servidor. En S3, el dinero externo se toca solo vía adapters (`qbox`, `qbcore`, `renewed_banking`, `okok_banking`, `qs`/similares cuando exista API estable) y un fallback nativo sobre el Bridge. Farm Sonar mantiene su propio ledger mínimo de movimientos agrícolas para auditoría interna, idempotency y trazabilidad, pero el banco externo/framework sigue siendo la fuente inmediata de saldo del jugador hasta que un servidor active un adapter dedicado.
 
