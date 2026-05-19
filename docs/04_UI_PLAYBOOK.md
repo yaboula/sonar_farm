@@ -1,9 +1,9 @@
 # 🎨 Farm Sonar — UI Playbook
 
-> **Estado:** v1.0 — Foundation UI canon  
+> **Estado:** v1.0 — Foundation UI canon básico
 > **Fecha:** 2026-05-19  
 > **Fuente canónica:** `00_BIBLE.md §1.1` + `02_DECISIONS.md ADR-006`  
-> **Scope:** identidad visual, paleta, tipografía, Bento system, componentes base, proceso v0.dev  
+> **Scope:** versión básica/fundacional de identidad visual, paleta, tipografía, Bento system, componentes base, proceso v0.dev
 > **No scope v1:** motion canon completo, sound design final, componentes de apps futuras no necesarias todavía
 
 ---
@@ -11,6 +11,8 @@
 ## 0. Para qué existe este documento
 
 Este documento convierte la identidad visual de Farm Sonar en reglas operables para Cascade, v0.dev, Opus y futuros sub-agents.
+
+Esta **v1.0 es una versión básica y fundacional**: fija las reglas mínimas que evitan drift visual temprano, pero no pretende ser el design system completo final. Los detalles finos de responsive, motion, sound, componentes de datos avanzados y patrones de pantalla se refinan en S4 o en futuras versiones del Playbook cuando exista UI real que los justifique.
 
 No sustituye al Bible. El orden de autoridad es:
 
@@ -487,6 +489,6 @@ Un slice con UI no puede cerrarse si:
 
 ## 13. Changelog
 
-| Versión | Fecha      | Cambios                                                                                                                                                                                                                                                                                             |
-| ------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1.0** | 2026-05-19 | Primer UI Playbook. Firma AgriSphere Light Mode, paleta hex final, Flat Minimalista por ADR-006, tipografía Geist/JetBrains, Bento geometry, shadcn/ui catalog v1, signature components (`BentoGrid`, `BatchChip`, `LimePulse`), proceso v0.dev y DoD visual. Motion y sound quedan TBD controlado. |
+| Versión | Fecha      | Cambios                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.0** | 2026-05-19 | Primer UI Playbook básico/fundacional. Firma AgriSphere Light Mode, paleta hex final, Flat Minimalista por ADR-006, tipografía Geist/JetBrains, Bento geometry, shadcn/ui catalog v1, signature components (`BentoGrid`, `BatchChip`, `LimePulse`), proceso v0.dev y DoD visual. Responsive fino, motion, sound, componentes de datos avanzados y patrones de pantalla quedan TBD controlado para S4 o versiones futuras. |
