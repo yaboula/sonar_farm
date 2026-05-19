@@ -90,7 +90,7 @@ Returns the frozen POJO described in §2 or `nil`. Always safe to call (no-op on
 ---@return string|nil err  Error message when ok=false.
 ```
 
-The framework is the immediate ledger; later (S3 Banca) the bridge becomes a wrapper around `Sonar.Farm.Banca.Credit(...)` and the framework money becomes a mirror.
+The active framework or configured finance adapter is the immediate ledger. S3 must not make `sonar_bank` or any external bank resource a hard dependency; compatibility is added through explicit adapters.
 
 ### `Sonar.Farm.Bridge.RemoveMoney(src, account, amount, reason)`
 

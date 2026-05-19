@@ -185,28 +185,31 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 
 ---
 
-### S3 — Banca Sonar core 🧱🔓 · Complejidad: L
+### S3 — Finance compatibility layer 🧱🔓 · Complejidad: L
 
-**Scope.** Sistema bancario fundacional. Cuentas personales auto-creadas al primer login. IBAN generator único determinístico (prefix `SF` + 22 chars). Movimientos como event-sourced log (cada movimiento es row inmutable). Transferencias atómicas. Escrow FSM (`PENDING → HELD → RELEASED | REFUNDED`) para vending (S10) y contratos (S21).
+**Scope.** Capa financiera fundacional para que Farm Sonar sea independiente y compatible con bancos existentes. Farm Sonar no depende de `sonar_bank` ni asume ser el banco global del servidor. En S3, el dinero externo se toca solo vía adapters (`qbox`, `qbcore`, `renewed_banking`, `okok_banking`, `qs`/similares cuando exista API estable) y un fallback nativo sobre el Bridge. Farm Sonar mantiene su propio ledger mínimo de movimientos agrícolas para auditoría interna, idempotency y trazabilidad, pero el banco externo/framework sigue siendo la fuente inmediata de saldo del jugador hasta que un servidor active un adapter dedicado.
 
 **Deliverables.**
 
-- Migration `003_banca_core.sql` (`sonar_farm_bank_accounts`, `sonar_farm_bank_movements`, `sonar_farm_bank_escrows`).
-- `server/banca/account_service.lua`.
-- `server/banca/transfer_service.lua` con transacción atómica.
-- `server/banca/escrow_service.lua` con FSM.
-- Integración con `Bridge.AddMoney/RemoveMoney` (Banca Sonar es fuente de verdad; el dinero del framework es espejo).
-- Eventos: `sonar:farm:banca:movement_created`, `sonar:farm:banca:escrow_state_changed`.
-- Tests de transferencia + escrow FSM.
+- Migration `003_finance_core.sql` (`sonar_farm_finance_movements`, `sonar_farm_finance_idempotency`, `sonar_farm_finance_escrows` si S3 mantiene escrow en alcance).
+- `server/finance/money_adapter.lua` con interfaz mínima: `GetBalance`, `Credit`, `Debit`, `Transfer`, `CanAfford`, `GetActiveAdapter`.
+- Adapters iniciales: `native_bridge` (QBox/QBCore vía `Sonar.Farm.Bridge`), `qbox`, `qbcore`; stubs/documentación para `renewed_banking`, `okok_banking`, `qs`/similares si no hay API verificada.
+- `server/finance/movement_service.lua` como ledger agrícola append-only para auditoría interna, no como reemplazo obligatorio del banco externo.
+- `server/finance/escrow_service.lua` con FSM solo si se mantiene en S3; si complica compatibilidad, diferir escrow a un slice posterior.
+- Eventos: `sonar:farm:banca:movement_created`, `sonar:farm:banca:adapter_selected`, `sonar:farm:banca:escrow_state_changed` si escrow se implementa.
+- Tests de debit/credit/idempotency/adapter selection y smoke en QBox; QBCore smoke antes de cerrar Fase 0.
 
 **DoD específico.**
 
-- 100 transferencias concurrentes desde lua threads no causan inconsistencia (test).
-- Escrow timeout funciona: si HELD > X horas sin RELEASED → REFUNDED automático.
+- Ninguna llamada directa a `sonar_bank`, `sonar_bank_app` u otro banco externo fuera de adapters.
+- QBox/QBCore native money funciona vía Bridge sin banco adicional instalado.
+- Adapter selection es configurable y visible en boot logs.
+- Money mutations son idempotentes y dejan movement audit row en `sonar_farm_finance_movements`.
+- Si escrow queda en S3: timeout funciona (`HELD > X horas` → `REFUNDED`) y no depende de un banco específico.
 
 **Dependencias:** S2.
 
-**Riesgo:** medio. La consistencia financiera es crítica. Tests obligatorios.
+**Riesgo:** alto. Compatibilidad bancaria FiveM es fragmentada; S3 debe priorizar independencia, adapters y degradación segura antes que features avanzadas de banca propia.
 
 ---
 

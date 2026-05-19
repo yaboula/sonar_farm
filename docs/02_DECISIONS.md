@@ -291,3 +291,28 @@ Donde `account ∈ {'cash', 'bank'}` y `type ∈ {'success', 'error', 'info', 'w
 - `docs/slices/S2_db_foundation.md` registra la excepción y conserva evidencia de QBox A/B/C.
 - Roadmap marca S2 `DONE` con nota de QBCore smoke deferred.
 - Antes de cerrar Fase 0 completa, se deben ejecutar los smokes QBCore y DB-unreachable para S2 o abrir un nuevo ADR si siguen imposibles.
+
+---
+
+## ADR-008 — Design Farm finance as a compatibility adapter layer, not a hard bank dependency
+
+**Date:** 2026-05-19
+**Status:** ACCEPTED
+**Origin slice:** S3
+
+**Context.** The founder already has a separate advanced `sonar_bank` / `sonar_bank_app` ecosystem, but Farm Sonar must ship as an independent farming script. Roadmap S3 originally implied that Farm Banca would become the source of truth and framework money would become a mirror. That would make Farm Sonar harder to install on QBox/QBCore servers that already use qb-banking, Renewed Banking, okokBanking, qs-style banking or similar stacks.
+
+**Options considered:**
+
+- **A** — Make Farm Banca the mandatory source of truth and mirror framework money. Pros: strongest internal consistency. Cons: conflicts with existing server banks and violates the plug-and-play promise.
+- **B** — Depend directly on `sonar_bank` when present. Pros: reuses the advanced Sonar bank. Cons: creates a hard cross-resource dependency and blocks standalone customers.
+- **C** — Build a Farm finance adapter layer. Pros: standalone by default, compatible with QBox/QBCore native money and future external bank adapters; `sonar_bank` can be integrated later as one adapter. Cons: less feature-rich in S3 than a full bank.
+
+**Decision:** **C**. S3 is a finance compatibility layer with an internal Farm audit ledger, not a full mandatory bank replacement.
+
+**Consequences.**
+
+- Farm Sonar never hard-depends on `sonar_bank`, `sonar_bank_app`, Renewed, okok, qs or any other bank resource.
+- Money mutations go through a Farm finance adapter contract and record Farm-local movements for audit/idempotency.
+- QBox/QBCore native money via `Sonar.Farm.Bridge` is the baseline adapter.
+- Future adapters may support `sonar_bank`, Renewed Banking, okokBanking, qs-style banking or custom server banks when their API is verified.

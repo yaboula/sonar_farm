@@ -232,7 +232,7 @@ You are the **Backend Agent** for Farm Sonar slice **<SXX> — <name>**.
 - All DB writes in transactions where applicable.
 - All hot paths async (no `MySQL.Sync.fetchAll` blocking).
 - All state changes publish a `sonar:farm:*` event.
-- All player money mutations go through `Bridge.AddMoney/RemoveMoney` AND through `BancaService` for audit log.
+- All player money mutations go through the Farm finance adapter layer, which may delegate to `Bridge.AddMoney/RemoveMoney` or a configured bank adapter, and always writes an audit movement.
 - No hardcoded numbers — use `Config.*`.
 
 ## On completion
