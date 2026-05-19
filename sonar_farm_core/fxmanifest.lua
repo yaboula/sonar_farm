@@ -21,14 +21,20 @@ dependencies {
 }
 
 -- ============================================================
+-- ox_lib modules to auto-load. ox_lib's `init.lua` reads this
+-- metadata via `GetResourceMetadata(resource, 'ox_lib', ...)`
+-- and, for each entry, loads `imports/<name>/{shared,context}.lua`
+-- AND calls the module's init function. For `locale`, this
+-- registers the `locale(str, ...)` global AND loads our
+-- `locales/<lang>.json` files based on the `ox:locale` convar.
+-- ============================================================
+ox_lib 'locale'
+
+-- ============================================================
 -- Shared scripts (run on both server and client)
 -- ============================================================
 shared_scripts {
     '@ox_lib/init.lua',
-    -- shared/init.lua MUST come right after ox_lib so it can call
-    -- `lib.locale()` to register the global `locale()` function
-    -- before any other script uses it.
-    'shared/init.lua',
     'shared/version.lua',
     -- Bridge: adapters MUST load before init.lua (init picks one).
     'shared/bridge/qbox.lua',
