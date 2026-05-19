@@ -13,6 +13,8 @@
 //   rect   — generic rectangle (caller controls dimensions).
 // ============================================================
 
+import { useI18n } from '@/i18n';
+
 export type SkeletonVariant = 'text' | 'card' | 'circle' | 'rect';
 export type SkeletonCircleSize = 'sm' | 'md' | 'lg';
 
@@ -37,16 +39,18 @@ export function Skeleton({
     lines = 1,
     size = 'md',
     className,
-    'aria-label': ariaLabel = 'Loading',
+    'aria-label': ariaLabel,
 }: SkeletonProps): JSX.Element {
+    const { t } = useI18n();
     const baseCls = 'fs-skeleton rounded-md bg-[rgb(150_156_156_/_0.15)]';
+    const resolvedAriaLabel = ariaLabel ?? t('state.loading.title');
 
     if (variant === 'text') {
         return (
             <div
                 className={['flex flex-col gap-2', className].filter(Boolean).join(' ')}
                 aria-busy="true"
-                aria-label={ariaLabel}
+                aria-label={resolvedAriaLabel}
             >
                 {Array.from({ length: lines }).map((_, idx) => (
                     <div
@@ -66,14 +70,14 @@ export function Skeleton({
         const cls = [baseCls, 'rounded-full', CIRCLE_SIZE[size], className]
             .filter(Boolean)
             .join(' ');
-        return <div className={cls} aria-busy="true" aria-label={ariaLabel} />;
+        return <div className={cls} aria-busy="true" aria-label={resolvedAriaLabel} />;
     }
 
     if (variant === 'card') {
         const cls = [baseCls, 'h-32 w-full rounded-2xl', className].filter(Boolean).join(' ');
-        return <div className={cls} aria-busy="true" aria-label={ariaLabel} />;
+        return <div className={cls} aria-busy="true" aria-label={resolvedAriaLabel} />;
     }
 
     const cls = [baseCls, 'h-6 w-full', className].filter(Boolean).join(' ');
-    return <div className={cls} aria-busy="true" aria-label={ariaLabel} />;
+    return <div className={cls} aria-busy="true" aria-label={resolvedAriaLabel} />;
 }

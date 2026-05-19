@@ -213,7 +213,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 
 ---
 
-### S4 — NUI shell + design system 🧱🔓 · Complejidad: L · **Estado: `ACTIVE`** (2026-05-19)
+### S4 — NUI shell + design system 🧱🔓 · Complejidad: L · **Estado: `DONE`** (2026-05-19; impl `b4fbf17`)
 
 **Scope.** Shell React de la Tablet/Laptop con design system. Router de apps (placeholders). Entrypoints físicos: `ox_target` sobre el laptop de la oficina abre Manager Panel; keybind global `F6` (configurable) abre Tablet de campo. Tokens Tailwind v4 con `@theme` siguiendo paleta del Bible §1.1.
 
@@ -239,6 +239,8 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 **Dependencias:** S0.
 
 **Riesgo:** medio. Es el primer contacto del jugador con el producto. Tiene que ser pulido.
+
+**Cierre.** Smoke completo PASS: Tablet F6 → `/plots`, ESC libera foco, Laptop `ox_target` → manager `/dashboard`, repeated open/close sin bloqueo, QBCore bridge activo. Bug `useLocation() outside Router` cerrado moviendo `MemoryRouter` al nivel del shell completo.
 
 ---
 

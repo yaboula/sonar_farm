@@ -3,7 +3,9 @@
         "brand": "Farm Sonar",
         "tagline": "Premium farming infrastructure",
         "close": "Close",
-        "loading": "Loading…"
+        "loading": "Loading…",
+        "primaryNavigation": "Primary navigation",
+        "tabletApps": "Tablet apps"
     },
     "mode": {
         "manager": "Manager",
@@ -90,6 +92,12 @@
             "cashBalance": "Cash balance",
             "demoCallout": "This is a placeholder card. Real data lights up in later slices.",
             "sampleBatchHint": "Sample batch chip"
+        }
+    },
+    "component": {
+        "batchChip": {
+            "ariaLabel": "Batch {{batchId}}",
+            "lowFreshness": "Low freshness"
         }
     }
 }

@@ -10,8 +10,11 @@ repository  'https://github.com/yaboula/sonar_farm'
 
 dependencies {
     'ox_lib',
+    'ox_target',
     'sonar_farm_core',
 }
+
+ox_lib 'locale'
 
 -- ============================================================
 -- NUI: built React SPA lives at web/dist/.
@@ -23,14 +26,18 @@ ui_page 'web/dist/index.html'
 files {
     'web/dist/index.html',
     'web/dist/**/*',
+    'locales/*.json',
 }
 
 shared_scripts {
     '@ox_lib/init.lua',
+    'config.lua',
 }
 
 client_scripts {
     'client/main.lua',
+    'client/laptop_interaction.lua',
+    'client/tablet_interaction.lua',
 }
 
 provide 'sonar_farm_tablet'

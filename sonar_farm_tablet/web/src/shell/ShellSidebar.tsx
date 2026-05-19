@@ -31,7 +31,7 @@ export function ShellSidebar({ mode }: ShellSidebarProps): JSX.Element {
         <aside
             className="flex flex-col gap-1 border-r border-fs-border bg-fs-surface px-3 py-6"
             style={{ width: 'var(--fs-sidebar-w-manager)' }}
-            aria-label="Primary navigation"
+            aria-label={t('shell.primaryNavigation')}
         >
             <nav className="flex flex-col gap-1" role="navigation">
                 {routes.map((route) => (

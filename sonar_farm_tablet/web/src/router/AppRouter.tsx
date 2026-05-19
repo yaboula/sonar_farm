@@ -28,24 +28,42 @@ import type { NuiRoute } from '@/types/nui';
 
 interface AppRouterProps {
     initialRoute: NuiRoute;
+    children?: React.ReactNode;
 }
 
+/**
+ * The route table — must be rendered inside a MemoryRouter context.
+ * Each shell (ManagerShell, TabletShell) owns its own MemoryRouter so
+ * that NavLink / useLocation work in sibling nav components.
+ */
+export function AppRoutes(): JSX.Element {
+    return (
+        <Routes>
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/plots" element={<PlotsPage />} />
+            <Route path="/batches" element={<BatchesPage />} />
+            <Route path="/market" element={<MarketPage />} />
+            <Route path="/contracts" element={<ContractsPage />} />
+            <Route path="/personnel" element={<PersonnelPage />} />
+            <Route path="/finance" element={<FinancePage />} />
+            <Route path="/log" element={<LogPage />} />
+            <Route path="/tasks" element={<TasksPage />} />
+            <Route path="/messages" element={<MessagesPage />} />
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+    );
+}
+
+/**
+ * Standalone router — wraps AppRoutes in its own MemoryRouter.
+ * Use this only when the caller has no existing Router context.
+ * ManagerShell and TabletShell own their own MemoryRouter instead
+ * so NavLink siblings can live outside the <Routes> tree.
+ */
 export function AppRouter({ initialRoute }: AppRouterProps): JSX.Element {
     return (
         <MemoryRouter initialEntries={[initialRoute]}>
-            <Routes>
-                <Route path="/dashboard" element={<DashboardPage />} />
-                <Route path="/plots" element={<PlotsPage />} />
-                <Route path="/batches" element={<BatchesPage />} />
-                <Route path="/market" element={<MarketPage />} />
-                <Route path="/contracts" element={<ContractsPage />} />
-                <Route path="/personnel" element={<PersonnelPage />} />
-                <Route path="/finance" element={<FinancePage />} />
-                <Route path="/log" element={<LogPage />} />
-                <Route path="/tasks" element={<TasksPage />} />
-                <Route path="/messages" element={<MessagesPage />} />
-                <Route path="*" element={<Navigate to="/dashboard" replace />} />
-            </Routes>
+            <AppRoutes />
         </MemoryRouter>
     );
 }

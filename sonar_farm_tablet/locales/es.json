@@ -1,0 +1,10 @@
+{
+    "interaction": {
+        "laptop": {
+            "target_label": "Abrir gerente Farm Sonar"
+        },
+        "tablet": {
+            "keybind_label": "Abrir tablet Farm Sonar"
+        }
+    }
+}

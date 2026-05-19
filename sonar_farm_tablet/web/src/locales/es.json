@@ -3,7 +3,9 @@
         "brand": "Farm Sonar",
         "tagline": "Infraestructura agrícola premium",
         "close": "Cerrar",
-        "loading": "Cargando…"
+        "loading": "Cargando…",
+        "primaryNavigation": "Navegación principal",
+        "tabletApps": "Apps de tablet"
     },
     "mode": {
         "manager": "Gerencia",
@@ -90,6 +92,12 @@
             "cashBalance": "Caja",
             "demoCallout": "Esta es una tarjeta placeholder. Los datos reales aparecen en slices posteriores.",
             "sampleBatchHint": "Chip de lote de ejemplo"
+        }
+    },
+    "component": {
+        "batchChip": {
+            "ariaLabel": "Lote {{batchId}}",
+            "lowFreshness": "Frescura baja"
         }
     }
 }

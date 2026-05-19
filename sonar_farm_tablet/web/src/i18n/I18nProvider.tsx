@@ -35,6 +35,13 @@ function resolvePath(tree: unknown, key: string): string | undefined {
     return typeof cursor === 'string' ? cursor : undefined;
 }
 
+function interpolate(message: string, values: Record<string, string | number> = {}): string {
+    return message.replace(/\{\{(\w+)\}\}/g, (token, key: string) => {
+        const value = values[key];
+        return value === undefined ? token : String(value);
+    });
+}
+
 interface I18nProviderProps {
     children: ReactNode;
     initialLocale?: Locale;
@@ -44,10 +51,10 @@ export function I18nProvider({ children, initialLocale = 'en' }: I18nProviderPro
     const [locale, setLocale] = useState<Locale>(initialLocale);
 
     const t = useCallback(
-        (key: string): string => {
+        (key: string, values?: Record<string, string | number>): string => {
             const resolved =
                 resolvePath(dictionaries[locale], key) ?? resolvePath(dictionaries.en, key);
-            return resolved ?? key;
+            return interpolate(resolved ?? key, values);
         },
         [locale]
     );

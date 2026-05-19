@@ -14,6 +14,7 @@
 // ============================================================
 
 import { Mono } from '@/components/typography/Mono';
+import { useI18n } from '@/i18n';
 
 export type BatchQuality = 'S' | 'A' | 'B' | 'C' | 'D';
 
@@ -55,6 +56,7 @@ export function BatchChip({
     className,
     'aria-label': ariaLabel,
 }: BatchChipProps): JSX.Element {
+    const { t } = useI18n();
     const cls = [
         'inline-flex items-center gap-2 rounded-2xl border border-fs-border bg-fs-surface px-3 py-1.5',
         'transition-colors duration-[var(--duration-fs-fast)]',
@@ -75,7 +77,7 @@ export function BatchChip({
             className={cls}
             type={onClick ? 'button' : undefined}
             onClick={onClick}
-            aria-label={ariaLabel ?? `Batch ${batchId}`}
+            aria-label={ariaLabel ?? t('component.batchChip.ariaLabel', { batchId })}
         >
             <span
                 aria-hidden="true"
@@ -93,7 +95,7 @@ export function BatchChip({
                 <span
                     aria-hidden="true"
                     className="ml-1 inline-block h-1.5 w-1.5 rounded-full bg-fs-danger-fg"
-                    title="Low freshness"
+                    title={t('component.batchChip.lowFreshness')}
                 />
             ) : null}
         </Tag>

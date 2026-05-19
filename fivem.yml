@@ -122,6 +122,66 @@ globals:
     args:
       - type: bool
 
+  # ---- FiveM vector types ----
+  vector3:
+    args:
+      - type: number
+      - type: number
+      - type: number
+  vector4:
+    args:
+      - type: number
+      - type: number
+      - type: number
+      - type: number
+
+  # ---- Model loading (client) ----
+  GetHashKey:
+    args:
+      - type: string
+  RequestModel:
+    args:
+      - type: any
+  HasModelLoaded:
+    args:
+      - type: any
+  SetModelAsNoLongerNeeded:
+    args:
+      - type: any
+
+  # ---- Object / entity creation (client) ----
+  CreateObject:
+    args:
+      - type: any
+      - type: number
+      - type: number
+      - type: number
+      - type: bool
+      - type: bool
+      - type: bool
+  DeleteObject:
+    args:
+      - type: any
+  DoesEntityExist:
+    args:
+      - type: any
+  SetEntityHeading:
+    args:
+      - type: any
+      - type: number
+  FreezeEntityPosition:
+    args:
+      - type: any
+      - type: bool
+  SetEntityCollision:
+    args:
+      - type: any
+      - type: bool
+      - type: bool
+  PlaceObjectOnGroundProperly:
+    args:
+      - type: any
+
   # ---- Print / debug ----
   print:
     args:

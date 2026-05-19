@@ -1,0 +1,10 @@
+{
+    "interaction": {
+        "laptop": {
+            "target_label": "Open Farm Sonar Manager"
+        },
+        "tablet": {
+            "keybind_label": "Open Farm Sonar Tablet"
+        }
+    }
+}

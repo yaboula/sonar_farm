@@ -9,7 +9,9 @@
 // in the content area without re-rendering the topbar/sidebar.
 // ============================================================
 
-import { AppRouter } from '@/router/AppRouter';
+import { MemoryRouter } from 'react-router-dom';
+
+import { AppRoutes } from '@/router/AppRouter';
 import type { NuiRoute } from '@/types/nui';
 
 import { ShellContent } from './ShellContent';
@@ -23,14 +25,16 @@ interface ManagerShellProps {
 
 export function ManagerShell({ initialRoute, onClose }: ManagerShellProps): JSX.Element {
     return (
-        <div className="fs-fade-in flex h-full w-full flex-col bg-fs-bg text-fs-fg">
-            <ShellTopBar mode="manager" variant="manager" onClose={onClose} />
-            <div className="flex flex-1 overflow-hidden">
-                <ShellSidebar mode="manager" />
-                <ShellContent variant="manager">
-                    <AppRouter initialRoute={initialRoute} />
-                </ShellContent>
+        <MemoryRouter initialEntries={[initialRoute]}>
+            <div className="fs-fade-in flex h-full w-full flex-col bg-fs-bg text-fs-fg">
+                <ShellTopBar mode="manager" variant="manager" onClose={onClose} />
+                <div className="flex flex-1 overflow-hidden">
+                    <ShellSidebar mode="manager" />
+                    <ShellContent variant="manager">
+                        <AppRoutes />
+                    </ShellContent>
+                </div>
             </div>
-        </div>
+        </MemoryRouter>
     );
 }

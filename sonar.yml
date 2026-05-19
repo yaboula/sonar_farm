@@ -18,6 +18,7 @@ base: lua53+fivem+oxlib
 
 globals:
   Sonar: { any: true }
+  SonarFarmTablet: { any: true }
   Config: { any: true }
   Locales: { any: true }
   MySQL: { any: true }
