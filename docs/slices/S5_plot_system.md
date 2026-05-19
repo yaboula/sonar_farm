@@ -73,10 +73,10 @@ No blocking dependency is open.
 
 | Agent             | Role in this slice                                                                                 | Prompt block in `.prompts.md` |
 | ----------------- | -------------------------------------------------------------------------------------------------- | ----------------------------- |
-| Backend Agent     | Owns migration, table design, `PlotService`, idempotent seed sync, and event payloads.             | no                            |
+| Backend Agent     | Owns migration, table design, `PlotService`, idempotent seed sync, and event payloads.             | yes                           |
 | Frontend Agent    | Not needed; S5 has no NUI surface beyond future S27 consumption.                                   | no                            |
-| Integration Agent | Owns fxmanifest load order, admin command, config loading, and smoke procedure across QBox/QBCore. | no                            |
-| QA Agent          | Owns lint, DB shape verification, idempotency smoke, and DoD audit.                                | no                            |
+| Integration Agent | Owns fxmanifest load order, admin command, config loading, and smoke procedure across QBox/QBCore. | yes                           |
+| QA Agent          | Owns lint, DB shape verification, idempotency smoke, and DoD audit.                                | yes                           |
 
 S5 is complexity M, so `/spawn-pm` is optional and not required at slice start. Cascade can implement directly in this session unless the founder chooses to split Backend/QA into fresh sessions.
 
