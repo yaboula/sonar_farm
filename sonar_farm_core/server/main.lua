@@ -14,6 +14,15 @@ local function log_error(message)
     print(('[sonar_farm_core][ERROR] %s'):format(message))
 end
 
+local function run_finance_boot()
+    if not Sonar.Farm.Finance or type(Sonar.Farm.Finance.Boot) ~= 'function' then
+        log_error(locale('finance.boot.boot_failed'))
+        return false
+    end
+
+    return Sonar.Farm.Finance.Boot()
+end
+
 local function run_persistence_boot()
     if not Sonar.Farm.DB then
         log_error(locale('boot.db_unavailable'))
@@ -58,6 +67,11 @@ AddEventHandler('onResourceStart', function(resource_name)
     if not run_persistence_boot() then
         return
     end
+
+    -- Finance boot is gated on DB success and is non-fatal:
+    -- if it fails, Credit/Debit calls will fail gracefully at runtime
+    -- but the rest of the resource (Bridge, DB, future slices) still boots.
+    run_finance_boot()
 
     if Config and Config.Farm and Config.Farm.Debug then
         log_info('debug mode ENABLED')

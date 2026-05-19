@@ -316,3 +316,26 @@ Donde `account ∈ {'cash', 'bank'}` y `type ∈ {'success', 'error', 'info', 'w
 - Money mutations go through a Farm finance adapter contract and record Farm-local movements for audit/idempotency.
 - QBox/QBCore native money via `Sonar.Farm.Bridge` is the baseline adapter.
 - Future adapters may support `sonar_bank`, Renewed Banking, okokBanking, qs-style banking or custom server banks when their API is verified.
+
+---
+
+## ADR-009 — Close S3 with QBCore finance smoke deferred to Phase 0 closure
+
+**Date:** 2026-05-19
+**Status:** ACCEPTED
+**Origin slice:** S3
+
+**Context.** S3 implements the Farm finance compatibility layer on top of `Sonar.Farm.Bridge` and validates the QBox path with runtime smoke run `1779208796`. The baseline `native_bridge` adapter contains no QBox/QBCore direct calls; framework-specific behavior remains in the S1 Bridge. A QBCore runtime environment was still unavailable at S3 closure, matching the Phase 0 constraint already documented by ADR-007 for S2.
+
+**Options considered:**
+
+- **A** — Keep S3 open until QBCore runtime smoke is available. Pros: literal universal DoD compliance. Cons: blocks the roadmap even though S3 uses the already-reviewed Bridge boundary and has no QBCore-specific finance code.
+- **B** — Close S3 with a documented exception and require QBCore finance smoke before closing Phase 0. Pros: preserves momentum and keeps the debt visible. Cons: temporarily relaxes runtime verification.
+
+**Decision:** **B**. S3 is closed with QBCore finance smoke deferred to Phase 0 closure.
+
+**Consequences.**
+
+- `docs/slices/S3_finance_compatibility_layer.md` records QBox PASS and QBCore DEFERRED.
+- Before Phase 0 can be considered complete, QBCore smoke must cover S1 Bridge, S2 DB boot and S3 finance credit/debit/idempotency paths.
+- Any QBCore-specific failure found later must be fixed upstream in `Sonar.Farm.Bridge` or the finance adapter contract, not patched downstream in gameplay slices.

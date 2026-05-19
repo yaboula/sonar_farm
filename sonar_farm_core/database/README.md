@@ -31,4 +31,17 @@ DROP TABLE IF EXISTS `sonar_farm_migration_smoke`;
 
 After running the SQL above, start `sonar_farm_core` again. The runner should apply only `002_smoke_table`.
 
+For migration 003 (S3 finance core):
+
+```sql
+DELETE FROM `sonar_farm_migrations`
+WHERE `id` = '003';
+
+DROP TABLE IF EXISTS `sonar_farm_finance_movements`;
+```
+
+After running the SQL above, start `sonar_farm_core` again. The runner should apply only `003_finance_core`.
+
+**Warning:** deleting rows from `sonar_farm_finance_movements` is irreversible for audit purposes. Only perform this rollback in development/staging environments, never on live servers with real player data.
+
 For future migrations, rollback must be documented by the slice that introduces the migration. Do not delete rows from `sonar_farm_migrations` unless the schema/data changes made by that migration have also been safely reverted.

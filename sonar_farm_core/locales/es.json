@@ -12,6 +12,58 @@
     "ui": {
         "brand_name": "Farm Sonar"
     },
+    "finance": {
+        "boot": {
+            "adapter_selected": "Capa de finanzas lista \u2192 adapter: %s (modo: %s)",
+            "unavailable": "Capa de finanzas no disponible. Revisa el orden de server_scripts en fxmanifest.lua.",
+            "boot_failed": "Arranque de finanzas fallido. Revisa el orden de server_scripts en fxmanifest.lua."
+        },
+        "smoke": {
+            "ace_required": "[Farm Sonar] permiso ACE requerido: sonar.farm.admin",
+            "usage": "[Farm Sonar] uso: sonarfarm:financesmoke <player_source>",
+            "header": "\u2550\u2550\u2550 Smoke test de finanzas Farm Sonar \u2550\u2550\u2550",
+            "run_id": "Run ID: %s",
+            "target_source": "Source objetivo: %s",
+            "no_player": "[FAIL] Jugador no encontrado",
+            "player": "Jugador: %s (ID: %s)",
+            "initial_cash": "Cash inicial: %s",
+            "initial_bank": "Banco inicial: %s",
+            "test_credit": "[TEST 1] Acreditar 1000 en cash con clave de idempotencia",
+            "pass_credit_fresh": "[PASS] Crédito OK (nuevo) \u2014 movement_id: %s",
+            "warn_credit_replay_fresh": "[WARN] El crédito devolvió replay=true con un run_id nuevo \u2014 inesperado",
+            "fail_credit": "[FAIL] Crédito fallido: %s",
+            "test_replay": "[TEST 2] Repetir el mismo crédito (idempotencia)",
+            "pass_replay": "[PASS] Replay idempotente \u2014 ok=true, replay=true (sin doble mutación)",
+            "fail_replay_false": "[FAIL] La segunda llamada debía ser replay pero replay=false",
+            "fail_replay": "[FAIL] Replay devolvió ok=false: %s",
+            "test_credit_delta": "[TEST 3] Delta de balance tras crédito (esperado +1000)",
+            "pass_cash_delta": "[PASS] Delta cash: +%s (balance: %s)",
+            "fail_cash_delta": "[FAIL] Delta cash: %s \u2014 esperado +1000 (balance: %s)",
+            "fail_get_balance": "[FAIL] GetBalance falló: %s",
+            "test_debit": "[TEST 4] Debitar 500 de cash",
+            "pass_debit": "[PASS] Débito OK \u2014 delta: %s, movement_id: %s",
+            "fail_debit_delta": "[FAIL] Débito OK pero delta: %s \u2014 esperado -500",
+            "fail_debit": "[FAIL] Débito fallido: %s",
+            "test_overdraw": "[TEST 5] Debitar 999999 (debe fallar por fondos insuficientes)",
+            "pass_overdraw": "[PASS] Fondos insuficientes rechazado correctamente",
+            "fail_wrong_error": "[FAIL] Código de error incorrecto: %s",
+            "fail_overdraw_succeeded": "[FAIL] Overdraw debía fallar pero tuvo éxito",
+            "test_bank_credit": "[TEST 6] Acreditar 2000 en banco",
+            "pass_bank_credit": "[PASS] Crédito bancario OK \u2014 delta: +%s",
+            "fail_bank_credit_delta": "[FAIL] Crédito bancario OK pero delta: %s \u2014 esperado +2000",
+            "fail_bank_credit": "[FAIL] Crédito bancario fallido: %s",
+            "test_can_afford": "[TEST 7] Check CanAfford para 1000 cash",
+            "pass_can_afford": "[PASS] CanAfford devolvió true",
+            "info_can_afford_false": "[INFO] CanAfford devolvió false: %s",
+            "test_adapter": "[TEST 8] Obtener adapter activo",
+            "pass_adapter": "[PASS] Adapter: %s (modo: %s)",
+            "fail_adapter": "[FAIL] GetActiveAdapter falló",
+            "final_balances": "Balances finales:",
+            "balance_cash": "Cash: %s",
+            "balance_bank": "Banco: %s",
+            "footer": "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
+        }
+    },
     "bridge": {
         "test": {
             "ace_required": "[Farm Sonar] permiso ACE requerido: sonar.farm.admin",

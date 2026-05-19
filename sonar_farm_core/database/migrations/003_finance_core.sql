@@ -1,0 +1,21 @@
+CREATE TABLE IF NOT EXISTS `sonar_farm_finance_movements` (
+    `movement_id` VARCHAR(64) NOT NULL,
+    `idempotency_key` VARCHAR(128) NOT NULL,
+    `request_fingerprint` LONGTEXT NOT NULL,
+    `citizen_id` VARCHAR(64) NOT NULL,
+    `src` INT UNSIGNED NULL,
+    `direction` VARCHAR(32) NOT NULL,
+    `account` VARCHAR(32) NOT NULL,
+    `amount` BIGINT UNSIGNED NOT NULL,
+    `reason` VARCHAR(191) NOT NULL,
+    `adapter_name` VARCHAR(64) NOT NULL,
+    `status` VARCHAR(32) NOT NULL,
+    `error_code` VARCHAR(64) NULL,
+    `metadata_json` LONGTEXT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`movement_id`),
+    UNIQUE KEY `uk_sonar_farm_finance_movements_idempotency` (`idempotency_key`),
+    KEY `idx_sonar_farm_finance_movements_citizen` (`citizen_id`),
+    KEY `idx_sonar_farm_finance_movements_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

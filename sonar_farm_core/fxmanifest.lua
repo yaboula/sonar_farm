@@ -42,6 +42,7 @@ shared_scripts {
     'shared/bridge/_unsupported.lua',
     'shared/bridge/init.lua',
     'config.lua',
+    'config/finance.lua',
 }
 
 -- ============================================================
@@ -51,8 +52,15 @@ server_scripts {
     '@oxmysql/lib/MySQL.lua',
     'server/db/db.lua',
     'server/db/migrator.lua',
+    -- Finance domain: adapter registry → movement ledger → facade → boot coordinator.
+    -- All four must load before server/main.lua (the boot orchestrator).
+    'server/finance/adapters/native_bridge.lua',
+    'server/finance/movement_service.lua',
+    'server/finance/money_adapter.lua',
+    'server/finance/init.lua',
     'server/main.lua',
     'server/admin/bridge_test_command.lua',
+    'server/admin/finance_smoke_test.lua',
 }
 
 -- ============================================================
@@ -72,6 +80,7 @@ files {
 
 sonar_farm_migration 'database/migrations/001_init_migrations_table.sql'
 sonar_farm_migration 'database/migrations/002_smoke_table.sql'
+sonar_farm_migration 'database/migrations/003_finance_core.sql'
 
 -- ============================================================
 -- Lua language server: opt-in to safer globals
