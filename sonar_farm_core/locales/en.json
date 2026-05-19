@@ -2,7 +2,12 @@
     "boot": {
         "ready": "Farm Sonar core booted (v%s)",
         "bridge_initialized": "Bridge initialized → framework: %s",
-        "framework_unsupported": "Farm Sonar requires QBox or QBCore. ESX bridge planned for wave 2+."
+        "framework_unsupported": "Farm Sonar requires QBox or QBCore. ESX bridge planned for wave 2+.",
+        "db_unavailable": "DB wrapper unavailable. Check fxmanifest.lua server_scripts order.",
+        "migrator_unavailable": "Migration runner unavailable. Check fxmanifest.lua server_scripts order.",
+        "db_check_started": "DB connectivity check and migrations starting",
+        "db_boot_failed": "DB boot failed: %s",
+        "db_boot_ready": "DB boot ready: %d migrations applied, %d already applied, %d registered"
     },
     "ui": {
         "brand_name": "Farm Sonar"

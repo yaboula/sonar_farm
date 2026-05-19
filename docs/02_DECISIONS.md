@@ -268,3 +268,26 @@ Donde `account ∈ {'cash', 'bank'}` y `type ∈ {'success', 'error', 'info', 'w
 - Componente custom `<GlassCard>` propuesto en sesiones previas queda **descartado**. Los custom signatures firmados son: `<BentoGrid>`, `<BentoGrid.Item>`, `<BatchChip>`, `<LimePulse>`.
 - shadcn/ui `Card` se usa stock con override de estilos (`bg-white border-fs-border/20 shadow-none rounded-2xl p-6`).
 - Cualquier slice futuro que quiera reintroducir blur/shadow debe abrir nuevo ADR superseding este.
+
+---
+
+## ADR-007 — Cerrar S2 con smoke runtime parcial documentado
+
+**Fecha:** 2026-05-19
+**Estado:** ACCEPTED
+**Slice origen:** S2
+
+**Contexto.** S2 implementa infraestructura DB/migrations común a QBox y QBCore, sin llamadas a framework ni Bridge. QA verificó clean boot, idempotency y rollback en QBox, pero no había entorno QBCore disponible al cierre y el smoke runtime DB-unreachable no se ejecutó. El founder decidió no bloquear S3 por validaciones runtime pendientes que se repetirán al cierre de la fase completa.
+
+**Opciones consideradas:**
+
+- **A** — Mantener S2 `ACTIVE/IN_REVIEW` hasta disponer de QBCore y ejecutar DB-unreachable. Pros: DoD literal intacto. Contras: bloquea S3 aunque el código S2 no depende de framework y el fail-fast está cubierto por code path.
+- **B** — Cerrar S2 con excepción documentada y deuda QA explícita para cierre de Fase 0. Pros: permite avanzar a S3; la desviación queda visible. Contras: relaja temporalmente el DoD universal/runtime.
+
+**Decisión:** **B**. S2 se cierra con excepción controlada: QBCore runtime smoke y DB-unreachable runtime smoke se difieren hasta el cierre de Fase 0, antes de considerar completa la fase foundation.
+
+**Consecuencias.**
+
+- `docs/slices/S2_db_foundation.md` registra la excepción y conserva evidencia de QBox A/B/C.
+- Roadmap marca S2 `DONE` con nota de QBCore smoke deferred.
+- Antes de cerrar Fase 0 completa, se deben ejecutar los smokes QBCore y DB-unreachable para S2 o abrir un nuevo ADR si siguen imposibles.

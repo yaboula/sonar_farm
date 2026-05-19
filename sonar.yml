@@ -7,6 +7,7 @@
 #   - `Sonar`     namespace root (e.g. Sonar.Farm.Version).
 #   - `Config`    runtime-tunable values (loaded from config*.lua).
 #   - `Locales`   legacy key (kept for compat with QBCore-style usage).
+#   - `MySQL`     oxmysql Lua API global, isolated behind Sonar.Farm.DB.
 #
 # These globals are intentional — they are the documented public surface
 # of the resource (Bible §9 + naming rule §02). Selene's `unscoped_variables`
@@ -19,3 +20,4 @@ globals:
   Sonar: { any: true }
   Config: { any: true }
   Locales: { any: true }
+  MySQL: { any: true }

@@ -56,6 +56,10 @@ globals:
     args:
       - type: string
       - type: string
+  LoadResourceFile:
+    args:
+      - type: string
+      - type: string
 
   # ---- Convars ----
   GetConvar:

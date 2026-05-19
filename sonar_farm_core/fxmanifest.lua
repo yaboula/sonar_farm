@@ -48,6 +48,9 @@ shared_scripts {
 -- Server scripts
 -- ============================================================
 server_scripts {
+    '@oxmysql/lib/MySQL.lua',
+    'server/db/db.lua',
+    'server/db/migrator.lua',
     'server/main.lua',
     'server/admin/bridge_test_command.lua',
 }
@@ -64,7 +67,11 @@ client_scripts {
 -- ============================================================
 files {
     'locales/*.json',
+    'database/migrations/*.sql',
 }
+
+sonar_farm_migration 'database/migrations/001_init_migrations_table.sql'
+sonar_farm_migration 'database/migrations/002_smoke_table.sql'
 
 -- ============================================================
 -- Lua language server: opt-in to safer globals

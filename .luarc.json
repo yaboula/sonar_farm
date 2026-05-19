@@ -27,24 +27,18 @@
         "GetResourceState",
         "GetResourceMetadata",
         "GetNumResourceMetadata",
+        "LoadResourceFile",
         "GetConvar",
         "GetConvarInt",
         "SetConvar",
         "GetPlayerName",
         "GetPlayerIdentifiers",
-        "source"
+        "source",
+        "MySQL"
     ],
-    "diagnostics.disable": [
-        "lowercase-global"
-    ],
+    "diagnostics.disable": ["lowercase-global"],
     "workspace.library": [],
-    "workspace.ignoreDir": [
-        ".git",
-        "node_modules",
-        "**/dist",
-        "**/build",
-        "docs/_archive"
-    ],
+    "workspace.ignoreDir": [".git", "node_modules", "**/dist", "**/build", "docs/_archive"],
     "files.associations": {
         "*.lua": "lua"
     },

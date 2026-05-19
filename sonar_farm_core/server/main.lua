@@ -14,6 +14,29 @@ local function log_error(message)
     print(('[sonar_farm_core][ERROR] %s'):format(message))
 end
 
+local function run_persistence_boot()
+    if not Sonar.Farm.DB then
+        log_error(locale('boot.db_unavailable'))
+        return false
+    end
+
+    if not Sonar.Farm.Migrator then
+        log_error(locale('boot.migrator_unavailable'))
+        return false
+    end
+
+    log_info(locale('boot.db_check_started'))
+
+    local ok, result_or_error = Sonar.Farm.Migrator.run_pending_safe()
+    if not ok then
+        log_error(locale('boot.db_boot_failed'):format(result_or_error))
+        return false
+    end
+
+    log_info(locale('boot.db_boot_ready'):format(result_or_error.applied, result_or_error.skipped, result_or_error.total))
+    return true
+end
+
 AddEventHandler('onResourceStart', function(resource_name)
     if resource_name ~= GetCurrentResourceName() then
         return
@@ -26,11 +49,15 @@ AddEventHandler('onResourceStart', function(resource_name)
 
     -- ox_lib's `locale()` helper resolves keys from locales/*.json
     -- according to the active server locale (config: ox:locale convar).
-    -- `locale()` is registered as a global by `shared/init.lua` which
-    -- calls `lib.locale()` once at resource boot.
+    -- `locale()` is registered as a global by ox_lib's `locale` module,
+    -- loaded through the `ox_lib 'locale'` fxmanifest metadata directive.
     local boot_message = locale('boot.ready', Sonar.Farm.Version)
 
     log_info(boot_message)
+
+    if not run_persistence_boot() then
+        return
+    end
 
     if Config and Config.Farm and Config.Farm.Debug then
         log_info('debug mode ENABLED')
