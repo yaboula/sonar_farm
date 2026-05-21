@@ -34,6 +34,113 @@
 
 <!-- ADRs se añaden a continuación en orden cronológico -->
 
+## ADR-011 — `batch_id` format: `sf-` prefix + 8 random hex chars
+
+**Date:** 2026-05-22
+**Status:** ACCEPTED
+**Origin slice:** B1 (S7)
+
+**Context.** Every harvested batch needs a unique, human-readable identifier that appears in logs, ox_inventory tooltips, DB audit rows, and future sale screens. UUID v4 (32 hex + 4 dashes) is standard but verbose; a shorter format is preferable for display without sacrificing practical uniqueness at RP server scale.
+
+**Options considered:**
+
+- **A** — UUID v4 (`xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx`). Pros: universally unique, standard. Cons: 36 chars, visually noisy in tooltips, over-engineered for < 1M batches/year.
+- **B** — `sf-` + 8 random hex chars (e.g. `sf-a1b2c3d4`). Pros: short, readable, `sf-` prefix makes Farm Sonar IDs recognizable in any log, collision probability negligible at RP scale. Cons: not globally unique (acceptable — scoped to one server DB).
+- **C** — Sequential integer. Pros: trivially short. Cons: leaks harvest volume to players; no prefix to identify origin.
+
+**Decision:** **B**. `string.format('sf-%08x', math.random(0, 0xFFFFFFFF))`. Server-generated only (anti-pattern §2). Validated by regex `^sf%-[0-9a-f]{8}$` in `PhysicalItem.ValidateMetadata`.
+
+**Consequences.**
+
+- `sonar_farm_batches.batch_id` is `VARCHAR(32) PRIMARY KEY`.
+- If a future vertical (Mill Sonar, etc.) produces items, they use a different prefix (`ms-`, `bs-`) to avoid cross-resource collisions.
+- If server scale ever exceeds ~1M batches, revisit with UUID v4 and a new ADR.
+
+---
+
+## ADR-012 — Scheduler tick: configurable `Wait(N*1000)`, default 30 s, no per-frame polling
+
+**Date:** 2026-05-22
+**Status:** ACCEPTED
+**Origin slice:** B1 (S6)
+
+**Context.** The crop lifecycle scheduler must advance plot stages when `next_stage_ts <= now()`. Anti-pattern §4 forbids per-frame loops. The tick interval determines both responsiveness and server overhead.
+
+**Options considered:**
+
+- **A** — Per-frame loop (`Wait(0)`). Pros: instant transitions. Cons: forbidden by anti-pattern §4; burns CPU for a mechanic that changes at most 4 times per 18h cycle.
+- **B** — Fixed 30 s tick hardcoded. Pros: simple. Cons: hardcoded magic number (anti-pattern §3).
+- **C** — `Wait(Config.Farm.Scheduler.TickSeconds * 1000)`, default 30 s. Pros: configurable without code change; dev servers can set 5 s for fast testing; prod can increase to 60 s for lower overhead. Cons: stage transitions are not instant (acceptable — RP servers don't need sub-second crop transitions).
+
+**Decision:** **C**. `Config.Farm.Scheduler.TickSeconds = 30` in `config.lua`. Scheduler queries only plots with `next_stage_ts <= UNIX_TIMESTAMP()` per tick — not all active crops.
+
+**Consequences.**
+
+- Stage transitions may lag up to `TickSeconds` behind the scheduled time. This is acceptable and expected.
+- `/sonarfarm:debug:fastforward` sets `next_stage_ts` in the past; the scheduler picks it up on the next tick (≤ 30 s default).
+- Future slices that need finer resolution (e.g. real-time pest spread) should introduce a separate domain scheduler rather than lowering this global tick.
+
+---
+
+## ADR-013 — `sonar_farm_crops` uses surrogate `INT AUTO_INCREMENT` PK (not `plot_id`)
+
+**Date:** 2026-05-22
+**Status:** ACCEPTED
+**Origin slice:** B1 (S6)
+
+**Context.** Unlike `sonar_farm_plots` (ADR-010, natural key `plot_id`), the crops table records individual planting events. A plot can be replanted many times; using `plot_id` as PK would prevent multiple records for the same plot (one active + historical).
+
+**Options considered:**
+
+- **A** — `plot_id VARCHAR(64) PRIMARY KEY`. Pros: matches ADR-010 style. Cons: prevents replanting history; DELETE on harvest is required (no audit trail of past harvests).
+- **B** — Surrogate `INT UNSIGNED AUTO_INCREMENT PRIMARY KEY` + unique constraint `uq_sfcrop_plot (plot_id)` on active crops only. Pros: allows historical rows if ever needed (remove unique constraint later); surrogate FK is stable across `plot_id` renames; race condition protection from DB-level unique key. Cons: slightly more complex join.
+
+**Decision:** **B**. Surrogate PK. Unique key `uq_sfcrop_plot` enforces the "one active crop per plot" invariant at DB level (complementing the service-layer check). On harvest, the crop row is deleted — no history kept in B1; a future slice (S11 or later) may repurpose the row as an archive by removing the unique constraint and adding a `harvested_at` column.
+
+**Consequences.**
+
+- `sonar_farm_batches.crop_id` FK references `sonar_farm_crops.id` (surrogate), not `plot_id`.
+- Race condition protection: two simultaneous `Plant` calls produce a DB unique-key violation on the second insert, which the service catches and returns as `{ ok=false }`.
+
+---
+
+## ADR-014 — Slice Bundle pattern: pilot with B1 (S6+S7+S8), measure before formalizing
+
+**Date:** 2026-05-22
+**Status:** ACCEPTED
+**Origin slice:** B1
+
+**Context.** Roadmap slices S6+S7+S8 are explicitly marked as developing in parallel and closing together. The standard workflow (one mini-brief + one `/spawn-pm` per slice) would pay 3× context setup cost for contracts that are identical across the three slices. A "Slice Bundle" pattern groups them into one mini-brief, one prompts file, and one `/end-slice` call.
+
+**Options considered:**
+
+- **A** — Keep slice-per-slice workflow. Pros: lower risk, proven pattern. Cons: 3× redundant setup cost (~40-60 k tokens) for tightly coupled slices.
+- **B** — Slice Bundle: one mini-brief (`B1_*.md`), one prompts file (`B1_*.prompts.md`), four horizontally-scoped sub-agent prompts (Backend → Integration + Frontend in parallel → QA). Pros: single §Contracts section paid once; sub-agents receive exact DB schemas, event payloads, and TypeScript interfaces without re-deriving them; DoD closed in one `/end-slice`. Cons: larger PR surface; if one sub-agent breaks the shared contract, it breaks N slices simultaneously; needs careful DoD tracking per slice within the bundle.
+
+**Decision:** **B** as a pilot. No permanent methodology until B1 closes and results are measured.
+
+**Bundle eligibility rules (provisional, to be hardened after pilot):**
+
+1. Slices share a DB schema, event payload, or service API (acoplamiento de contrato).
+2. Same technical surface (same files/sub-agents touched).
+3. DoD of one cannot be verified without the others.
+4. Aggregated complexity ≤ XL (≤ ~21 AI-days).
+
+**B1 pilot results:**
+
+- 4 sub-agents (Backend → Integration + Frontend → QA) executed across ~2 days.
+- 16/16 unit tests green; QBox founder smoke PASS.
+- Two documented deviations (cooldown→fallow lazy flip; NUI quality wire format gap) — both non-blocking and caught before close.
+- Estimated token saving vs. 3 separate slices: ~35-45% setup overhead eliminated.
+
+**Consequences.**
+
+- `B2` (S13+S14+S15) and subsequent bundles may adopt this pattern if they meet the 4 eligibility rules.
+- The `/end-slice` workflow should be extended to accept a bundle ID (`/end-slice B1`) and verify DoD per slice individually within the bundle closing report.
+- If a future bundle produces more than 2 non-blocking deviations at QA stage, the pattern should be reconsidered for that bundle.
+
+---
+
 ## ADR-001 — Adoptar Tailwind v4 con `@theme` directiva CSS-first
 
 **Fecha:** 2026-05-18

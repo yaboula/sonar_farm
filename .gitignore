@@ -90,7 +90,9 @@ tools/
 
 # ---- Claude / Cursor / AI session caches ----
 .claude/
-.cursor/
+.cursor/*
+!.cursor/rules/
+!.cursor/rules/**
 .aider*
 
 # ---- Founder personal scratchpad (never commit) ----

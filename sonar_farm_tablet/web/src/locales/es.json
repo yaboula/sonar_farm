@@ -98,6 +98,13 @@
         "batchChip": {
             "ariaLabel": "Lote {{batchId}}",
             "lowFreshness": "Frescura baja"
+        },
+        "qualityBadge": {
+            "ariaLabel": "Calidad {{grade}}"
+        },
+        "freshnessBar": {
+            "ariaLabel": "Frescura {{value}}%",
+            "label": "{{value}}%"
         }
     }
 }

@@ -21,4 +21,5 @@ globals:
   SonarFarmTablet: { any: true }
   Config: { any: true }
   Locales: { any: true }
+  LocalPlayer: { any: true }
   MySQL: { any: true }

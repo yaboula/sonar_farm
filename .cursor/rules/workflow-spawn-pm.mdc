@@ -1,0 +1,31 @@
+---
+description: Manual workflow for /spawn-pm
+alwaysApply: false
+---
+
+# Workflow: `/spawn-pm`
+
+Use this when a slice is complex enough to require coordinated sub-agents.
+
+## PM Agent Role
+
+- Do not write production code in this session.
+- Do not make architectural decisions unilaterally.
+- Split slice work into clear prompts for 2-4 sub-agents.
+- Produce `docs/slices/<SXX>_<name>.prompts.md`.
+
+## Sub-Agent Catalog
+
+- Backend Agent: Lua server logic, DB migrations, services, FSMs, events, validations.
+- Frontend Agent: React, TypeScript, Tailwind, shadcn, Framer Motion, NUI, Recharts.
+- Integration Agent: `Bridge.*`, ox integrations, client-server messaging, anims, props, vehicles, `fxmanifest.lua`.
+- QA Agent: automated tests, smoke tests, balance pass, DoD verification.
+
+## Steps
+
+1. Read the active mini-brief and Roadmap entry.
+2. Choose 2-4 needed sub-agents and document why.
+3. Decompose deliverables, inputs, outputs, and interface contracts.
+4. Write `docs/slices/<SXX>_<name>.prompts.md` with a coordination contract and one full prompt per sub-agent.
+5. Each prompt must include context refs, scope, deliverables, interface contracts, sub-agent DoD, and out-of-scope items.
+6. Report which sub-agents are needed, suggested order, and prompts file path.

@@ -1,0 +1,19 @@
+---
+description: Technical anti-patterns that must be refused in Farm Sonar code
+alwaysApply: true
+---
+
+# Technical Anti-Patterns
+
+Refuse to write these patterns and propose the correct one.
+
+1. **Direct calls between resources**: use the FiveM event bus with `sonar:farm:*` or the bridge layer instead.
+2. **Client-authoritative game state**: the server is the single source of truth for money, inventory, plot state, and quality.
+3. **Hardcoded tunables**: prices, durations, NPK ranges, IBAN prefixes, animation timings, weights, and capacities belong in config files.
+4. **Per-frame polling for stage transitions**: use a configurable scheduler, defaulting to 30 seconds, and query only due plots.
+5. **Synchronous DB reads in hot paths**: use async `oxmysql` calls and cache hot data with TTL.
+6. **Mutating DB without publishing state events**: every state-changing service method emits the matching `sonar:farm:<domain>:<action>` event.
+7. **Tight coupling to QBox/QBCore APIs**: always go through `Sonar.Farm.Bridge.*`.
+8. **Lineage chain mutation**: `lineage_chain` is append-only.
+9. **Long blocking animations without escape**: use cancelable `ox_lib` progress bars or checkpoints.
+10. **Logging money/IBANs at INFO**: financial events go to the audit table; INFO logs reference movement IDs only.

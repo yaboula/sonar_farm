@@ -83,6 +83,10 @@
             "unavailable": "PlotService no disponible. Revisa el orden de server_scripts en fxmanifest.lua.",
             "skipped_entries": "El seed de parcelas omitió %d entradas inválidas del config (ver logs [plots][ERROR] arriba)"
         },
+        "interaction": {
+            "plant_wheat": "Plantar Trigo",
+            "harvest": "Cosechar"
+        },
         "reload": {
             "ace_required": "[Farm Sonar] permiso ACE requerido: sonar.farm.admin",
             "unavailable": "[Farm Sonar] PlotService no disponible. Revisa el orden de server_scripts en fxmanifest.lua.",
@@ -91,6 +95,42 @@
             "skipped_warning": "[WARN] %d entradas de seed inválidas fueron omitidas — revisa la consola del servidor",
             "failed": "[FAIL] Recarga de parcelas fallida: %s",
             "footer": "═══════════════════════════════════════"
+        }
+    },
+    "debug": {
+        "fastforward": {
+            "ace_required": "[Farm Sonar] permiso ACE requerido: sonar.farm.admin",
+            "disabled": "[Farm Sonar] fastforward de debug desactivado. Activa Config.Farm.Debug = true solo en desarrollo.",
+            "usage": "[Farm Sonar] uso: sonarfarm:debug:fastforward <plot_id> <hours>",
+            "unavailable": "[Farm Sonar] herramientas de debug de lifecycle no disponibles. Revisa el orden de server_scripts.",
+            "no_crop": "[Farm Sonar] no hay cultivo activo para la parcela %s",
+            "done": "[Farm Sonar] parcela %s adelantada %s horas"
+        }
+    },
+    "lifecycle": {
+        "boot": {
+            "ready": "[lifecycle] Ciclo de cultivo listo: {active} cultivos activos",
+            "scheduler_started": "[lifecycle] Scheduler iniciado (tick: {seconds}s)"
+        }
+    },
+    "items": {
+        "metadata": {
+            "quality_badge": "Calidad",
+            "freshness_percent": "Frescura",
+            "batch_suffix": "Lote"
+        },
+        "sonar_seed_wheat": {
+            "label": "Semillas de Trigo",
+            "desc": "Saco de semillas certificadas de trigo para parcelas extensivas."
+        },
+        "sonar_batch_wheat": {
+            "label": "Lote de Trigo",
+            "desc": "Lote cosechado con calidad y origen trazables en metadata."
+        }
+    },
+    "crops": {
+        "wheat": {
+            "name": "Trigo"
         }
     }
 }

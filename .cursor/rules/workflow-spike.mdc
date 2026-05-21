@@ -1,0 +1,26 @@
+---
+description: Manual workflow for /spike <topic>
+alwaysApply: false
+---
+
+# Workflow: `/spike <topic>`
+
+Use this for a time-boxed technical investigation that blocks scoping or delivery.
+
+## Constraints
+
+- Time-box: maximum 2 working days.
+- No production code.
+- Throwaway prototypes live in `/spikes/<topic>/`.
+- Required artifact: `docs/spikes/<topic>.md` in English.
+
+## Steps
+
+1. Frame the question, why it matters, time budget, and decision criteria in `docs/spikes/<topic>.md`.
+2. Survey existing knowledge: run `/research <topic>`, search `docs/_archive/sonar_legacy/`, and search the codebase.
+3. Build the smallest prototype that proves or disproves the question.
+4. Document what was tried, what worked, what failed, and performance numbers if relevant.
+5. Conclude with verdict: `VIABLE`, `VIABLE_WITH_CAVEATS`, `NOT_VIABLE`, or `INCONCLUSIVE`.
+6. Create an ADR if the verdict triggers an architectural decision.
+7. Add `/spikes/<topic>/README.md` explaining the prototype is throwaway and linking to the report.
+8. Report a concise verdict and next action.

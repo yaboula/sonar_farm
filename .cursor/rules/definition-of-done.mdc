@@ -1,0 +1,40 @@
+---
+description: Universal Definition of Done checklist for every Farm Sonar slice
+alwaysApply: true
+---
+
+# Definition Of Done
+
+Every slice must pass all of these before being marked `DONE`.
+
+## Behavior
+
+1. Works end-to-end on QBox.
+2. Works end-to-end on QBCore.
+3. Happy-path smoke test is documented in the slice mini-brief.
+
+## Quality
+
+4. Automated tests exist where they make sense: economic logic, server validations, formulas, and FSMs.
+5. No hardcoded user-facing strings; use `locales/{es,en}.lua`.
+6. No hardcoded magic numbers; use `config.lua` or per-domain config files.
+
+## Architecture
+
+7. Respects the 5 Pillars of Bible §3.
+8. Respects Bible §9.4 technical anti-patterns.
+9. Respects `naming-conventions.mdc`.
+
+## Persistence
+
+10. DB migrations are versioned and rollbackable when the slice touches the DB.
+
+## Documentation
+
+11. Slice mini-brief is updated with what was actually built.
+12. ADR is created in `docs/02_DECISIONS.md` for non-obvious architectural decisions.
+13. Bible §18 changelog is updated if the slice changed product canon.
+
+## Enforcement
+
+The `/end-slice <SXX>` workflow verifies this checklist and refuses to close if any item is missing.

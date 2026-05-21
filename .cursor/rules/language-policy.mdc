@@ -1,0 +1,44 @@
+---
+description: Language policy for code, documentation, commits, chat, and i18n
+alwaysApply: true
+---
+
+# Language Policy
+
+## English
+
+Use English for:
+
+- All code, identifiers, file names, comments, and docstrings.
+- Commit messages.
+- Mini-briefs in `docs/slices/SXX_*.md`.
+- ADRs in `docs/02_DECISIONS.md`.
+- Spike reports in `docs/spikes/*.md`.
+- Research reports in `docs/research/*.md`.
+- Sub-agent prompts in `docs/slices/SXX_*.prompts.md`.
+- Internal API documentation.
+
+## Spanish
+
+Use Spanish only for founder-facing content:
+
+- `docs/00_BIBLE.md`.
+- `docs/01_ROADMAP.md`.
+- `docs/03_AI_PLAYBOOK.md`.
+- `docs/04_UI_PLAYBOOK.md` when created.
+- Top-level `README.md`.
+- Chat with the founder.
+
+## i18n
+
+- Never hardcode user-facing UI strings in code.
+- Lua strings go through `Locale('key.path')`.
+- React strings go through `t('key.path')`.
+- Keep `locales/es.lua` and `locales/en.lua` in sync.
+- Default fallback locale: `en`.
+
+## Forbidden
+
+- Mixed-language identifiers like `get_parcela` or `companyEmpresa`.
+- Spanish strings hardcoded in JSX/Lua bypassing i18n.
+- English commits describing Spanish code; the code itself must be English.

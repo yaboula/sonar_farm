@@ -128,6 +128,11 @@ globals:
       - type: number
       - type: number
       - type: number
+  vec3:
+    args:
+      - type: number
+      - type: number
+      - type: number
   vector4:
     args:
       - type: number
@@ -148,6 +153,15 @@ globals:
   SetModelAsNoLongerNeeded:
     args:
       - type: any
+  CreateObjectNoOffset:
+    args:
+      - type: any
+      - type: number
+      - type: number
+      - type: number
+      - type: bool
+      - type: bool
+      - type: bool
 
   # ---- Object / entity creation (client) ----
   CreateObject:
@@ -181,6 +195,67 @@ globals:
   PlaceObjectOnGroundProperly:
     args:
       - type: any
+  SetEntityAsMissionEntity:
+    args:
+      - type: any
+      - type: bool
+      - type: bool
+  SetEntityDistanceCullingRadius:
+    args:
+      - type: any
+      - type: number
+  SetEntityScale:
+    args:
+      - type: any
+      - type: number
+
+  # ---- Animation / ped helpers (client) ----
+  RequestAnimDict:
+    args:
+      - type: string
+  HasAnimDictLoaded:
+    args:
+      - type: string
+  RemoveAnimDict:
+    args:
+      - type: string
+  PlayerPedId:
+    args: []
+  ClearPedTasks:
+    args:
+      - type: any
+
+  # ---- Particle FX helpers (client) ----
+  RequestNamedPtfxAsset:
+    args:
+      - type: string
+  HasNamedPtfxAssetLoaded:
+    args:
+      - type: string
+  UseParticleFxAssetNextCall:
+    args:
+      - type: string
+  StartParticleFxLoopedAtCoord:
+    args:
+      - type: string
+      - type: number
+      - type: number
+      - type: number
+      - type: number
+      - type: number
+      - type: number
+      - type: number
+      - type: bool
+      - type: bool
+      - type: bool
+      - type: bool
+  StopParticleFxLooped:
+    args:
+      - type: any
+      - type: bool
+  RemoveNamedPtfxAsset:
+    args:
+      - type: string
 
   # ---- Print / debug ----
   print:

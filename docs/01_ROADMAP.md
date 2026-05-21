@@ -278,7 +278,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 
 ---
 
-### S6 — Trigo lifecycle físico ⭐🚨 · Complejidad: XL
+### S6 — Trigo lifecycle físico ⭐🚨 · Complejidad: XL · **Estado: `DONE`** (2026-05-22, bundle B1 con S7+S8)
 
 **Scope.** **El slice más importante de Fase 1.** Flujo físico completo:
 
@@ -317,7 +317,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 
 ---
 
-### S7 — Item Físico universal · Complejidad: M
+### S7 — Item Físico universal · Complejidad: M · **Estado: `DONE`** (2026-05-22, bundle B1 con S6+S8)
 
 **Scope.** Schema de "Item Físico" en `ox_inventory`. Cualquier item productivo hereda este schema:
 
@@ -351,7 +351,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 
 ---
 
-### S8 — Sistema calidad: 7 factores stub · Complejidad: L
+### S8 — Sistema calidad: 7 factores stub · Complejidad: L · **Estado: `DONE`** (2026-05-22, bundle B1 con S6+S7)
 
 **Scope.** Implementación de los 7 factores de calidad (Bible §10). Trackeo durante el ciclo del cultivo. Fórmula stub inicial (media ponderada con pesos uniformes; balance fino en S33). Mapping numérico → S/A/B/C/D.
 

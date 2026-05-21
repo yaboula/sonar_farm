@@ -83,6 +83,10 @@
             "unavailable": "PlotService unavailable. Check fxmanifest.lua server_scripts order.",
             "skipped_entries": "Plot seed sync skipped %d invalid config entries (see [plots][ERROR] logs above)"
         },
+        "interaction": {
+            "plant_wheat": "Plant Wheat",
+            "harvest": "Harvest"
+        },
         "reload": {
             "ace_required": "[Farm Sonar] ACE permission required: sonar.farm.admin",
             "unavailable": "[Farm Sonar] PlotService unavailable. Check fxmanifest.lua server_scripts order.",
@@ -91,6 +95,42 @@
             "skipped_warning": "[WARN] %d invalid seed entries were skipped — check server console for details",
             "failed": "[FAIL] Plot reload failed: %s",
             "footer": "═══════════════════════════════"
+        }
+    },
+    "debug": {
+        "fastforward": {
+            "ace_required": "[Farm Sonar] ACE permission required: sonar.farm.admin",
+            "disabled": "[Farm Sonar] debug fastforward is disabled. Set Config.Farm.Debug = true in development only.",
+            "usage": "[Farm Sonar] usage: sonarfarm:debug:fastforward <plot_id> <hours>",
+            "unavailable": "[Farm Sonar] lifecycle debug tools unavailable. Check server_scripts order.",
+            "no_crop": "[Farm Sonar] no active crop found for plot %s",
+            "done": "[Farm Sonar] fast-forwarded plot %s by %s hours"
+        }
+    },
+    "lifecycle": {
+        "boot": {
+            "ready": "[lifecycle] Crop lifecycle ready: {active} active crops",
+            "scheduler_started": "[lifecycle] Scheduler started (tick: {seconds}s)"
+        }
+    },
+    "items": {
+        "metadata": {
+            "quality_badge": "Quality",
+            "freshness_percent": "Freshness",
+            "batch_suffix": "Batch"
+        },
+        "sonar_seed_wheat": {
+            "label": "Wheat Seeds",
+            "desc": "Certified wheat seed bag for extensive plots."
+        },
+        "sonar_batch_wheat": {
+            "label": "Wheat Batch",
+            "desc": "Harvested wheat batch with traceable quality and origin metadata."
+        }
+    },
+    "crops": {
+        "wheat": {
+            "name": "Wheat"
         }
     }
 }

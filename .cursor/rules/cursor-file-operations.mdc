@@ -1,0 +1,15 @@
+---
+description: File operation best practices imported from Windsurf/Cascade
+alwaysApply: true
+---
+
+# File Operation Best Practices
+
+- Read a file before editing it.
+- Use absolute paths for reads and edits when a tool requires them.
+- Make edit search strings unique with enough surrounding context.
+- For small changes, read the file and then apply a targeted edit.
+- For new files, create the file explicitly with the complete intended content.
+- Do not modify files that do not exist unless creating them is the goal.
+- When replacing a repeated value, make sure a replace-all operation is intentional.
+- Avoid broad "fix everything" edits without first understanding the relevant logic.

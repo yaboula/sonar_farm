@@ -1,0 +1,21 @@
+---
+description: Manual workflow for /start-slice <SXX>
+alwaysApply: false
+---
+
+# Workflow: `/start-slice <SXX>`
+
+Use this at the beginning of every slice implementation session.
+
+## Steps
+
+1. Read foundation context if not already loaded: `docs/00_BIBLE.md`, `docs/01_ROADMAP.md`, and relevant parts of `docs/03_AI_PLAYBOOK.md`.
+2. Locate the slice in `docs/01_ROADMAP.md`. Confirm scope, dependencies, complexity, slice DoD, and whether it is marked as marketing or risk.
+3. Check for an existing mini-brief at `docs/slices/<SXX>_<name>.md`. If it exists, load it and confirm continuation with the user.
+4. If no mini-brief exists, copy `docs/slices/_TEMPLATE.md` to `docs/slices/<SXX>_<name>.md` and fill in slice ID, name, status, phase, complexity, dependencies, scope, deliverables, universal DoD, and slice-specific DoD.
+5. Build an IDE todo list with deliverables, slice DoD items, and `Run /end-slice <SXX>`.
+6. Update `docs/01_ROADMAP.md` from `PLANNED` to `ACTIVE`.
+7. Decide whether `/spawn-pm` is needed: usually skip for S/M; recommend 2-3 sub-agents for L and 3-4 for XL.
+8. Report slice, complexity, dependency status, and next action.
+
+Never start coding before steps 1-6 are complete. If dependencies are not `DONE`, halt and ask the user how to proceed.

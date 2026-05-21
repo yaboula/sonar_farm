@@ -17,7 +17,53 @@ Config.Farm = Config.Farm or {}
 Config.Farm.Locale = 'en'
 
 -- Debug flag: toggles verbose logs and admin commands. NEVER true in production.
-Config.Farm.Debug = false
+Config.Farm.Debug = true
 
 Config.Farm.Chat = Config.Farm.Chat or {}
 Config.Farm.Chat.BrandColor = { 182, 251, 99 }
+
+Config.Farm.Interactions = {
+    Progress = {
+        plant = 3000,
+        harvest = 5000,
+    },
+    Animations = {
+        plant = {
+            dict = 'amb@world_human_gardener_plant@male@base',
+            clip = 'base',
+            flag = 49,
+        },
+        harvest = {
+            dict = 'amb@world_human_gardener_plant@male@base',
+            clip = 'base',
+            flag = 49,
+        },
+    },
+}
+
+Config.Farm.Rendering = {
+    PlotPropCullingRadius = 250.0,
+    HarvestFxDurationMs = 900,
+}
+
+Config.Farm.Scheduler = { TickSeconds = 30 }
+Config.Farm.Quality = {
+    weights = {
+        soil = 1.0,
+        irrigation = 1.0,
+        pest_impact = 1.0,
+        weather_match = 1.0,
+        seed_quality = 1.0,
+        fertilization = 1.0,
+        harvest_timing = 1.0,
+    },
+    NeutralDefaults = {
+        irrigation = 70,
+        pest_impact = 100,
+        weather_match = 70,
+        seed_quality = 70,
+        fertilization = 70,
+    },
+    HarvestTimingDecayPerHour = 5,
+    Grades = { S = 95, A = 80, B = 60, C = 40 },
+}

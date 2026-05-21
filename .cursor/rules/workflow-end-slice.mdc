@@ -1,0 +1,31 @@
+---
+description: Manual workflow for /end-slice <SXX>
+alwaysApply: false
+---
+
+# Workflow: `/end-slice <SXX>`
+
+Use this at the end of every slice implementation, before declaring it `DONE`.
+
+## Steps
+
+1. Locate `docs/slices/<SXX>_<name>.md`. Refuse to continue if it does not exist.
+2. Verify the Universal DoD from `definition-of-done.mdc`.
+3. Verify slice-specific DoD from the mini-brief.
+4. If any DoD item fails, halt, report failures, and do not mark the slice `DONE`.
+5. Update `docs/01_ROADMAP.md`: set slice state from `IN_REVIEW` to `DONE` and add date plus commit reference if available.
+6. Create an ADR in `docs/02_DECISIONS.md` if the slice introduced a non-obvious architectural decision.
+7. Update Bible §18 changelog if the slice changed product canon.
+8. Update the mini-brief closing summary with what shipped, deviations, discoveries, and pointers for dependent slices.
+9. Suggest an English conventional commit message:
+
+```text
+feat(<domain>): <SXX> - <slice name>
+
+- <key deliverable 1>
+- <key deliverable 2>
+
+Closes <SXX>.
+```
+
+10. Report a concise summary: slice closed, what shipped, and what is unblocked next.

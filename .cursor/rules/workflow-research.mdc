@@ -1,0 +1,33 @@
+---
+description: Manual workflow for /research <topic>
+alwaysApply: false
+---
+
+# Workflow: `/research <topic>`
+
+Use this when external knowledge is needed before designing or coding.
+
+## Trusted Sources
+
+Prioritize official docs and primary sources:
+
+- `overextended.dev`
+- `docs.fivem.net`
+- `docs.qbox.re`
+- `qbcore.org` and `github.com/qbcore-framework/*`
+- `react.dev`, `tailwindcss.com`, `ui.shadcn.com`, `motion.dev`
+- `forum.cfx.re`
+- `github.com/overextended/*`
+- `github.com/Qbox-project/*`
+
+## Steps
+
+1. Frame the exact question at the top of `docs/research/<topic>.md`.
+2. Search official docs, CFX forum, GitHub issues/discussions, and any edge-case sources needed.
+3. Read the most relevant results.
+4. Write `docs/research/<topic>.md` in English with: date, question, trigger, summary, key findings, snippets, caveats, and references.
+5. Cite every claim with a URL or repo file reference. Mark unsupported claims as `(unverified)`.
+6. If the research affects a decision, reference the research file from the slice mini-brief or ADR.
+7. Report a 3-line summary with key answer and research path.
+
+Do not use this workflow for facts already documented in the Bible/Roadmap/ADRs or for questions only answerable by reading this codebase.

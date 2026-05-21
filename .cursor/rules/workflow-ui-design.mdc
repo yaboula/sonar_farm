@@ -1,0 +1,31 @@
+---
+description: Manual workflow for /ui-design <app-or-screen>
+alwaysApply: false
+---
+
+# Workflow: `/ui-design <app-or-screen>`
+
+Use this before any slice that introduces or significantly changes a UI surface.
+
+## Steps
+
+1. Identify the owning slice and confirm the slice mini-brief exists.
+2. Read `docs/00_BIBLE.md` §1.1 and §15, plus `docs/04_UI_PLAYBOOK.md` if it exists.
+3. Create `docs/slices/<SXX>_<name>.ui_brief.md` in English with context, surface type, data shown, actions, layout intent, components, motion intent, inspirations, and out of scope.
+4. Hand off the brief to v0.dev for mockup generation.
+5. Review the mockup before implementation:
+   - Uses Farm Sonar palette tokens.
+   - Uses Geist Sans + JetBrains Mono only.
+   - Uses shadcn primitives where applicable.
+   - Uses Bento grid when multiple data clusters coexist.
+   - Uses glassmorphism cards.
+   - Uses lime neon sparingly.
+   - Color-codes quality letters S/A/B/C/D per Bible §1.1.
+   - Uses mono font for IDs, IBANs, and dates.
+   - Has no hardcoded strings.
+   - Includes loading, empty, and error states.
+   - Handles mobile/tablet aspect when needed.
+6. Once approved, reference the mockup and brief from the Frontend Agent prompt.
+7. Report the brief path and v0.dev next step.
+
+Never approve a mockup that fails the core checklist items.

@@ -1,0 +1,44 @@
+---
+description: Farm Sonar naming conventions for DB, events, files, resources, and code
+alwaysApply: true
+---
+
+# Naming Conventions
+
+## Database
+
+- Tables: `sonar_farm_*` (for example `sonar_farm_plots`).
+- Columns: `snake_case`.
+- Migrations: `database/migrations/NNN_<description>.sql` with 3-digit zero padding.
+
+## Events
+
+- Format: `sonar:farm:<domain>:<action>`.
+- Domains: `plot`, `crop`, `batch`, `quality`, `pest`, `climate`, `storage`, `sale`, `contract`, `banca`, `company`, `drone`.
+
+## Resources And Items
+
+- Resources: `sonar_farm_core`, `sonar_farm_tablet`, then `sonar_<vertical>_core/tablet` for future verticals.
+- Seeds: `sonar_seed_<crop>`.
+- Batches: `sonar_batch_<crop>`.
+- Tools: `sonar_<tool>`.
+- Fertilizers: `sonar_fertilizer_<type>`.
+- Pesticides: `sonar_pesticide_<type>`.
+
+## Files And Identifiers
+
+- Lua files: `snake_case.lua`.
+- React components: `PascalCase.tsx`.
+- TS types/interfaces: `PascalCase`.
+- TS hooks: `useCamelCase.ts`.
+- Lua variables: `snake_case`.
+- TypeScript/JavaScript variables: `camelCase`.
+- Constants: `UPPER_SNAKE_CASE`.
+- Bridge methods: `Bridge.PascalCase(args)`.
+- Server services: `<domain>_service.lua` exposing `<Domain>Service`.
+
+## Forbidden
+
+- Never use `sonar_farm_*` for events.
+- Never use `Farm.*` or `farm_*` without the `sonar_` prefix in production code.
+- Never mix English and Spanish in identifiers.
