@@ -170,6 +170,84 @@
             "scheduler_started": "[lifecycle] Scheduler started (tick: {seconds}s)"
         }
     },
+    "pests_boot": {
+        "ready": "Pest service ready: %d susceptible crops loaded"
+    },
+    "irrigation": {
+        "interaction": {
+            "water": "Water crop",
+            "watering": "Watering crop...",
+            "refill": "Refill tank",
+            "refilling": "Refilling tank..."
+        },
+        "notify": {
+            "watered": "+{delta} irrigation score",
+            "overwater": "Over-watered (-{delta} score)",
+            "refilled": "Tank refilled"
+        },
+        "errors": {
+            "invalid_plot_id": "Invalid plot.",
+            "crop_not_active": "This plot has no active crop.",
+            "irrigation_unavailable": "Irrigation service is unavailable.",
+            "tank_missing": "You need a water tank.",
+            "tank_empty": "Your water tank is empty.",
+            "tank_full": "Your water tank is already full.",
+            "inventory_unavailable": "Inventory is unavailable.",
+            "inventory_lookup_failed": "Could not inspect inventory.",
+            "inventory_metadata_unavailable": "Tank metadata service is unavailable.",
+            "inventory_metadata_failed": "Could not update tank charges.",
+            "watering_failed": "Watering could not be completed.",
+            "unknown": "Unknown irrigation error."
+        }
+    },
+    "fertilization": {
+        "interaction": {
+            "apply": "Fertilize",
+            "applying": "Applying fertilizer...",
+            "select_title": "Select fertilizer",
+            "select_label": "Fertilizer type"
+        },
+        "notify": {
+            "correct": "+{delta} fertilization score",
+            "wrong": "Wrong fertilizer (-{delta} score)",
+            "over": "Over-fertilized (-{delta} score)"
+        },
+        "errors": {
+            "invalid_plot_id": "Invalid plot.",
+            "invalid_item_name": "Invalid fertilizer item.",
+            "crop_not_active": "This plot has no active crop.",
+            "fertilization_unavailable": "Fertilization service is unavailable.",
+            "fertilizer_missing": "You do not have that fertilizer.",
+            "inventory_unavailable": "Inventory is unavailable.",
+            "inventory_lookup_failed": "Could not inspect inventory.",
+            "fertilization_failed": "Fertilization could not be completed.",
+            "unknown": "Unknown fertilization error."
+        }
+    },
+    "pest": {
+        "interaction": {
+            "treat": "Treat pest",
+            "treating": "Treating pest...",
+            "select_title": "Select pesticide",
+            "select_label": "Pesticide type"
+        },
+        "notify": {
+            "treated": "Pest eliminated (+{delta} score)",
+            "no_pest": "No active pest found.",
+            "severe": "Pest worsened to severe!"
+        },
+        "errors": {
+            "invalid_plot_id": "Invalid plot.",
+            "invalid_item_name": "Invalid pesticide item.",
+            "pest_unavailable": "Pest service is unavailable.",
+            "no_active_pest": "No active pest found.",
+            "pesticide_missing": "You do not have that pesticide.",
+            "inventory_unavailable": "Inventory is unavailable.",
+            "inventory_lookup_failed": "Could not inspect inventory.",
+            "pest_treatment_failed": "Pest treatment could not be completed.",
+            "unknown": "Unknown pest error."
+        }
+    },
     "items": {
         "metadata": {
             "quality_badge": "Quality",
@@ -199,6 +277,34 @@
         "sonar_batch_barley": {
             "label": "Barley Batch",
             "desc": "Harvested barley batch with traceable quality and origin metadata."
+        },
+        "sonar_water_tank": {
+            "label": "Water Tank",
+            "desc": "Portable tank used to water crops and refill at wells."
+        },
+        "sonar_fertilizer_n": {
+            "label": "Nitrogen Fertilizer",
+            "desc": "Nitrogen-focused fertilizer for demanding crops."
+        },
+        "sonar_fertilizer_p": {
+            "label": "Phosphorus Fertilizer",
+            "desc": "Phosphorus-focused fertilizer for root and early growth support."
+        },
+        "sonar_fertilizer_k": {
+            "label": "Potassium Fertilizer",
+            "desc": "Potassium-focused fertilizer for resilience and stress tolerance."
+        },
+        "sonar_fertilizer_npk": {
+            "label": "Balanced NPK Fertilizer",
+            "desc": "Balanced fertilizer covering nitrogen, phosphorus, and potassium."
+        },
+        "sonar_pesticide_contact": {
+            "label": "Contact Pesticide",
+            "desc": "Fast-acting pesticide used to treat visible infestations."
+        },
+        "sonar_pesticide_systemic": {
+            "label": "Systemic Pesticide",
+            "desc": "Longer-lasting pesticide absorbed through the crop."
         }
     },
     "crops": {

@@ -170,6 +170,84 @@
             "scheduler_started": "[lifecycle] Scheduler iniciado (tick: {seconds}s)"
         }
     },
+    "pests_boot": {
+        "ready": "Servicio de plagas listo: %d cultivos susceptibles cargados"
+    },
+    "irrigation": {
+        "interaction": {
+            "water": "Regar cultivo",
+            "watering": "Regando cultivo...",
+            "refill": "Rellenar tanque",
+            "refilling": "Rellenando tanque..."
+        },
+        "notify": {
+            "watered": "+{delta} de riego",
+            "overwater": "Exceso de riego (-{delta} puntos)",
+            "refilled": "Tanque rellenado"
+        },
+        "errors": {
+            "invalid_plot_id": "Parcela inválida.",
+            "crop_not_active": "Esta parcela no tiene un cultivo activo.",
+            "irrigation_unavailable": "El servicio de riego no está disponible.",
+            "tank_missing": "Necesitas un tanque de agua.",
+            "tank_empty": "Tu tanque de agua está vacío.",
+            "tank_full": "Tu tanque de agua ya está lleno.",
+            "inventory_unavailable": "El inventario no está disponible.",
+            "inventory_lookup_failed": "No se pudo inspeccionar el inventario.",
+            "inventory_metadata_unavailable": "El servicio de metadata del tanque no está disponible.",
+            "inventory_metadata_failed": "No se pudieron actualizar las cargas del tanque.",
+            "watering_failed": "No se pudo completar el riego.",
+            "unknown": "Error de riego desconocido."
+        }
+    },
+    "fertilization": {
+        "interaction": {
+            "apply": "Fertilizar",
+            "applying": "Aplicando fertilizante...",
+            "select_title": "Seleccionar fertilizante",
+            "select_label": "Tipo de fertilizante"
+        },
+        "notify": {
+            "correct": "+{delta} de fertilización",
+            "wrong": "Fertilizante incorrecto (-{delta} puntos)",
+            "over": "Exceso de fertilización (-{delta} puntos)"
+        },
+        "errors": {
+            "invalid_plot_id": "Parcela inválida.",
+            "invalid_item_name": "Fertilizante inválido.",
+            "crop_not_active": "Esta parcela no tiene un cultivo activo.",
+            "fertilization_unavailable": "El servicio de fertilización no está disponible.",
+            "fertilizer_missing": "No tienes ese fertilizante.",
+            "inventory_unavailable": "El inventario no está disponible.",
+            "inventory_lookup_failed": "No se pudo inspeccionar el inventario.",
+            "fertilization_failed": "No se pudo completar la fertilización.",
+            "unknown": "Error de fertilización desconocido."
+        }
+    },
+    "pest": {
+        "interaction": {
+            "treat": "Tratar plaga",
+            "treating": "Tratando plaga...",
+            "select_title": "Seleccionar pesticida",
+            "select_label": "Tipo de pesticida"
+        },
+        "notify": {
+            "treated": "Plaga eliminada (+{delta} puntos)",
+            "no_pest": "No se encontró una plaga activa.",
+            "severe": "¡La plaga pasó a severa!"
+        },
+        "errors": {
+            "invalid_plot_id": "Parcela inválida.",
+            "invalid_item_name": "Pesticida inválido.",
+            "pest_unavailable": "El servicio de plagas no está disponible.",
+            "no_active_pest": "No se encontró una plaga activa.",
+            "pesticide_missing": "No tienes ese pesticida.",
+            "inventory_unavailable": "El inventario no está disponible.",
+            "inventory_lookup_failed": "No se pudo inspeccionar el inventario.",
+            "pest_treatment_failed": "No se pudo completar el tratamiento de la plaga.",
+            "unknown": "Error de plaga desconocido."
+        }
+    },
     "items": {
         "metadata": {
             "quality_badge": "Calidad",
@@ -199,6 +277,34 @@
         "sonar_batch_barley": {
             "label": "Lote de Cebada",
             "desc": "Lote cosechado de cebada con calidad y origen trazables en metadata."
+        },
+        "sonar_water_tank": {
+            "label": "Tanque de Agua",
+            "desc": "Tanque portátil para regar cultivos y rellenar en pozos."
+        },
+        "sonar_fertilizer_n": {
+            "label": "Fertilizante de Nitrógeno",
+            "desc": "Fertilizante centrado en nitrógeno para cultivos exigentes."
+        },
+        "sonar_fertilizer_p": {
+            "label": "Fertilizante de Fósforo",
+            "desc": "Fertilizante centrado en fósforo para raíces y crecimiento temprano."
+        },
+        "sonar_fertilizer_k": {
+            "label": "Fertilizante de Potasio",
+            "desc": "Fertilizante centrado en potasio para resiliencia y tolerancia al estrés."
+        },
+        "sonar_fertilizer_npk": {
+            "label": "Fertilizante NPK Balanceado",
+            "desc": "Fertilizante equilibrado con nitrógeno, fósforo y potasio."
+        },
+        "sonar_pesticide_contact": {
+            "label": "Pesticida de Contacto",
+            "desc": "Pesticida de acción rápida para tratar infestaciones visibles."
+        },
+        "sonar_pesticide_systemic": {
+            "label": "Pesticida Sistémico",
+            "desc": "Pesticida de efecto más duradero absorbido por el cultivo."
         }
     },
     "crops": {

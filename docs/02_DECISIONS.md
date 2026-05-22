@@ -500,6 +500,67 @@ Donde `account ∈ {'cash', 'bank'}` y `type ∈ {'success', 'error', 'info', 'w
 
 ---
 
+## ADR-018 — Pest scheduler shares the existing lifecycle tick (no dedicated thread)
+
+**Date:** 2026-05-22
+**Status:** ACCEPTED
+**Origin slice:** B3 (S15)
+
+**Context.** PestService needs to tick periodically to spawn pests probabilistically and escalate
+untreated pests to SEVERE. Options are a dedicated `CreateThread` loop or reusing the existing
+lifecycle scheduler tick in `server/lifecycle/scheduler.lua`.
+
+**Options considered:**
+
+- **A** — Dedicated CreateThread in `pest_service.lua` with its own `Wait(N * 1000)`. Pros: fully
+  independent; can have a different tick rate. Cons: a second server thread; violates anti-pattern
+  §4 intent (minimize active threads); two tick sources can diverge causing subtle ordering bugs.
+- **B** — Call `PestService.TickCrops(active_crops)` inside the existing lifecycle scheduler tick,
+  passing the already-fetched active crops list. Pros: single server tick source; zero extra
+  threads; reuses the same `active_crops` query; tick rate controlled by one config value. Cons:
+  pest tick rate == lifecycle tick rate (default 30s) — acceptable for B3 probability model.
+
+**Decision:** **B**. PestService is a passive receiver called from the lifecycle scheduler.
+
+**Consequences.**
+- Pest spawn probability is per 30s tick (default). If the scheduler tick rate changes, pest
+  probability implicitly changes. Document `spawn_probability_per_tick` in config comment.
+- Future S16 climate events may want independent tick cadence; that slice may need its own thread
+  or a separate scheduled tick — this ADR does not bind S16.
+
+---
+
+## ADR-019 — Explicit `pest_severity` column vs. inferring severity from timestamp age
+
+**Date:** 2026-05-22
+**Status:** ACCEPTED
+**Origin slice:** B3 (S15)
+
+**Context.** The pest FSM has three states: NONE, DETECTED, SEVERE. SEVERE is reached when a
+pest goes untreated beyond `Config.Farm.Pests.SeverityHours`. Two ways to persist this.
+
+**Options considered:**
+
+- **A** — Infer severity from `pest_detected_ts` age at query time: `IF(pest_detected_ts IS NOT
+  NULL AND UNIX_TIMESTAMP() - pest_detected_ts > severity_hours * 3600, 'severe', 'detected')`.
+  Pros: no migration; single source of truth. Cons: every `GetStatus` call re-evaluates severity;
+  FSM transition moment is ambiguous between ticks; S11 offline reconciliation would need to
+  replicate the same inference logic, creating duplication.
+- **B** — Explicit `pest_severity ENUM('none','detected','severe') DEFAULT 'none'` column.
+  Pros: FSM state is explicit and cheap to query; scheduler stamps it at transition time;
+  `GetStatus` is a simple SELECT; S11 delta-calc reads a single authoritative value. Cons:
+  requires migration 011.
+
+**Decision:** **B**. Explicit column gives a clear, cheap, auditable FSM state.
+
+**Consequences.**
+- Migration `011_pest_severity.sql` required (already shipped in B3).
+- Any code that evaluates pest severity must write to this column, not just rely on timestamp age.
+- If the severity threshold config changes at runtime, existing 'detected' pests are re-evaluated
+  on the next scheduler tick, not retroactively — document as known behavior.
+
+---
+
 ## ADR-016 — Persist explicit offline risk timestamps in `sonar_farm_quality_tracking`
 
 **Date:** 2026-05-22
@@ -521,3 +582,26 @@ Donde `account ∈ {'cash', 'bank'}` y `type ∈ {'success', 'error', 'info', 'w
 - S11 is deterministic and idempotent across immediate reboots.
 - S13 irrigation and S15 pest gameplay should update these fields rather than inventing separate offline markers.
 - If future quality risks need offline accumulation, extend the same row before introducing a new table.
+
+---
+
+## ADR-017 — Close S11 and S12 with QBox smoke PASS while deferring QBCore smoke
+
+**Date:** 2026-05-22
+**Status:** ACCEPTED
+**Origin slice:** S11 / S12
+
+**Context.** Universal DoD requires end-to-end smoke on both QBox and QBCore. S11 and S12 completed implementation, automated validation, and founder QBox smoke successfully. Immediately after that, work started on B3, and the founder explicitly asked to close the previous slice work rather than keep S11/S12 open waiting for QBCore runtime verification.
+
+**Options considered:**
+
+- **A** — Keep S11 and S12 formally open until QBCore smoke is run. Pros: strict DoD compliance. Cons: leaves already-shipped work in limbo while B3 has started; creates roadmap/status noise.
+- **B** — Close S11 and S12 now, document QBox PASS and record QBCore smoke as deferred founder decision. Pros: keeps project state aligned with reality; preserves traceability of the exception. Cons: formal closure happens with one universal DoD item still pending.
+
+**Decision:** **B**. Close S11 and S12 with QBox smoke PASS, explicit mini-brief closing summaries, and roadmap notes that QBCore smoke was deferred by founder decision after B3 start.
+
+**Consequences.**
+
+- This is an explicit exception, not a lowering of the bar for future slices.
+- When QBCore smoke is later executed, both mini-briefs should be updated and this ADR can be superseded or retired by a follow-up note.
+- B3 planning/execution can proceed without keeping S11/S12 artificially active.

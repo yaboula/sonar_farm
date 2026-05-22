@@ -48,6 +48,12 @@ Automated validation passed:
   - `lifecycle_spec.lua`
   - `storage_spec.lua`
   - `sale_spec.lua`
+- Founder QBox smoke PASS:
+  - boot reconciliation applied correctly after offline timestamp manipulation
+  - 6h cap respected under 24h offline simulation
+  - immediate reboot remained idempotent
+  - DB timestamps refreshed correctly
+  - quality factors stayed within configured limits
 
 ## 5. Happy-path smoke script
 
@@ -67,5 +73,31 @@ Automated validation passed:
 
 - **Code:** implemented.
 - **Automated tests:** pass.
-- **QBox smoke:** pending founder runtime verification.
-- **QBCore smoke:** pending founder runtime verification.
+- **QBox smoke:** PASS.
+- **QBCore smoke:** deferred by founder decision after B3 start; closure exception documented in ADR-017.
+
+## 7. Closing summary
+
+### What shipped
+
+- Offline delta calculator with configurable cap and factor penalties.
+- Boot reconciler ordered before lifecycle scheduler.
+- Admin dry-run command for previewing reconciliation.
+- Migration for explicit offline risk timestamps.
+- Unit coverage for 1h / 6h / 24h / 7d offline cases.
+
+### What deviated from plan
+
+- The slice was closed with QBox smoke PASS only; QBCore smoke was deferred by founder decision to start B3 immediately.
+
+### Discoveries / lessons
+
+- Deterministic offline reconciliation needs explicit risk-start timestamps, not score inference.
+- Running reconciliation before the lifecycle scheduler is mandatory to avoid stale-stage races on boot.
+- Idempotence is easy to regress, so the dry-run path and boot path must stay behaviorally aligned.
+
+### Pointers for next slices
+
+- S13 irrigation should own setting and clearing `next_irrigation_due_ts`.
+- S15 pest gameplay should own setting and clearing `pest_detected_ts`.
+- When QBCore smoke is performed, append the result here and retire ADR-017 if no longer needed.

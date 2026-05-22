@@ -46,6 +46,8 @@ shared_scripts {
     'config/plots.lua',
     'config/storage.lua',
     'config/npcs.lua',
+    'config/irrigation.lua',
+    'config/items.lua',
     'config/verified_props.lua',
     'config/crops/wheat.lua',
     'config/crops/corn.lua',
@@ -92,6 +94,7 @@ server_scripts {
     -- Lifecycle domain: service → scheduler.
     'server/lifecycle/crop_lifecycle_service.lua',
     'server/lifecycle/scheduler.lua',
+    'server/pests/pest_service.lua',
     'server/main.lua',
     'server/admin/bridge_test_command.lua',
     'server/admin/finance_smoke_test.lua',
@@ -100,6 +103,10 @@ server_scripts {
     'server/admin/persistence_dryrun_command.lua',
     'server/admin/debug_fastforward.lua',
     'server/admin/debug_plant.lua',
+    'server/admin/debug_pest_spawn.lua',
+    'server/admin/debug_reset_plot.lua',
+    'server/admin/debug_plot_status.lua',
+    'server/admin/debug_simulate_offline.lua',
 }
 
 -- ============================================================
@@ -109,6 +116,9 @@ client_scripts {
     'client/main.lua',
     'client/plot_renderer.lua',
     'client/plot_interactions.lua',
+    'client/irrigation_interactions.lua',
+    'client/fertilization_interactions.lua',
+    'client/pest_interactions.lua',
     'client/inventory_render.lua',
     'client/silo_interactions.lua',
     'client/npc_vendor_interaction.lua',
@@ -132,6 +142,7 @@ sonar_farm_migration 'database/migrations/007_quality_tracking.sql'
 sonar_farm_migration 'database/migrations/008_storage.sql'
 sonar_farm_migration 'database/migrations/009_finance_amount_decimal.sql'
 sonar_farm_migration 'database/migrations/010_quality_offline_tracking.sql'
+sonar_farm_migration 'database/migrations/011_pest_severity.sql'
 
 -- ============================================================
 -- Lua language server: opt-in to safer globals

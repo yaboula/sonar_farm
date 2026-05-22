@@ -50,6 +50,12 @@ Automated validation passed:
   - `lifecycle_spec.lua`
   - `storage_spec.lua`
   - `sale_spec.lua`
+- Founder QBox smoke PASS:
+  - corn and barley planted on separate plots
+  - both advanced through stage progression correctly
+  - harvest yielded `sonar_batch_corn` and `sonar_batch_barley`
+  - metadata (`crop_type`, `batch_id`, `quality`, `freshness`) was correct
+  - Pedro accepted both crops with distinct prices and no console errors
 
 ## 4. Happy-path smoke script
 
@@ -66,5 +72,31 @@ Automated validation passed:
 
 - **Code:** implemented.
 - **Automated tests:** pass.
-- **QBox smoke:** pending founder runtime verification.
-- **QBCore smoke:** pending founder runtime verification.
+- **QBox smoke:** PASS.
+- **QBCore smoke:** deferred by founder decision after B3 start; closure exception documented in ADR-017.
+
+## 6. Closing summary
+
+### What shipped
+
+- Corn and barley crop configs plus verified stage props.
+- Dynamic seed/batch item registry for configured crops.
+- Dynamic plant, render, harvest, and sale integration across the existing wheat-first flow.
+- Locale coverage for crop names, items, planting, and generic sale interaction labels.
+- Config-based buyer acceptance for wheat, corn, and barley.
+
+### What deviated from plan
+
+- The roadmap wording said “config-only”, but a minimal upstream de-hardcoding pass was required to make the system truly config-driven and compliant with Bible §3 Pillar 5.
+- The slice was closed with QBox smoke PASS only; QBCore smoke was deferred by founder decision to start B3 immediately.
+
+### Discoveries / lessons
+
+- “Config-only” claims are meaningless unless integration points are already crop-agnostic.
+- NPC sale UX also needs to avoid crop-specific labels once buyers can accept multiple crops.
+- Item registration must be safe to load in plain Lua so config regressions remain testable.
+
+### Pointers for next slices
+
+- S17 and later crops can now reuse the same config-driven path instead of adding bespoke Lua logic.
+- When QBCore smoke is performed, append the result here and retire ADR-017 if no longer needed.

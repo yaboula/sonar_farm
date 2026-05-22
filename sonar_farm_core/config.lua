@@ -26,6 +26,10 @@ Config.Farm.Interactions = {
     Progress = {
         plant = 3000,
         harvest = 5000,
+        water = 10000,
+        refill = 5000,
+        fertilize = 8000,
+        treat_pest = 12000,
     },
     Animations = {
         plant = {
@@ -34,6 +38,26 @@ Config.Farm.Interactions = {
             flag = 49,
         },
         harvest = {
+            dict = 'amb@world_human_gardener_plant@male@base',
+            clip = 'base',
+            flag = 49,
+        },
+        water = {
+            dict = 'amb@world_human_gardener_plant@male@base',
+            clip = 'base',
+            flag = 49,
+        },
+        refill = {
+            dict = 'amb@world_human_gardener_plant@male@base',
+            clip = 'base',
+            flag = 49,
+        },
+        fertilize = {
+            dict = 'amb@world_human_gardener_plant@male@base',
+            clip = 'base',
+            flag = 49,
+        },
+        treat_pest = {
             dict = 'amb@world_human_gardener_plant@male@base',
             clip = 'base',
             flag = 49,

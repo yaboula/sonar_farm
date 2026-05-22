@@ -5,6 +5,7 @@ Sonar.Farm.Items = Sonar.Farm.Items or {}
 local function build_registry()
     local registry = {}
     local crops = Config and Config.Farm and Config.Farm.Crops or {}
+    local item_tools = Config and Config.Farm and Config.Farm.Items and Config.Farm.Items.tools or {}
 
     for crop_type, crop_config in pairs(crops) do
         if type(crop_type) == 'string' and crop_type ~= '' and type(crop_config) == 'table' then
@@ -32,6 +33,22 @@ local function build_registry()
                 client = {
                     image = batch_name,
                 },
+            }
+        end
+    end
+
+    for item_name, item_config in pairs(item_tools) do
+        if type(item_name) == 'string' and item_name ~= '' and type(item_config) == 'table' then
+            registry[item_name] = {
+                name = item_name,
+                label = item_config.label or ('items.%s.label'):format(item_name),
+                weight = math.floor(tonumber(item_config.weight) or 0),
+                stack = item_config.stack == true,
+                close = item_config.close == true,
+                consume = tonumber(item_config.consume),
+                description = item_config.description or ('items.%s.desc'):format(item_name),
+                client = item_config.client,
+                metadata = item_config.metadata,
             }
         end
     end

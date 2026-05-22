@@ -22,4 +22,21 @@ Config.Farm.Crops.corn = {
     freshness_decay_rate_per_h = 2,
     seed_quality_default = 70,
     npk_optimal = { n = 70, p = 35, k = 55 },
+    fertilization = {
+        optimal_items = { 'sonar_fertilizer_npk', 'sonar_fertilizer_k' },
+        ceiling = 90,
+        wrong_penalty = -5,
+        overfertilize_floor = 40,
+        max_applications_per_stage = 1,
+        score_gain_correct = 15,
+    },
+    pests = {
+        susceptible_to = { 'aphid', 'blight' },
+        spawn_probability_per_tick = 0.05,
+        min_stage = 1,
+        max_stage = 3,
+        severity_hours = 24,
+        treat_score_restore = 30,
+        severe_treat_ceiling = 60,
+    },
 }

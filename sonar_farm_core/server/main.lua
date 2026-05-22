@@ -121,6 +121,154 @@ local function validate_batch_metadata(metadata)
     return Sonar.Farm.PhysicalItem.ValidateMetadata(metadata)
 end
 
+local function get_active_crop_row(plot_id)
+    if not Sonar.Farm.DB or type(Sonar.Farm.DB.row) ~= 'function' then
+        return nil
+    end
+
+    return Sonar.Farm.DB.row([[
+        SELECT `plot_id`, `crop_type`, `stage`
+        FROM `sonar_farm_crops`
+        WHERE `plot_id` = ?
+        LIMIT 1
+    ]], { plot_id })
+end
+
+local function get_quality_factor(factor_name)
+    local quality = Sonar and Sonar.Farm and Sonar.Farm.Quality or nil
+    local factors = quality and quality.Factors or nil
+    local factor = factors and factors[factor_name] or nil
+    if type(factor) ~= 'table' then
+        return nil
+    end
+
+    return factor
+end
+
+local function get_irrigation_max_charges()
+    return math.max(tonumber(Config and Config.Farm and Config.Farm.Irrigation and Config.Farm.Irrigation.tank_max_charges) or 0, 0)
+end
+
+local function search_inventory_slots(source, item_name, metadata)
+    local ox_inventory = get_ox_inventory()
+    if not ox_inventory then
+        return nil, 'inventory_unavailable'
+    end
+
+    local ok, slots_or_error = pcall(function()
+        return ox_inventory:Search(source, 'slots', item_name, metadata)
+    end)
+
+    if not ok then
+        return nil, 'inventory_lookup_failed'
+    end
+
+    return type(slots_or_error) == 'table' and slots_or_error or {}, nil
+end
+
+local function copy_metadata(metadata)
+    local copied = {}
+    if type(metadata) ~= 'table' then
+        return copied
+    end
+
+    for key, value in pairs(metadata) do
+        copied[key] = value
+    end
+
+    return copied
+end
+
+local function set_inventory_slot_metadata(source, slot_id, metadata)
+    local ox_inventory = get_ox_inventory()
+    if not ox_inventory or type(ox_inventory.SetMetadata) ~= 'function' then
+        return false, 'inventory_metadata_unavailable'
+    end
+
+    local ok, result = pcall(function()
+        return ox_inventory:SetMetadata(source, slot_id, metadata)
+    end)
+
+    if not ok then
+        return false, 'inventory_metadata_failed'
+    end
+
+    return result ~= false, result ~= false and nil or 'inventory_metadata_failed'
+end
+
+local function find_water_tank_slot(source, required_charges)
+    local slots, slot_error = search_inventory_slots(source, 'sonar_water_tank')
+    if not slots then
+        return nil, nil, slot_error
+    end
+
+    local needed = math.max(tonumber(required_charges) or 1, 1)
+    local max_charges = get_irrigation_max_charges()
+
+    for index = 1, #slots do
+        local slot = slots[index]
+        local metadata = type(slot) == 'table' and type(slot.metadata) == 'table' and slot.metadata or {}
+        local charges = tonumber(metadata.charges)
+        if charges == nil then
+            charges = max_charges
+        end
+
+        if charges >= needed then
+            return slot, charges, nil
+        end
+    end
+
+    if #slots == 0 then
+        return nil, nil, 'tank_missing'
+    end
+
+    return nil, nil, 'tank_empty'
+end
+
+local function find_refillable_tank_slot(source)
+    local slots, slot_error = search_inventory_slots(source, 'sonar_water_tank')
+    if not slots then
+        return nil, nil, slot_error
+    end
+
+    local max_charges = get_irrigation_max_charges()
+
+    for index = 1, #slots do
+        local slot = slots[index]
+        local metadata = type(slot) == 'table' and type(slot.metadata) == 'table' and slot.metadata or {}
+        local charges = tonumber(metadata.charges)
+        if charges == nil then
+            charges = max_charges
+        end
+
+        if charges < max_charges then
+            return slot, charges, nil
+        end
+    end
+
+    if #slots == 0 then
+        return nil, nil, 'tank_missing'
+    end
+
+    return nil, max_charges, 'tank_full'
+end
+
+local function find_first_item_slot(source, item_name)
+    local slots, slot_error = search_inventory_slots(source, item_name)
+    if not slots then
+        return nil, slot_error
+    end
+
+    for index = 1, #slots do
+        local slot = slots[index]
+        if type(slot) == 'table' and (tonumber(slot.count) or 0) > 0 then
+            return slot, nil
+        end
+    end
+
+    return nil, 'item_missing'
+end
+
 local function resolve_inventory_batch(source, batch_id, crop_type)
     local ox_inventory = get_ox_inventory()
     if not ox_inventory then
@@ -393,6 +541,26 @@ local function run_npc_buyer_boot()
     return Sonar.Farm.NPCs.Boot()
 end
 
+local function run_pest_service_boot()
+    if not Sonar.Farm.PestService or type(Sonar.Farm.PestService.Boot) ~= 'function' then
+        log_error('[pests] boot unavailable. Check fxmanifest.lua server_scripts order.')
+        return false
+    end
+
+    local ok, result = pcall(Sonar.Farm.PestService.Boot)
+    if not ok then
+        log_error(('[pests] boot failed: %s'):format(tostring(result)))
+        return false
+    end
+
+    if result ~= true then
+        log_error('[pests] boot failed')
+        return false
+    end
+
+    return true
+end
+
 local function run_quality_boot()
     if not Sonar.Farm.Quality or type(Sonar.Farm.Quality.Boot) ~= 'function' then
         log_error('[quality] boot unavailable. Check fxmanifest.lua server_scripts order.')
@@ -603,6 +771,205 @@ local function register_plot_callbacks()
             },
         }
     end)
+
+    lib.callback.register('sonar:farm:plot:water', function(source, plot_id, charges_used)
+        if type(plot_id) ~= 'string' or plot_id == '' then
+            return { ok = false, error = 'invalid_plot_id' }
+        end
+
+        local active_crop = get_active_crop_row(plot_id)
+        if not active_crop then
+            return { ok = false, error = 'crop_not_active' }
+        end
+
+        local irrigation_factor = get_quality_factor('Irrigation')
+        if not irrigation_factor or type(irrigation_factor.TrackWatering) ~= 'function' or type(irrigation_factor.get) ~= 'function' then
+            return { ok = false, error = 'irrigation_unavailable' }
+        end
+
+        local requested_charges = math.max(tonumber(charges_used) or 1, 1)
+        local tank_slot, current_charges, tank_error = find_water_tank_slot(source, requested_charges)
+        if not tank_slot then
+            return { ok = false, error = tank_error or 'tank_missing' }
+        end
+
+        local previous_score = tonumber(irrigation_factor:get(plot_id)) or 0
+        local original_metadata = copy_metadata(tank_slot.metadata)
+        local updated_metadata = copy_metadata(tank_slot.metadata)
+        updated_metadata.charges = math.max((tonumber(current_charges) or 0) - requested_charges, 0)
+
+        local metadata_ok, metadata_error = set_inventory_slot_metadata(source, tank_slot.slot, updated_metadata)
+        if not metadata_ok then
+            return { ok = false, error = metadata_error or 'inventory_metadata_failed' }
+        end
+
+        local ok, new_score, track_error = irrigation_factor.TrackWatering(plot_id, requested_charges, tonumber(active_crop.stage) or 0)
+        if not ok then
+            set_inventory_slot_metadata(source, tank_slot.slot, original_metadata)
+            return { ok = false, error = tostring(track_error or 'watering_failed') }
+        end
+
+        local score_delta = (tonumber(new_score) or 0) - previous_score
+        return {
+            ok = true,
+            new_score = new_score,
+            delta = math.abs(score_delta),
+            result = score_delta >= 0 and 'watered' or 'overwater',
+            charges = updated_metadata.charges,
+        }
+    end)
+
+    lib.callback.register('sonar:farm:plot:refill_tank', function(source)
+        local tank_slot, _, tank_error = find_refillable_tank_slot(source)
+        if not tank_slot then
+            return { ok = false, error = tank_error or 'tank_missing' }
+        end
+
+        local updated_metadata = copy_metadata(tank_slot.metadata)
+        updated_metadata.charges = get_irrigation_max_charges()
+
+        local metadata_ok, metadata_error = set_inventory_slot_metadata(source, tank_slot.slot, updated_metadata)
+        if not metadata_ok then
+            return { ok = false, error = metadata_error or 'inventory_metadata_failed' }
+        end
+
+        return {
+            ok = true,
+            charges = updated_metadata.charges,
+        }
+    end)
+
+    lib.callback.register('sonar:farm:plot:fertilize', function(source, plot_id, item_name)
+        if type(plot_id) ~= 'string' or plot_id == '' then
+            return { ok = false, error = 'invalid_plot_id' }
+        end
+
+        if type(item_name) ~= 'string' or item_name == '' then
+            return { ok = false, error = 'invalid_item_name' }
+        end
+
+        local active_crop = get_active_crop_row(plot_id)
+        if not active_crop or not is_non_empty_string(active_crop.crop_type) then
+            return { ok = false, error = 'crop_not_active' }
+        end
+
+        local fertilization_factor = get_quality_factor('Fertilization')
+        if not fertilization_factor or type(fertilization_factor.TrackApplication) ~= 'function' or type(fertilization_factor.get) ~= 'function' then
+            return { ok = false, error = 'fertilization_unavailable' }
+        end
+
+        local slot, slot_error = find_first_item_slot(source, item_name)
+        if not slot then
+            return { ok = false, error = slot_error == 'item_missing' and 'fertilizer_missing' or slot_error }
+        end
+
+        local previous_score = tonumber(fertilization_factor:get(plot_id)) or 0
+        local remove_ok, remove_result = pcall(function()
+            return get_ox_inventory():RemoveItem(source, item_name, 1)
+        end)
+        if not remove_ok or remove_result == false then
+            return { ok = false, error = 'fertilizer_missing' }
+        end
+
+        local ok, new_score, track_error = fertilization_factor.TrackApplication(
+            plot_id,
+            item_name,
+            tostring(active_crop.crop_type),
+            tonumber(active_crop.stage) or 0
+        )
+        if not ok then
+            pcall(function()
+                get_ox_inventory():AddItem(source, item_name, 1)
+            end)
+            return { ok = false, error = tostring(track_error or 'fertilization_failed') }
+        end
+
+        local crop_config = Config and Config.Farm and Config.Farm.Crops and Config.Farm.Crops[tostring(active_crop.crop_type)] or nil
+        local fertilizer_config = crop_config and crop_config.fertilization or {}
+        local score_delta = (tonumber(new_score) or 0) - previous_score
+        local result = 'wrong'
+        if tonumber(new_score) == tonumber(fertilizer_config.overfertilize_floor) then
+            result = 'over'
+        elseif score_delta > 0 then
+            result = 'correct'
+        end
+
+        return {
+            ok = true,
+            new_score = new_score,
+            delta = math.abs(score_delta),
+            result = result,
+        }
+    end)
+
+    lib.callback.register('sonar:farm:plot:treat_pest', function(source, plot_id, pesticide_item)
+        if type(plot_id) ~= 'string' or plot_id == '' then
+            return { ok = false, error = 'invalid_plot_id' }
+        end
+
+        if type(pesticide_item) ~= 'string' or pesticide_item == '' then
+            return { ok = false, error = 'invalid_item_name' }
+        end
+
+        local pest_factor = get_quality_factor('Pest')
+        if not pest_factor or type(pest_factor.Treat) ~= 'function' or type(pest_factor.GetStatus) ~= 'function' or type(pest_factor.get) ~= 'function' then
+            return { ok = false, error = 'pest_unavailable' }
+        end
+
+        local status = pest_factor.GetStatus(plot_id)
+        if not status then
+            return { ok = false, error = 'no_active_pest' }
+        end
+
+        local slot, slot_error = find_first_item_slot(source, pesticide_item)
+        if not slot then
+            return { ok = false, error = slot_error == 'item_missing' and 'pesticide_missing' or slot_error }
+        end
+
+        local previous_score = tonumber(pest_factor:get(plot_id)) or 0
+        local remove_ok, remove_result = pcall(function()
+            return get_ox_inventory():RemoveItem(source, pesticide_item, 1)
+        end)
+        if not remove_ok or remove_result == false then
+            return { ok = false, error = 'pesticide_missing' }
+        end
+
+        local ok, new_score, treat_error = pest_factor.Treat(plot_id, pesticide_item)
+        if not ok then
+            pcall(function()
+                get_ox_inventory():AddItem(source, pesticide_item, 1)
+            end)
+            return { ok = false, error = tostring(treat_error or 'pest_treatment_failed') }
+        end
+
+        return {
+            ok = true,
+            new_score = new_score,
+            delta = math.abs((tonumber(new_score) or 0) - previous_score),
+            severity = status.severity,
+        }
+    end)
+
+    lib.callback.register('sonar:farm:pest:get_status', function(source, plot_id)
+        if source <= 0 or type(plot_id) ~= 'string' or plot_id == '' then
+            return nil
+        end
+
+        local pest_factor = get_quality_factor('Pest')
+        if not pest_factor or type(pest_factor.GetStatus) ~= 'function' then
+            return nil
+        end
+
+        return pest_factor.GetStatus(plot_id)
+    end)
+
+    lib.callback.register('sonar:farm:pest:get_active', function(source)
+        if source <= 0 or not Sonar.Farm.PestService or type(Sonar.Farm.PestService.GetActivePests) ~= 'function' then
+            return {}
+        end
+
+        return Sonar.Farm.PestService.GetActivePests()
+    end)
 end
 
 local function register_sale_callbacks()
@@ -746,6 +1113,11 @@ local function register_plot_event_relays()
         'sonar:farm:plot:stage_advanced',
         'sonar:farm:plot:harvested',
         'sonar:farm:plot:state_changed',
+        'sonar:farm:plot:watered',
+        'sonar:farm:plot:fertilized',
+        'sonar:farm:pest:appeared',
+        'sonar:farm:pest:treated',
+        'sonar:farm:pest:severe',
     }
 
     for index = 1, #relay_events do
@@ -823,6 +1195,7 @@ AddEventHandler('onResourceStart', function(resource_name)
     run_lifecycle_boot()
     run_storage_boot()
     run_npc_buyer_boot()
+    run_pest_service_boot()
 
     register_plot_callbacks()
     register_sale_callbacks()

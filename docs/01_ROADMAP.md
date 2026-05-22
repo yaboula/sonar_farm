@@ -429,7 +429,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 ### S11 — Persistencia delta-calc + cap 6h 🚨 · Complejidad: XL · **Estado: `DONE`** (2026-05-22)
 
 > Mini-brief: [`docs/slices/S11_persistence_delta_calc.md`](./slices/S11_persistence_delta_calc.md).
-> Automated validation PASS (`persistence_spec.lua` + full Lua regression pack + `pnpm run lint:lua`). QBox/QBCore smoke pending founder runtime verification.
+> Automated validation PASS (`persistence_spec.lua` + full Lua regression pack + `pnpm run lint:lua`). Founder QBox smoke PASS. QBCore smoke deferred by founder decision after B3 start (ADR-017).
 
 **Scope.** **Risk-first.** Implementación del modelo de persistencia del Bible §13.2. Al server boot, para cada parcela activa, calcular el delta UNIX desde `last_updated_ts` y aplicar:
 
@@ -471,7 +471,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 ### S12 — Cereales restantes vía config-only 🔓 · Complejidad: S · **Estado: `DONE`** (2026-05-22)
 
 > Mini-brief: [`docs/slices/S12_remaining_cereals_config_only.md`](./slices/S12_remaining_cereals_config_only.md).
-> Corn + barley configs shipped. Minimal upstream de-hardcoding was required to restore the intended config-driven contract (Pillar 5); automated validation PASS (`crop_config_spec.lua` + regression pack + `pnpm run lint:lua`). QBox/QBCore smoke pending founder runtime verification.
+> Corn + barley configs shipped. Minimal upstream de-hardcoding was required to restore the intended config-driven contract (Pillar 5); automated validation PASS (`crop_config_spec.lua` + regression pack + `pnpm run lint:lua`). Founder QBox smoke PASS. QBCore smoke deferred by founder decision after B3 start (ADR-017).
 
 **Scope.** Añadir maíz y cebada **sin tocar código**. Solo `config/crops/corn.lua`, `config/crops/barley.lua`, items en `ox_inventory` data, modelos 3D de stages. Validamos que el sistema cumple Pilar 5.
 
@@ -490,7 +490,10 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 
 ---
 
-### S13 — Riego físico (cisterna) · Complejidad: L · **Estado: `ACTIVE`** (2026-05-22, bundle B3 con S14+S15)
+### S13 — Riego físico (cisterna) · Complejidad: L · **Estado: `DONE`** (2026-05-22, bundle B3 con S14+S15)
+
+> Mini-brief: [`docs/slices/B3_factor_activation.md`](./slices/B3_factor_activation.md).
+> QBox smoke PASS (founder verified). QBCore smoke postponed by founder decision (bridge-only). ADR-018 signed.
 
 **Scope.** Mecánica física de regar. Cisterna como vehículo o item portable. `ox_target` sobre parcela: "Regar". Anim ~10s. Riego saturado/óptimo/insuficiente impacta `irrigation_score`. Riego excesivo penaliza también (encharcado).
 
@@ -509,7 +512,10 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 
 ---
 
-### S14 — Fertilización física (NPK) · Complejidad: L · **Estado: `ACTIVE`** (2026-05-22, bundle B3 con S13+S15)
+### S14 — Fertilización física (NPK) · Complejidad: L · **Estado: `DONE`** (2026-05-22, bundle B3 con S13+S15)
+
+> Mini-brief: [`docs/slices/B3_factor_activation.md`](./slices/B3_factor_activation.md).
+> QBox smoke PASS. QBCore smoke postponed.
 
 **Scope.** Items de fertilizante (3 tipos NPK + complejos). Fertilizadora vehículo. `ox_target` "Fertilizar". NPK óptimo para cada cultivo en `config/crops/<crop>.lua`. Sub-óptimo penaliza, óptimo bonifica, exceso penaliza (curva campana).
 
@@ -524,7 +530,10 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 
 ---
 
-### S15 — Plagas + fumigadora · Complejidad: L · **Estado: `ACTIVE`** (2026-05-22, bundle B3 con S13+S14)
+### S15 — Plagas + fumigadora · Complejidad: L · **Estado: `DONE`** (2026-05-22, bundle B3 con S13+S14)
+
+> Mini-brief: [`docs/slices/B3_factor_activation.md`](./slices/B3_factor_activation.md).
+> QBox smoke PASS. QBCore smoke postponed. ADR-019 signed (pest_severity explicit column).
 
 **Scope.** Sistema de plagas selectivo. Cada cultivo define lista de plagas que lo afectan + probabilidad por estación. Plaga aparece visualmente en parcela (overlay 3D distintivo, manchas, hojas amarillentas). Detección visual del jugador o vía Tablet (en S30 con probe). Fumigadora + pesticida específico → eliminar plaga. Plaga no tratada impacta `pest_impact`.
 
