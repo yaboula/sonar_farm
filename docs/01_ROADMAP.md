@@ -575,6 +575,8 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 
 ### S17 — Hortícolas + invernadero · Complejidad: L
 
+**Estado:** 🟢 ACTIVE (B4)
+
 **Scope.** Los 5 cultivos hortícolas (tomate, pimiento, lechuga, cebolla, patata) vía config-only siguiendo Pilar 5. Sub-nodos Hortalizas/Hojas/Bulbos/Tubérculos plenamente operativos. **Invernadero (cristal industrial)** como tipo especial de parcela: `weather_match` neutro siempre (climas externos no afectan dentro), pero con coste operativo de mantenimiento y sin bonus de optimal weather.
 
 **Deliverables.**
