@@ -1,7 +1,7 @@
-# S16 — Clima dinámico + 4 estaciones
+﻿# S16 Ã¢â‚¬â€ Clima dinÃƒÂ¡mico + 4 estaciones
 
 > **Status:** ACTIVE
-> **Phase:** Phase 2 — Depth & Scale
+> **Phase:** Phase 2 Ã¢â‚¬â€ Depth & Scale
 > **Complexity:** XL
 > **Roadmap reference:** [docs/01_ROADMAP.md#s16](../01_ROADMAP.md)
 > **Started:** 2026-05-22
@@ -12,73 +12,91 @@
 
 ## 1. Scope
 
-Sistema climático server-authoritative que cierra el Pilar 3 (Time & Nature) y activa matemáticamente el `weather_match`.
-Introduce las 4 estaciones (que rotan más rápido que en la vida real según el Bible §13.1) y un motor de eventos meteorológicos (lluvia, sequía, granizo, etc.).
-El servidor es el dueño de la verdad climatológica. Los clientes sincronizan los visuales del clima de FiveM con el estado del servidor. Además, los eventos climáticos impactan periódicamente en el estado de las parcelas (ej. lluvia suma agua y sube irrigation_score; sequía la baja).
+Sistema climÃƒÂ¡tico server-authoritative que cierra el Pilar 3 (Time & Nature) y activa matemÃƒÂ¡ticamente el `weather_match`.
+Introduce las 4 estaciones (que rotan mÃƒÂ¡s rÃƒÂ¡pido que en la vida real segÃƒÂºn el Bible Ã‚Â§13.1) y un motor de eventos meteorolÃƒÂ³gicos (lluvia, sequÃƒÂ­a, granizo, etc.).
+El servidor es el dueÃƒÂ±o de la verdad climatolÃƒÂ³gica. Los clientes sincronizan los visuales del clima de FiveM con el estado del servidor. AdemÃƒÂ¡s, los eventos climÃƒÂ¡ticos impactan periÃƒÂ³dicamente en el estado de las parcelas (ej. lluvia suma agua y sube irrigation_score; sequÃƒÂ­a la baja).
 
 ## 2. Goal (Wooow Test outcome)
 
-Un jugador está en su granja, de repente empieza a llover (sincronizado para todos). Revisa el `ox_target` de su parcela y ve que la humedad (`irrigation_score`) ha subido automáticamente sin tener que usar la regadera, ahorrándole trabajo. Semanas (in-game) después, cae granizo y destruye parte de la calidad de sus cultivos desprotegidos (pero el invernadero se salva).
+Un jugador estÃƒÂ¡ en su granja, de repente empieza a llover (sincronizado para todos). Revisa el `ox_target` de su parcela y ve que la humedad (`irrigation_score`) ha subido automÃƒÂ¡ticamente sin tener que usar la regadera, ahorrÃƒÂ¡ndole trabajo. Semanas (in-game) despuÃƒÂ©s, cae granizo y destruye parte de la calidad de sus cultivos desprotegidos (pero el invernadero se salva).
 
 ## 3. Dependencies
 
 | Slice | Reason                                        | Status |
 | ----- | --------------------------------------------- | ------ |
 | S8    | Base de calidad con los 7 factores preparados | DONE   |
-| S11   | Tick del scheduler y reconciliación           | DONE   |
-| S17   | Invernaderos como exención de clima           | DONE   |
+| S11   | Tick del scheduler y reconciliaciÃƒÂ³n        | DONE   |
+| S17   | Invernaderos como exenciÃƒÂ³n de clima        | DONE   |
 
 ## 4. Deliverables
 
-- [ ] `012_climate.sql` para guardar la estación actual y evento activo (si queremos persistirlo entre reinicios).
-- [ ] `config/climate.lua` con duraciones de estación, probabilidades de eventos, y toggle visual (`Config.Farm.Climate.EnableWeatherSync`).
-- [ ] `server/climate/climate_service.lua` (scheduler de estaciones y eventos).
-- [ ] Lógica para que el clima afecte parcelas (ej. lluvia sube `irrigation_score`, granizo baja `quality`).
-- [ ] Conexión del factor `weather` en `server/quality/factors/weather.lua` según la estación y el cultivo (óptimo vs actual).
-- [ ] `client/climate/weather_sync.lua` para forzar los nativos de clima de FiveM (solo si `EnableWeatherSync` está activo).
-- [ ] Eventos: `sonar:farm:climate:season_changed`, `sonar:farm:climate:event_started`.
+- [x] `012_climate.sql` con tabla `sonar_farm_climate_state`.
+- [x] `config/climate.lua` con estaciones, probabilidades, efectos y `EnableWeatherSync = false`.
+- [x] `server/climate/climate_service.lua` (boot, scheduler, persistencia, eventos, efectos en plots outdoor).
+- [x] LÃƒÂ³gica para que el clima afecte parcelas (lluvia/sequÃƒÂ­a/granizo), greenhouse exento.
+- [x] Factor `weather` real en `server/quality/factors/weather.lua` con `optimal_seasons` + `preferred_weather` en cada crop config.
+- [x] Wiring en `fxmanifest.lua`, `config.lua` (TimeMultiplier) y `server/main.lua`.
+- [x] Tests: `climate_service_spec.lua` + ajustes en `greenhouse_spec.lua` + `quality_spec.lua` + `crop_config_spec.lua`.
+- [x] `client/climate/weather_sync.lua` (Integration Agent).
+- [ ] Smoke in-game QBox/QBCore (pendiente fundador).
 
 ## 5. Universal DoD checklist
 
-- [ ] Works end-to-end on QBox (smoke documented in §10).
-- [ ] Works end-to-end on QBCore (smoke documented in §10).
-- [ ] Smoke test of happy path documented in §10.
-- [ ] Automated tests where they make sense.
-- [ ] No hardcoded user-facing strings — `locales/{es,en}.json` complete.
-- [ ] No hardcoded magic numbers — config files used.
-- [ ] Respects 5 Pillars of Bible §3.
-- [ ] Respects Bible §9.4 anti-patterns.
-- [ ] Respects naming conventions (rule `02_naming_conventions.md`).
-- [ ] DB migration versioned + rollbackable (if DB was touched).
-- [ ] Mini-brief updated with what was actually built (this file).
+- [ ] Works end-to-end on QBox (smoke documented in Ã‚Â§10).
+- [ ] Works end-to-end on QBCore (smoke documented in Ã‚Â§10).
+- [ ] Smoke test of happy path documented in Ã‚Â§10.
+- [x] Automated tests where they make sense.
+- [x] No hardcoded user-facing strings Ã¢â‚¬â€ `locales/{es,en}.json` complete.
+- [x] No hardcoded magic numbers Ã¢â‚¬â€ config files used.
+- [x] Respects 5 Pillars of Bible Ã‚Â§3.
+- [x] Respects Bible Ã‚Â§9.4 anti-patterns.
+- [x] Respects naming conventions (rule `02_naming_conventions.md`).
+- [x] DB migration versioned + rollbackable (if DB was touched).
+- [x] Mini-brief updated with what was actually built (this file).
 - [ ] ADR created in `docs/02_DECISIONS.md` if non-obvious decision was taken.
-- [ ] Bible §18 changelog updated if product canon changed.
+- [ ] Bible Ã‚Â§18 changelog updated if product canon changed.
 
 ## 6. Slice-specific DoD
 
-- [ ] Las estaciones avanzan automáticamente según los ticks del servidor.
-- [ ] Los eventos meteorológicos (lluvia, etc.) tienen impacto real matemático en los scores de las parcelas (excepto invernaderos).
-- [ ] El `weather_match` factor evalúa si el crop actual le gusta la estación/clima actual.
-- [ ] Conflicto mitigado: toggle en config permite apagar el sync visual por si el server ya usa `vSync` o `cd_easytime`, pero la matemática sigue funcionando.
+- [ ] Las estaciones avanzan automÃƒÂ¡ticamente segÃƒÂºn los ticks del servidor.
+- [ ] Los eventos meteorolÃƒÂ³gicos (lluvia, etc.) tienen impacto real matemÃƒÂ¡tico en los scores de las parcelas (excepto invernaderos).
+- [ ] El `weather_match` factor evalÃƒÂºa si el crop actual le gusta la estaciÃƒÂ³n/clima actual.
+- [ ] Conflicto mitigado: toggle en config permite apagar el sync visual por si el server ya usa `vSync` o `cd_easytime`, pero la matemÃƒÂ¡tica sigue funcionando.
 
 ## 7. Sub-agents involved
 
 | Agent             | Role in this slice                                                                          | Prompt block in `.prompts.md` |
 | ----------------- | ------------------------------------------------------------------------------------------- | ----------------------------- |
 | Backend Agent     | Base de datos, State machine de estaciones, FSM de clima y mutaciones de score en parcelas. | yes                           |
-| Integration Agent | Sincronización visual del clima en el cliente FiveM y HUD local.                            | yes                           |
+| Integration Agent | SincronizaciÃƒÂ³n visual del clima en el cliente FiveM y HUD local.                         | yes                           |
 
 ## 8. Architecture notes
 
-_(To be filled during execution)_
+- Backend payloads were confirmed from `server/climate/climate_service.lua`.
+- `sonar:farm:climate:weather_changed` emits `{ previous_weather, current_weather, season, weather_started_at, changed_at }`.
+- `sonar:farm:climate:season_changed` emits `{ previous_season, current_season, season_started_at, changed_at }`.
+- Client sync hydrates from `lib.callback.await('sonar:farm:climate:get_state')` on resource start and `playerSpawned`.
+- `client/climate/weather_sync.lua` stores a local `{ season, weather }` snapshot and exports `GetCurrentClimate()` for read-only client access.
+- Visual weather application is fully gated by `Config.Farm.Climate.EnableWeatherSync`. When false, the script only updates local state and never calls GTA weather natives.
+- Client presentation config lives in `config/climate_client.lua`: `WeatherTransitionSeconds`, `WeatherPersistRefreshSeconds`, `NativeWeatherMap`.
 
 ## 9. ADRs created
 
-_(To be filled during execution)_
+- None. The integration follows the existing server-authoritative and config-driven slice contract.
 
 ## 10. Smoke test (happy path)
 
-_(To be filled during execution)_
+1. Set `Config.Farm.Climate.EnableWeatherSync = false` in `sonar_farm_core/config/climate.lua` and restart `sonar_farm_core`.
+2. Join the server on QBox, spawn your character, and confirm Farm Sonar does not force any visual weather change on spawn.
+3. Wait for a server climate change or trigger one with any local debug helper available in your branch.
+4. Confirm the player still sees no Farm Sonar-driven weather override while `EnableWeatherSync` is disabled.
+5. Confirm climate math still advances server-side by checking that outdoor plot quality context changes after the weather event.
+6. Set `Config.Farm.Climate.EnableWeatherSync = true` and keep `WeatherTransitionSeconds = 20` in `sonar_farm_core/config/climate_client.lua`.
+7. Restart `sonar_farm_core`, join again, and confirm the current server weather is applied once after spawn with a smooth transition instead of an instant pop.
+8. Wait for or trigger `sonar:farm:climate:weather_changed` and confirm all connected players converge to the same target GTA weather after the configured transition.
+9. Wait for or trigger `sonar:farm:climate:season_changed` and confirm season state updates without changing GTA time-of-day.
+10. From any client-side consumer or temporary debug helper, call `GetCurrentClimate()` and confirm it returns `{ season, weather }` without firing extra events.
+11. Repeat steps 1-10 on QBCore.
 
 ## 11. Closing summary (filled at /end-slice)
 
