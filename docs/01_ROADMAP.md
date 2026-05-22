@@ -551,6 +551,8 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 
 ### S16 — Clima dinámico + 4 estaciones 🚨 · Complejidad: XL
 
+**Estado:** 🟢 ACTIVE (B5)
+
 **Scope.** Sistema climático server-authoritative. Estaciones rotan según multiplicador del Bible §13.1. Eventos meteorológicos: lluvia (afecta `irrigation_score` positivo si moderado, negativo si torrencial), sequía, granizo (penalty crítico), heladas. El cliente sincroniza weather y time con el server-authoritative state. `weather_match` factor finalmente activo.
 
 **Deliverables.**
