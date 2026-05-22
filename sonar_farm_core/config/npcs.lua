@@ -24,7 +24,7 @@ Config.Farm.NPCs.buyers = {
         },
         heading = 96.43,
         interaction_radius = 5.0,
-        accepted_crops = { 'wheat' },
+        accepted_crops = { 'wheat', 'barley', 'corn' },
         base_price_per_kg = 0.80,
         quality_multipliers = {
             S = 2.0,

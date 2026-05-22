@@ -413,6 +413,16 @@ local function run_quality_boot()
     return true
 end
 
+local function run_offline_reconcile_boot()
+    local persistence = Sonar and Sonar.Farm and Sonar.Farm.Persistence or nil
+    if not persistence or not persistence.BootReconciler or type(persistence.BootReconciler.Boot) ~= 'function' then
+        log_error(locale('persistence.boot.unavailable'))
+        return false
+    end
+
+    return persistence.BootReconciler.Boot()
+end
+
 local function run_lifecycle_boot()
     if not Sonar.Farm.CropLifecycle or type(Sonar.Farm.CropLifecycle.Boot) ~= 'function' then
         log_error('[lifecycle] boot unavailable. Check fxmanifest.lua server_scripts order.')
@@ -485,13 +495,22 @@ local function register_plot_callbacks()
         return crops
     end)
 
-    lib.callback.register('sonar:farm:plot:plant', function(source, plot_id)
+    lib.callback.register('sonar:farm:plot:plant', function(source, plot_id, crop_type)
         if type(plot_id) ~= 'string' or plot_id == '' then
             return { ok = false, error = 'invalid_plot_id' }
         end
 
+        if type(crop_type) ~= 'string' or crop_type == '' then
+            return { ok = false, error = 'invalid_crop_type' }
+        end
+
         if not Sonar.Farm.CropLifecycle or type(Sonar.Farm.CropLifecycle.Plant) ~= 'function' then
             return { ok = false, error = 'lifecycle_unavailable' }
+        end
+
+        local crop_config = Config and Config.Farm and Config.Farm.Crops and Config.Farm.Crops[crop_type] or nil
+        if type(crop_config) ~= 'table' then
+            return { ok = false, error = 'invalid_crop_type' }
         end
 
         local player_cid = get_player_cid(source)
@@ -504,18 +523,20 @@ local function register_plot_callbacks()
             return { ok = false, error = 'inventory_unavailable' }
         end
 
+        local seed_item_name = ('sonar_seed_%s'):format(crop_type)
+
         local remove_ok, remove_result = pcall(function()
-            return ox_inventory:RemoveItem(source, 'sonar_seed_wheat', 1)
+            return ox_inventory:RemoveItem(source, seed_item_name, 1)
         end)
 
         if not remove_ok or remove_result == false then
             return { ok = false, error = 'seed_missing' }
         end
 
-        local ok, crop_or_error = Sonar.Farm.CropLifecycle.Plant(plot_id, player_cid, 'wheat')
+        local ok, crop_or_error = Sonar.Farm.CropLifecycle.Plant(plot_id, player_cid, crop_type)
         if not ok then
             pcall(function()
-                ox_inventory:AddItem(source, 'sonar_seed_wheat', 1)
+                ox_inventory:AddItem(source, seed_item_name, 1)
             end)
             return { ok = false, error = tostring(crop_or_error) }
         end
@@ -554,13 +575,19 @@ local function register_plot_callbacks()
         local metadata = harvest_or_error.metadata
         local batch_id = tostring(metadata.batch_id or '')
         local suffix = batch_id:sub(-4):upper()
-        metadata.item_name = 'sonar_batch_wheat'
+        local crop_type = tostring(metadata.crop_type or '')
+        if crop_type == '' then
+            return { ok = false, error = 'invalid_crop_type' }
+        end
+
+        local batch_item_name = ('sonar_batch_%s'):format(crop_type)
+        metadata.item_name = batch_item_name
         metadata.quality_badge = tostring(metadata.quality or '')
         metadata.freshness_percent = tonumber(metadata.freshness) or 0
         metadata.batch_suffix = suffix
 
         local add_ok, add_result = pcall(function()
-            return ox_inventory:AddItem(source, 'sonar_batch_wheat', 1, metadata)
+            return ox_inventory:AddItem(source, batch_item_name, 1, metadata)
         end)
 
         if not add_ok or add_result == false then
@@ -792,6 +819,7 @@ AddEventHandler('onResourceStart', function(resource_name)
     -- Both are non-fatal to avoid hard-failing core boot if a single
     -- domain is temporarily misconfigured during development.
     run_quality_boot()
+    run_offline_reconcile_boot()
     run_lifecycle_boot()
     run_storage_boot()
     run_npc_buyer_boot()

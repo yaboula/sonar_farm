@@ -85,6 +85,8 @@
         },
         "interaction": {
             "plant_wheat": "Plant Wheat",
+            "plant_corn": "Plant Corn",
+            "plant_barley": "Plant Barley",
             "harvest": "Harvest"
         },
         "reload": {
@@ -146,6 +148,22 @@
             "done": "[Farm Sonar] fast-forwarded plot %s by %s hours"
         }
     },
+    "persistence": {
+        "boot": {
+            "unavailable": "Persistence reconciler unavailable. Check fxmanifest.lua server_scripts order."
+        },
+        "dryrun": {
+            "ace_required": "[Farm Sonar] ACE permission required: sonar.farm.admin",
+            "unavailable": "[Farm Sonar] Persistence reconciler unavailable. Check server_scripts order.",
+            "header": "═══ Farm Sonar Persistence Dry Run ═══",
+            "summary": "Would reconcile: %d, Unchanged: %d, Capped: %d, Skipped: %d (Total: %d)",
+            "preview_line": "%s · %s · stage advances: %d · capped: %s",
+            "capped_yes": "yes",
+            "capped_no": "no",
+            "failed": "[FAIL] Persistence dry run failed: %s",
+            "footer": "═══════════════════════════════════════"
+        }
+    },
     "lifecycle": {
         "boot": {
             "ready": "[lifecycle] Crop lifecycle ready: {active} active crops",
@@ -165,16 +183,39 @@
         "sonar_batch_wheat": {
             "label": "Wheat Batch",
             "desc": "Harvested wheat batch with traceable quality and origin metadata."
+        },
+        "sonar_seed_corn": {
+            "label": "Corn Seeds",
+            "desc": "Certified corn seed bag for extensive plots."
+        },
+        "sonar_batch_corn": {
+            "label": "Corn Batch",
+            "desc": "Harvested corn batch with traceable quality and origin metadata."
+        },
+        "sonar_seed_barley": {
+            "label": "Barley Seeds",
+            "desc": "Certified barley seed bag for extensive plots."
+        },
+        "sonar_batch_barley": {
+            "label": "Barley Batch",
+            "desc": "Harvested barley batch with traceable quality and origin metadata."
         }
     },
     "crops": {
         "wheat": {
             "name": "Wheat"
+        },
+        "corn": {
+            "name": "Corn"
+        },
+        "barley": {
+            "name": "Barley"
         }
     },
     "sale": {
         "interaction": {
             "sell_wheat": "Sell Wheat",
+            "sell_batches": "Sell Batches",
             "unloading": "Unloading..."
         },
         "notify": {
@@ -187,6 +228,7 @@
             "batch_already_sold": "This batch was already sold.",
             "invalid_buyer_id": "Invalid buyer.",
             "invalid_batch_id": "Invalid batch.",
+            "invalid_crop_type": "Invalid crop type.",
             "player_unavailable": "Player is unavailable.",
             "inventory_unavailable": "Inventory is unavailable.",
             "inventory_lookup_failed": "Could not inspect inventory.",

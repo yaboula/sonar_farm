@@ -237,7 +237,7 @@ local function spawn_buyer_ped(buyer_id, buyer)
             {
                 name = option_names[1],
                 icon = 'fas fa-wheat-awn',
-                label = locale('sale.interaction.sell_wheat'),
+                label = locale('sale.interaction.sell_batches'),
                 distance = tonumber(buyer.interaction_radius) or 2.5,
                 canInteract = function()
                     return has_sellable_batch(buyer)

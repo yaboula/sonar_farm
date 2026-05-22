@@ -48,6 +48,8 @@ shared_scripts {
     'config/npcs.lua',
     'config/verified_props.lua',
     'config/crops/wheat.lua',
+    'config/crops/corn.lua',
+    'config/crops/barley.lua',
     'shared/items/item_registry.lua',
 }
 
@@ -83,6 +85,8 @@ server_scripts {
     'server/quality/factors/harvest_timing.lua',
     'server/quality/calculator.lua',
     'server/quality/init.lua',
+    'server/persistence/delta_calculator.lua',
+    'server/persistence/boot_reconciler.lua',
     -- Items domain.
     'server/items/physical_item.lua',
     -- Lifecycle domain: service → scheduler.
@@ -93,6 +97,7 @@ server_scripts {
     'server/admin/finance_smoke_test.lua',
     'server/admin/plots_reload_command.lua',
     'server/admin/storage_reload_command.lua',
+    'server/admin/persistence_dryrun_command.lua',
     'server/admin/debug_fastforward.lua',
     'server/admin/debug_plant.lua',
 }
@@ -126,6 +131,7 @@ sonar_farm_migration 'database/migrations/006_batches.sql'
 sonar_farm_migration 'database/migrations/007_quality_tracking.sql'
 sonar_farm_migration 'database/migrations/008_storage.sql'
 sonar_farm_migration 'database/migrations/009_finance_amount_decimal.sql'
+sonar_farm_migration 'database/migrations/010_quality_offline_tracking.sql'
 
 -- ============================================================
 -- Lua language server: opt-in to safer globals

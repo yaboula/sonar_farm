@@ -497,3 +497,27 @@ Donde `account ∈ {'cash', 'bank'}` y `type ∈ {'success', 'error', 'info', 'w
 - Cross-system ACID is impossible; B2 documents the limitation and implements best-effort rollback.
 - Future storage slices (S13 cold storage, S28 drone silo) must follow the same post-hook pattern.
 - If ox_inventory changes hook API, this ADR may need superseding.
+
+---
+
+## ADR-016 — Persist explicit offline risk timestamps in `sonar_farm_quality_tracking`
+
+**Date:** 2026-05-22
+**Status:** ACCEPTED
+**Origin slice:** S11
+
+**Context.** Bible §13.2 requires offline reconciliation on boot with capped negative accumulation for missed irrigation and untreated pests. Current B1 quality rows only stored current factor scores (`irrigation`, `pest_impact`) but not *when* an offline risk started. Inferring risk start from the score alone is ambiguous and non-idempotent.
+
+**Options considered:**
+
+- **A** — Infer offline penalties from current factor score only. Pros: no migration. Cons: cannot know when the missed irrigation / pest actually started; repeated boots become guessy; violates the risk-first intent of S11.
+- **B** — Persist explicit nullable timestamps (`next_irrigation_due_ts`, `pest_detected_ts`) in `sonar_farm_quality_tracking`. Pros: deterministic boot reconciliation; future S13/S15 trackers can set/clear them naturally; works with current schema. Cons: adds a migration before the full irrigation / pest gameplay loops exist.
+- **C** — Create a separate offline-events table. Pros: more extensible. Cons: over-engineered for current slices; extra joins and write paths.
+
+**Decision:** **B**. Add `next_irrigation_due_ts` and `pest_detected_ts` to `sonar_farm_quality_tracking` via migration `010_quality_offline_tracking.sql`. S11 reads these timestamps to compute capped offline penalties; future slices own writing them.
+
+**Consequences.**
+
+- S11 is deterministic and idempotent across immediate reboots.
+- S13 irrigation and S15 pest gameplay should update these fields rather than inventing separate offline markers.
+- If future quality risks need offline accumulation, extend the same row before introducing a new table.

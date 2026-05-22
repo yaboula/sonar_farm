@@ -1,19 +1,18 @@
-local CROP_TYPE = 'wheat'
-
 local plot_entities = {}
 local plot_coords = {}
+local plot_crop_types = {}
 
 local function get_render_config()
     return Config and Config.Farm and Config.Farm.Rendering or {}
 end
 
-local function get_crop_config()
+local function get_crop_config(crop_type)
     local crops = Config and Config.Farm and Config.Farm.Crops or nil
-    return crops and crops[CROP_TYPE] or nil
+    return crops and crops[crop_type] or nil
 end
 
-local function get_stage_config(stage)
-    local crop_config = get_crop_config()
+local function get_stage_config(crop_type, stage)
+    local crop_config = get_crop_config(crop_type)
     if not crop_config or type(crop_config.stages) ~= 'table' then
         return nil
     end
@@ -21,10 +20,15 @@ local function get_stage_config(stage)
     return crop_config.stages[stage]
 end
 
-local function get_cooldown_config()
+local function get_cooldown_config(crop_type)
     local verified_props = Config and Config.Farm and Config.Farm.VerifiedProps or nil
-    local wheat_props = verified_props and verified_props[CROP_TYPE] or nil
-    return wheat_props and wheat_props.cooldown or nil
+    local crop_props = verified_props and verified_props[crop_type] or nil
+    if crop_props and crop_props.cooldown then
+        return crop_props.cooldown
+    end
+
+    local fallback = verified_props and verified_props.wheat or nil
+    return fallback and fallback.cooldown or nil
 end
 
 local function get_plot_coords(plot_id)
@@ -76,8 +80,8 @@ local function despawn_plot_prop(plot_id)
     plot_entities[plot_id] = nil
 end
 
-local function spawn_plot_prop(plot_id, stage)
-    local stage_config = get_stage_config(stage)
+local function spawn_plot_prop(plot_id, crop_type, stage)
+    local stage_config = get_stage_config(crop_type, stage)
     local coords = get_plot_coords(plot_id)
     if not stage_config or not coords then
         return false
@@ -111,13 +115,14 @@ local function spawn_plot_prop(plot_id, stage)
     -- SetEntityDistanceCullingRadius(entity, culling_radius)
 
     plot_entities[plot_id] = entity
+    plot_crop_types[plot_id] = crop_type
     SetModelAsNoLongerNeeded(model_hash)
 
     return true
 end
 
-local function spawn_cooldown_prop(plot_id)
-    local stage_config = get_cooldown_config()
+local function spawn_cooldown_prop(plot_id, crop_type)
+    local stage_config = get_cooldown_config(crop_type or plot_crop_types[plot_id] or 'wheat')
     local coords = get_plot_coords(plot_id)
     if not stage_config or not coords then
         return false
@@ -142,6 +147,9 @@ local function spawn_cooldown_prop(plot_id)
     FreezeEntityPosition(entity, true)
 
     plot_entities[plot_id] = entity
+    if crop_type then
+        plot_crop_types[plot_id] = crop_type
+    end
     SetModelAsNoLongerNeeded(model_hash)
 
     return true
@@ -213,9 +221,9 @@ local function sync_active_props()
 
     for index = 1, #active_crops do
         local crop = active_crops[index]
-        if crop and crop.crop_type == CROP_TYPE then
+        if crop and type(crop.crop_type) == 'string' and crop.crop_type ~= '' then
             local stage = tonumber(crop.stage) or 0
-            spawn_plot_prop(crop.plot_id, stage)
+            spawn_plot_prop(crop.plot_id, crop.crop_type, stage)
         end
     end
 end
@@ -240,20 +248,21 @@ end
 local function clear_all_props()
     for plot_id, _ in pairs(plot_entities) do
         despawn_plot_prop(plot_id)
+        plot_crop_types[plot_id] = nil
     end
 end
 
 RegisterNetEvent('sonar:farm:plot:planted', function(payload)
-    if type(payload) ~= 'table' or payload.crop_type ~= CROP_TYPE then
+    if type(payload) ~= 'table' or type(payload.crop_type) ~= 'string' or payload.crop_type == '' then
         return
     end
 
     local stage = tonumber(payload.stage) or 0
-    spawn_plot_prop(payload.plot_id, stage)
+    spawn_plot_prop(payload.plot_id, payload.crop_type, stage)
 end)
 
 RegisterNetEvent('sonar:farm:plot:stage_advanced', function(payload)
-    if type(payload) ~= 'table' or payload.crop_type ~= CROP_TYPE then
+    if type(payload) ~= 'table' or type(payload.crop_type) ~= 'string' or payload.crop_type == '' then
         return
     end
 
@@ -262,12 +271,16 @@ RegisterNetEvent('sonar:farm:plot:stage_advanced', function(payload)
         return
     end
 
-    spawn_plot_prop(payload.plot_id, next_stage)
+    spawn_plot_prop(payload.plot_id, payload.crop_type, next_stage)
 end)
 
 RegisterNetEvent('sonar:farm:plot:harvested', function(payload)
     if type(payload) ~= 'table' then
         return
+    end
+
+    if type(payload.crop_type) == 'string' and payload.crop_type ~= '' then
+        plot_crop_types[payload.plot_id] = payload.crop_type
     end
 
     despawn_plot_prop(payload.plot_id)
@@ -286,6 +299,7 @@ RegisterNetEvent('sonar:farm:plot:state_changed', function(payload)
 
     if payload.next_state == 'fallow' then
         despawn_plot_prop(payload.plot_id)
+        plot_crop_types[payload.plot_id] = nil
     end
 end)
 

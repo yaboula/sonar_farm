@@ -15,13 +15,18 @@ local function get_progress_config()
     return interactions.Progress or {}
 end
 
-local function has_seed_wheat()
+local function get_crops_config()
+    return Config and Config.Farm and Config.Farm.Crops or {}
+end
+
+local function has_seed_for_crop(crop_type)
     if type(exports) ~= 'table' or not exports.ox_inventory then
         return false
     end
 
+    local item_name = ('sonar_seed_%s'):format(crop_type)
     local ok, count_or_error = pcall(function()
-        return exports.ox_inventory:Search('count', 'sonar_seed_wheat')
+        return exports.ox_inventory:Search('count', item_name)
     end)
 
     if not ok then
@@ -111,13 +116,29 @@ local function get_plot_state(plot_id)
     return plot_state[plot_id]
 end
 
-local function plant_wheat(plot_id)
-    if not play_action_progress('plant', locale('plots.interaction.plant_wheat')) then
+local function crop_allows_plot_type(crop_type, plot_type)
+    local crop_config = get_crops_config()[crop_type] or {}
+    local allowed = crop_config.plot_types_allowed or {}
+    for index = 1, #allowed do
+        if allowed[index] == plot_type then
+            return true
+        end
+    end
+
+    return false
+end
+
+local function get_plant_label(crop_type)
+    return locale(('plots.interaction.plant_%s'):format(crop_type))
+end
+
+local function plant_crop(plot_id, crop_type)
+    if not play_action_progress('plant', get_plant_label(crop_type)) then
         return
     end
 
     local ok, response = pcall(function()
-        return lib.callback.await('sonar:farm:plot:plant', false, plot_id)
+        return lib.callback.await('sonar:farm:plot:plant', false, plot_id, crop_type)
     end)
 
     if not ok or type(response) ~= 'table' then
@@ -155,31 +176,50 @@ local function harvest_plot(plot_id)
     end
 end
 
-local function build_zone_options(plot_id)
-    return {
-        {
-            name = ('sonar_farm_plot_plant_%s'):format(plot_id),
+local function build_zone_options(plot)
+    local plot_id = plot.plot_id
+    local options = {}
+    local crop_types = {}
+    local crops = get_crops_config()
+
+    for crop_type, crop_config in pairs(crops) do
+        if type(crop_type) == 'string' and crop_type ~= '' and type(crop_config) == 'table' then
+            crop_types[#crop_types + 1] = crop_type
+        end
+    end
+
+    table.sort(crop_types)
+
+    for index = 1, #crop_types do
+        local crop_type = crop_types[index]
+        options[#options + 1] = {
+            name = ('sonar_farm_plot_plant_%s_%s'):format(plot_id, crop_type),
             icon = 'fas fa-seedling',
-            label = locale('plots.interaction.plant_wheat'),
+            label = get_plant_label(crop_type),
             canInteract = function()
-                return get_plot_state(plot_id) == 'fallow' and has_seed_wheat()
+                return get_plot_state(plot_id) == 'fallow'
+                    and crop_allows_plot_type(crop_type, plot.plot_type)
+                    and has_seed_for_crop(crop_type)
             end,
             onSelect = function()
-                plant_wheat(plot_id)
+                plant_crop(plot_id, crop_type)
             end,
-        },
-        {
-            name = ('sonar_farm_plot_harvest_%s'):format(plot_id),
-            icon = 'fas fa-wheat-awn',
-            label = locale('plots.interaction.harvest'),
-            canInteract = function()
-                return get_plot_state(plot_id) == 'harvest_ready'
-            end,
-            onSelect = function()
-                harvest_plot(plot_id)
-            end,
-        },
+        }
+    end
+
+    options[#options + 1] = {
+        name = ('sonar_farm_plot_harvest_%s'):format(plot_id),
+        icon = 'fas fa-wheat-awn',
+        label = locale('plots.interaction.harvest'),
+        canInteract = function()
+            return get_plot_state(plot_id) == 'harvest_ready'
+        end,
+        onSelect = function()
+            harvest_plot(plot_id)
+        end,
     }
+
+    return options
 end
 
 local function clear_plot_zones()
@@ -213,7 +253,7 @@ local function register_plot_zones(plots)
             coords = vec3(x, y, z),
             radius = tonumber(plot.radius) or 1.0,
             debug = false,
-            options = build_zone_options(plot.plot_id),
+            options = build_zone_options(plot),
         })
 
         plot_zones[plot.plot_id] = zone_id

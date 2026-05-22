@@ -85,6 +85,8 @@
         },
         "interaction": {
             "plant_wheat": "Plantar Trigo",
+            "plant_corn": "Plantar Maíz",
+            "plant_barley": "Plantar Cebada",
             "harvest": "Cosechar"
         },
         "reload": {
@@ -146,6 +148,22 @@
             "done": "[Farm Sonar] parcela %s adelantada %s horas"
         }
     },
+    "persistence": {
+        "boot": {
+            "unavailable": "Reconciliador de persistencia no disponible. Revisa el orden de server_scripts en fxmanifest.lua."
+        },
+        "dryrun": {
+            "ace_required": "[Farm Sonar] permiso ACE requerido: sonar.farm.admin",
+            "unavailable": "[Farm Sonar] reconciliador de persistencia no disponible. Revisa el orden de server_scripts.",
+            "header": "═══ Dry run de persistencia Farm Sonar ═══",
+            "summary": "Se reconciliarían: %d, Sin cambios: %d, Con cap: %d, Omitidos: %d (Total: %d)",
+            "preview_line": "%s · %s · avances de etapa: %d · con cap: %s",
+            "capped_yes": "sí",
+            "capped_no": "no",
+            "failed": "[FAIL] Dry run de persistencia fallido: %s",
+            "footer": "═════════════════════════════════════════"
+        }
+    },
     "lifecycle": {
         "boot": {
             "ready": "[lifecycle] Ciclo de cultivo listo: {active} cultivos activos",
@@ -165,16 +183,39 @@
         "sonar_batch_wheat": {
             "label": "Lote de Trigo",
             "desc": "Lote cosechado con calidad y origen trazables en metadata."
+        },
+        "sonar_seed_corn": {
+            "label": "Semillas de Maíz",
+            "desc": "Saco de semillas certificadas de maíz para parcelas extensivas."
+        },
+        "sonar_batch_corn": {
+            "label": "Lote de Maíz",
+            "desc": "Lote cosechado de maíz con calidad y origen trazables en metadata."
+        },
+        "sonar_seed_barley": {
+            "label": "Semillas de Cebada",
+            "desc": "Saco de semillas certificadas de cebada para parcelas extensivas."
+        },
+        "sonar_batch_barley": {
+            "label": "Lote de Cebada",
+            "desc": "Lote cosechado de cebada con calidad y origen trazables en metadata."
         }
     },
     "crops": {
         "wheat": {
             "name": "Trigo"
+        },
+        "corn": {
+            "name": "Maíz"
+        },
+        "barley": {
+            "name": "Cebada"
         }
     },
     "sale": {
         "interaction": {
             "sell_wheat": "Vender trigo",
+            "sell_batches": "Vender lotes",
             "unloading": "Descargando..."
         },
         "notify": {
@@ -187,6 +228,7 @@
             "batch_already_sold": "Este lote ya fue vendido.",
             "invalid_buyer_id": "Comprador inválido.",
             "invalid_batch_id": "Lote inválido.",
+            "invalid_crop_type": "Tipo de cultivo inválido.",
             "player_unavailable": "El jugador no está disponible.",
             "inventory_unavailable": "El inventario no está disponible.",
             "inventory_lookup_failed": "No se pudo inspeccionar el inventario.",

@@ -59,6 +59,13 @@ Config.Farm.Finance.AmountPrecision = Config.Farm.Finance.AmountPrecision or 2
 
 Config.Farm.Scheduler = { TickSeconds = 30 }
 
+Config.Farm.Persistence = {
+    OfflineCapHours = 6,
+    MaxFactorPenalty = 30,
+    IrrigationPenaltyPerHour = 5,
+    PestPenaltyPerHour = 5,
+}
+
 Config.Farm.Client = Config.Farm.Client or {}
 Config.Farm.Client.Startup = {
     RetryCount = 10,

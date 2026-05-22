@@ -6,8 +6,9 @@
 
 RegisterCommand('sonarfarm:debug:plant', function(source, args)
     local plot_id = args[1]
+    local crop_type = args[2] or 'wheat'
     if not plot_id or plot_id == '' then
-        print('[sonar_farm_core][debug:plant] Usage: /sonarfarm:debug:plant <plot_id>')
+        print('[sonar_farm_core][debug:plant] Usage: /sonarfarm:debug:plant <plot_id> [crop_type]')
         return
     end
 
@@ -18,9 +19,9 @@ RegisterCommand('sonarfarm:debug:plant', function(source, args)
     end
 
     local player_cid = 'debug_admin'
-    local ok, err = lifecycle.Plant(plot_id, player_cid, 'wheat')
+    local ok, err = lifecycle.Plant(plot_id, player_cid, crop_type)
     if ok then
-        print(('[sonar_farm_core][debug:plant] Planted wheat at %s'):format(plot_id))
+        print(('[sonar_farm_core][debug:plant] Planted %s at %s'):format(crop_type, plot_id))
     else
         print(('[sonar_farm_core][debug:plant] Failed: %s'):format(tostring(err)))
     end
