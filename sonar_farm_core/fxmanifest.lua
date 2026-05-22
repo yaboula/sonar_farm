@@ -44,6 +44,8 @@ shared_scripts {
     'config.lua',
     'config/finance.lua',
     'config/plots.lua',
+    'config/storage.lua',
+    'config/npcs.lua',
     'config/verified_props.lua',
     'config/crops/wheat.lua',
     'shared/items/item_registry.lua',
@@ -67,6 +69,10 @@ server_scripts {
     -- Sonar.Farm.Plots.Boot() after run_persistence_boot().
     'server/plots/plot_service.lua',
     'server/plots/init.lua',
+    'server/storage/storage_service.lua',
+    'server/storage/init.lua',
+    'server/npcs/npc_buyer_service.lua',
+    'server/npcs/init.lua',
     -- Quality domain: factors first → calculator → boot.
     'server/quality/factors/soil.lua',
     'server/quality/factors/irrigation.lua',
@@ -86,6 +92,7 @@ server_scripts {
     'server/admin/bridge_test_command.lua',
     'server/admin/finance_smoke_test.lua',
     'server/admin/plots_reload_command.lua',
+    'server/admin/storage_reload_command.lua',
     'server/admin/debug_fastforward.lua',
     'server/admin/debug_plant.lua',
 }
@@ -98,6 +105,8 @@ client_scripts {
     'client/plot_renderer.lua',
     'client/plot_interactions.lua',
     'client/inventory_render.lua',
+    'client/silo_interactions.lua',
+    'client/npc_vendor_interaction.lua',
 }
 
 -- ============================================================
@@ -115,6 +124,8 @@ sonar_farm_migration 'database/migrations/004_plots.sql'
 sonar_farm_migration 'database/migrations/005_crops.sql'
 sonar_farm_migration 'database/migrations/006_batches.sql'
 sonar_farm_migration 'database/migrations/007_quality_tracking.sql'
+sonar_farm_migration 'database/migrations/008_storage.sql'
+sonar_farm_migration 'database/migrations/009_finance_amount_decimal.sql'
 
 -- ============================================================
 -- Lua language server: opt-in to safer globals

@@ -25,6 +25,20 @@ description: lee este archivo antes de realizar operaciones de archivos en Casca
    - `write_to_file` también requiere ruta absoluta
    - El workspace es `d:\Granja_Sonar`
 
+5. **Bloques multi-línea como ancla**
+   - Evita usar bloques de 10+ líneas como `old_string`
+   - Si una sola línea vacía o espacio no coincide exactamente, todo falla
+   - El patcher es estricto con whitespace (espacios, tabs, líneas vacías)
+
+6. **Líneas vacías como ancla**
+   - Nunca uses líneas vacías como parte del ancla
+   - Son frágiles porque el patcher es estricto con formato
+   - Ancla en código real, no en whitespace
+
+7. **Cambios grandes en un solo edit**
+   - Para ediciones >300 líneas, divide en múltiples `edit` pequeños
+   - Los cambios grandes tienen más riesgo de fallar por contexto insuficiente
+
 ## Patrones que funcionan bien
 
 **Para cambios pequeños (1-2 líneas):**

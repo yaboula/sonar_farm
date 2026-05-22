@@ -46,7 +46,31 @@ Config.Farm.Rendering = {
     HarvestFxDurationMs = 900,
 }
 
+Config.Farm.Storage = Config.Farm.Storage or {}
+Config.Farm.Storage.AllowedTypes = Config.Farm.Storage.AllowedTypes or {}
+Config.Farm.Storage.units = Config.Farm.Storage.units or {}
+
+Config.Farm.NPCs = Config.Farm.NPCs or {}
+Config.Farm.NPCs.ValidQualityGrades = Config.Farm.NPCs.ValidQualityGrades or {}
+Config.Farm.NPCs.buyers = Config.Farm.NPCs.buyers or {}
+
+Config.Farm.Finance = Config.Farm.Finance or {}
+Config.Farm.Finance.AmountPrecision = Config.Farm.Finance.AmountPrecision or 2
+
 Config.Farm.Scheduler = { TickSeconds = 30 }
+
+Config.Farm.Client = Config.Farm.Client or {}
+Config.Farm.Client.Startup = {
+    RetryCount = 10,
+    RetryWaitMs = 1000,
+}
+
+Config.Farm.Client.NPCVendor = {
+    ModelLoadDeadlineMs = 5000,
+    SaleProgressDurationMs = 3000,
+    SuccessNotifyDurationMs = 5000,
+}
+
 Config.Farm.Quality = {
     weights = {
         soil = 1.0,

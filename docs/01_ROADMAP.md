@@ -374,27 +374,35 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 
 ---
 
-### S9 — Almacén físico (silo) · Complejidad: M
+### S9 — Almacén físico (silo) · Complejidad: M · **Estado: `DONE`** (2026-05-22, bundle B2 con S10)
+
+> Mini-brief: [`docs/slices/B2_storage_npc_sale.md`](./slices/B2_storage_npc_sale.md).
+> QBox smoke PASS (deposit/withdraw audit rows, capacity rejection). QBCore smoke postponed by founder decision (B2 uses bridge abstraction only). ADR-015 signed for ox_inventory post-hook/dual-write pattern.
 
 **Scope.** Silo físico en el MLO. `ox_target` para depositar lote → seleccionas item del inventario → se mueve al inventario virtual del silo (preserve `batch_id`). Capacidad limitada (config). Frescura sigue decayendo dentro (más lento si silo refrigerado/seco; en oleada 1 solo seco).
 
 **Deliverables.**
 
-- Migration `007_storage.sql` (tabla `sonar_farm_storage_units`).
+- Migration `008_storage.sql` (tabla `sonar_farm_storage_units` + `sonar_farm_storage_contents`).
 - `server/storage/storage_service.lua`.
 - Integración con `ox_inventory` (silo = stash con metadata Farm Sonar).
 - `ox_target` zone sobre el modelo del silo del MLO.
 - Eventos: `sonar:farm:storage:deposited`, `sonar:farm:storage:withdrawn`.
+- `/sonarfarm:storage:reload` admin command.
 
 **DoD específico.**
 
 - Depositar batch trigo en silo, verificar persistencia en DB, retirar, batch_id preservado.
+- Boot idempotent on re-ensure.
 
 **Dependencias:** S7, S2.
 
 ---
 
-### S10 — NPC comprador único + venta física ⭐ · Complejidad: L
+### S10 — NPC comprador único + venta física ⭐ · Complejidad: L · **Estado: `DONE`** (2026-05-22, bundle B2 con S9)
+
+> Mini-brief: [`docs/slices/B2_storage_npc_sale.md`](./slices/B2_storage_npc_sale.md).
+> QBox smoke PASS (NPC sale, finance movement, sold_ts stamp, lineage preservation, notify). QBCore smoke postponed by founder decision (B2 uses bridge abstraction only).
 
 **Scope.** Primer NPC comprador (Molino Pedro stub). Vendor marker físico (ped + zona ox_target). Jugador llega con camión cargado, descarga físicamente (anim ~30s), recibe pago en Banca Sonar. Precio calculado con fórmula simple (precio canon × tier calidad × 1.0 todo lo demás stub).
 

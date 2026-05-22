@@ -14,14 +14,14 @@
     },
     "finance": {
         "boot": {
-            "adapter_selected": "Finance layer ready \u2192 adapter: %s (mode: %s)",
+            "adapter_selected": "Finance layer ready → adapter: %s (mode: %s)",
             "unavailable": "Finance layer unavailable. Check fxmanifest.lua server_scripts order.",
             "boot_failed": "Finance boot failed. Check fxmanifest.lua server_scripts order."
         },
         "smoke": {
             "ace_required": "[Farm Sonar] ACE permission required: sonar.farm.admin",
             "usage": "[Farm Sonar] usage: sonarfarm:financesmoke <player_source>",
-            "header": "\u2550\u2550\u2550 Farm Sonar Finance Smoke Test \u2550\u2550\u2550",
+            "header": "═══ Farm Sonar Finance Smoke Test ═══",
             "run_id": "Run ID: %s",
             "target_source": "Target source: %s",
             "no_player": "[FAIL] Player not found",
@@ -29,28 +29,28 @@
             "initial_cash": "Initial cash: %s",
             "initial_bank": "Initial bank: %s",
             "test_credit": "[TEST 1] Credit 1000 to cash with idempotency key",
-            "pass_credit_fresh": "[PASS] Credit OK (fresh) \u2014 movement_id: %s",
-            "warn_credit_replay_fresh": "[WARN] Credit returned replay=true on a fresh run_id \u2014 unexpected",
+            "pass_credit_fresh": "[PASS] Credit OK (fresh) — movement_id: %s",
+            "warn_credit_replay_fresh": "[WARN] Credit returned replay=true on a fresh run_id — unexpected",
             "fail_credit": "[FAIL] Credit failed: %s",
             "test_replay": "[TEST 2] Replay same credit (idempotency)",
-            "pass_replay": "[PASS] Idempotency replay \u2014 ok=true, replay=true (no double mutation)",
+            "pass_replay": "[PASS] Idempotency replay — ok=true, replay=true (no double mutation)",
             "fail_replay_false": "[FAIL] Second call should be replay but replay=false",
             "fail_replay": "[FAIL] Replay returned ok=false: %s",
             "test_credit_delta": "[TEST 3] Balance delta after credit (expect +1000)",
             "pass_cash_delta": "[PASS] Cash delta: +%s (balance: %s)",
-            "fail_cash_delta": "[FAIL] Cash delta: %s \u2014 expected +1000 (balance: %s)",
+            "fail_cash_delta": "[FAIL] Cash delta: %s — expected +1000 (balance: %s)",
             "fail_get_balance": "[FAIL] GetBalance failed: %s",
             "test_debit": "[TEST 4] Debit 500 from cash",
-            "pass_debit": "[PASS] Debit OK \u2014 delta: %s, movement_id: %s",
-            "fail_debit_delta": "[FAIL] Debit OK but delta: %s \u2014 expected -500",
+            "pass_debit": "[PASS] Debit OK — delta: %s, movement_id: %s",
+            "fail_debit_delta": "[FAIL] Debit OK but delta: %s — expected -500",
             "fail_debit": "[FAIL] Debit failed: %s",
             "test_overdraw": "[TEST 5] Debit 999999 (should fail - insufficient funds)",
             "pass_overdraw": "[PASS] Insufficient funds correctly rejected",
             "fail_wrong_error": "[FAIL] Wrong error code: %s",
             "fail_overdraw_succeeded": "[FAIL] Overdraw should have failed but succeeded",
             "test_bank_credit": "[TEST 6] Credit 2000 to bank",
-            "pass_bank_credit": "[PASS] Bank credit OK \u2014 delta: +%s",
-            "fail_bank_credit_delta": "[FAIL] Bank credit OK but delta: %s \u2014 expected +2000",
+            "pass_bank_credit": "[PASS] Bank credit OK — delta: +%s",
+            "fail_bank_credit_delta": "[FAIL] Bank credit OK but delta: %s — expected +2000",
             "fail_bank_credit": "[FAIL] Bank credit failed: %s",
             "test_can_afford": "[TEST 7] CanAfford check for 1000 cash",
             "pass_can_afford": "[PASS] CanAfford returned true",
@@ -61,7 +61,7 @@
             "final_balances": "Final balances:",
             "balance_cash": "Cash: %s",
             "balance_bank": "Bank: %s",
-            "footer": "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
+            "footer": "══════════════════════════════════════════"
         }
     },
     "bridge": {
@@ -95,6 +95,45 @@
             "skipped_warning": "[WARN] %d invalid seed entries were skipped — check server console for details",
             "failed": "[FAIL] Plot reload failed: %s",
             "footer": "═══════════════════════════════"
+        }
+    },
+    "storage": {
+        "boot": {
+            "started": "Storage registry boot starting",
+            "ready": "Storage registry ready: %d created, %d updated, %d unchanged, %d skipped, %d total",
+            "boot_failed": "Storage registry boot failed: %s",
+            "unavailable": "StorageService unavailable. Check fxmanifest.lua server_scripts order.",
+            "skipped_entries": "Storage seed sync skipped %d invalid config entries"
+        },
+        "reload": {
+            "ace_required": "[Farm Sonar] ACE permission required: sonar.farm.admin",
+            "unavailable": "[Farm Sonar] StorageService unavailable. Check fxmanifest.lua server_scripts order.",
+            "header": "═══ Farm Sonar Storage Reload ═══",
+            "summary": "Created: %d, Updated: %d, Unchanged: %d, Skipped: %d (Total: %d)",
+            "skipped_warning": "[WARN] %d invalid seed entries were skipped — check server console for details",
+            "failed": "[FAIL] Storage reload failed: %s",
+            "footer": "════════════════════════════════"
+        },
+        "silo_grapeseed_01": {
+            "name": "Grapeseed Silo"
+        },
+        "interaction": {
+            "deposit": "Deposit Batch",
+            "check": "Check Storage"
+        },
+        "hook": {
+            "deposit_failed": "Storage deposit audit failed for {batch_id}: {error}",
+            "withdraw_failed": "Storage withdraw audit failed for {batch_id}: {error}"
+        }
+    },
+    "npcs": {
+        "boot": {
+            "ready": "NPC buyers ready: %d registered",
+            "boot_failed": "NPC buyer boot failed: %s",
+            "unavailable": "NPCBuyerService unavailable. Check fxmanifest.lua server_scripts order."
+        },
+        "pedro": {
+            "name": "Molino Pedro"
         }
     },
     "debug": {
@@ -131,6 +170,31 @@
     "crops": {
         "wheat": {
             "name": "Wheat"
+        }
+    },
+    "sale": {
+        "interaction": {
+            "sell_wheat": "Sell Wheat",
+            "unloading": "Unloading..."
+        },
+        "notify": {
+            "success": "+€{amount} — {buyer}",
+            "error": "Sale failed: {reason}"
+        },
+        "errors": {
+            "batch_not_in_inventory": "Batch not found in your inventory.",
+            "batch_not_found": "Batch not found.",
+            "batch_already_sold": "This batch was already sold.",
+            "invalid_buyer_id": "Invalid buyer.",
+            "invalid_batch_id": "Invalid batch.",
+            "player_unavailable": "Player is unavailable.",
+            "inventory_unavailable": "Inventory is unavailable.",
+            "inventory_lookup_failed": "Could not inspect inventory.",
+            "invalid_batch_metadata": "Batch metadata is invalid.",
+            "crop_not_accepted": "This buyer does not accept that crop.",
+            "npc_buyer_unavailable": "Buyer service is unavailable.",
+            "sale_failed": "Sale could not be completed.",
+            "unknown": "Unknown sale error."
         }
     }
 }

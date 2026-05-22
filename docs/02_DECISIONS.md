@@ -472,3 +472,28 @@ Donde `account ∈ {'cash', 'bank'}` y `type ∈ {'success', 'error', 'info', 'w
 - The Backend service exposes `PlotService.UpdatePlotState(plot_id, patch, reason)` with a strict allowlist of patchable fields (`state`, `soil_score`, `planted_ts`, `next_stage_ts`); config-owned columns are unreachable from this entry point on purpose.
 - Removing a plot from `config/plots.lua` does **not** delete the DB row. Cleanup of orphaned plots is deferred to a future admin tool with explicit confirmation.
 - If a future slice ever needs to rename a `plot_id`, the migration must be authored by hand (insert new row with carried-over `soil_score`, then delete old row) and accompanied by a new ADR.
+
+---
+
+## ADR-015 — ox_inventory dual-write via post-hook event (not validation hook)
+
+**Date:** 2026-05-22
+**Status:** ACCEPTED
+**Origin slice:** B2 (S9)
+
+**Context.** S9 storage needs to mirror ox_inventory stash operations to `sonar_farm_storage_contents` for audit and freshness tracking. ox_inventory provides `registerHook('swapItems')` with two phases: validation callback (pre-swap) and post-hook event (after swap succeeds). The audit write must happen only after the inventory move succeeds, but ox_inventory docs state validation callbacks should avoid side effects.
+
+**Options considered:**
+
+- **A** — Write audit row inside validation callback. Pros: single code path. Cons: violates ox_inventory docs (validation should be pure); if the swap fails after validation, audit row is orphaned; no rollback mechanism.
+- **B** — Write audit row in post-hook event using the returned `hookId`. Pros: audit only written after successful swap; matches ox_inventory recommended pattern; can implement rollback (delete row) if DB write fails. Cons: dual-write pattern (inventory + DB) cannot be ACID across systems; requires explicit error handling.
+- **C** — Skip audit layer, trust ox_inventory stash as source of truth. Pros: simpler. Cons: no freshness tracking in DB; no audit trail for sales; future slices (S19 freshness decay) need DB metadata.
+
+**Decision:** **B**. Use `exports.ox_inventory:registerHook('swapItems', nil, { inventoryFilter = { '^sonar_farm_silo_' } })` to get `hookId`, then `AddEventHandler(hookId, function(success, payload) ... end)` for audit writes. On DB write failure, attempt to restore the item via `exports.ox_inventory:RemoveItem` and roll back `sold_ts` if sale path.
+
+**Consequences.**
+
+- `sonar_farm_storage_contents` is an audit layer, not the source of truth. ox_inventory stash is authoritative for item presence.
+- Cross-system ACID is impossible; B2 documents the limitation and implements best-effort rollback.
+- Future storage slices (S13 cold storage, S28 drone silo) must follow the same post-hook pattern.
+- If ox_inventory changes hook API, this ADR may need superseding.

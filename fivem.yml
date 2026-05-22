@@ -1,6 +1,6 @@
 ---
 # ============================================================
-# Farm Sonar — selene custom stdlib for FiveM natives + lifecycle.
+# Farm Sonar â€” selene custom stdlib for FiveM natives + lifecycle.
 # Declares globals provided by the FiveM Lua runtime so selene does not
 # flag them as undefined.
 # ============================================================
@@ -257,6 +257,35 @@ globals:
     args:
       - type: string
 
+  joaat:
+    args:
+      - type: string
+  IsModelInCdimage:
+    args:
+      - type: any
+  GetGameTimer:
+    args: []
+  CreatePed:
+    args:
+      - type: number
+      - type: any
+      - type: number
+      - type: number
+      - type: number
+      - type: number
+      - type: bool
+      - type: bool
+  DeletePed:
+    args:
+      - type: any
+  SetEntityInvincible:
+    args:
+      - type: any
+      - type: bool
+  SetBlockingOfNonTemporaryEvents:
+    args:
+      - type: any
+      - type: bool
   # ---- Print / debug ----
   print:
     args:

@@ -50,10 +50,20 @@ local function is_valid_account(account)
     return account == 'cash' or account == 'bank'
 end
 
+local function get_amount_precision()
+    return tonumber(Config and Config.Farm and Config.Farm.Finance and Config.Farm.Finance.AmountPrecision) or 2
+end
+
 ---@param amount any
 ---@return boolean
 local function is_valid_positive_amount(amount)
-    return type(amount) == 'number' and amount > 0 and amount == math.floor(amount)
+    if type(amount) ~= 'number' or amount <= 0 then
+        return false
+    end
+
+    local multiplier = 10 ^ get_amount_precision()
+    local scaled = amount * multiplier
+    return math.abs(scaled - math.floor(scaled + 0.0001)) < 0.0001
 end
 
 -- ---- GetPlayer ----------------------------------------------

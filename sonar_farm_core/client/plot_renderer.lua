@@ -97,7 +97,6 @@ local function spawn_plot_prop(plot_id, stage)
         return false
     end
 
-    local scale = tonumber(stage_config.prop_scale)
     -- SetEntityScale is not a native FiveM function - disabled for now
     -- if scale and scale > 0 then
     --     SetEntityScale(entity, scale)

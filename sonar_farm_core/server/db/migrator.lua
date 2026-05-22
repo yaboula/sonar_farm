@@ -81,6 +81,38 @@ local function read_migration_sql(migration)
     return sql
 end
 
+local function strip_sql_comments(sql)
+    local without_block_comments = sql:gsub('/%*.-%*/', ' ')
+    local lines = {}
+
+    for line in without_block_comments:gmatch('([^\r\n]+)') do
+        local cleaned = line:gsub('%-%-.*$', '')
+        if cleaned:match('%S') then
+            lines[#lines + 1] = cleaned
+        end
+    end
+
+    return table.concat(lines, '\n')
+end
+
+local function split_sql_statements(sql)
+    local normalized = strip_sql_comments(sql)
+    local statements = {}
+
+    for statement in normalized:gmatch('([^;]+)') do
+        local trimmed = statement:match('^%s*(.-)%s*$')
+        if trimmed and trimmed ~= '' then
+            statements[#statements + 1] = trimmed
+        end
+    end
+
+    if #statements == 0 then
+        error('Migration SQL did not contain any executable statements.', 3)
+    end
+
+    return statements
+end
+
 local function ensure_migrations_table()
     get_db().execute(([[
         CREATE TABLE IF NOT EXISTS `%s` (
@@ -106,14 +138,22 @@ end
 
 local function apply_migration(migration)
     local sql = read_migration_sql(migration)
+    local statements = split_sql_statements(sql)
+    local transaction_queries = {}
 
-    get_db().transaction({
-        { query = sql, values = {} },
-        {
-            query = ('INSERT INTO `%s` (`id`, `name`, `filename`) VALUES (?, ?, ?)'):format(MIGRATIONS_TABLE),
-            values = { migration.id, migration.name, migration.path },
-        },
-    })
+    for index = 1, #statements do
+        transaction_queries[#transaction_queries + 1] = {
+            query = statements[index],
+            values = {},
+        }
+    end
+
+    transaction_queries[#transaction_queries + 1] = {
+        query = ('INSERT INTO `%s` (`id`, `name`, `filename`) VALUES (?, ?, ?)'):format(MIGRATIONS_TABLE),
+        values = { migration.id, migration.name, migration.path },
+    }
+
+    get_db().transaction(transaction_queries)
 end
 
 function migrator.discover()

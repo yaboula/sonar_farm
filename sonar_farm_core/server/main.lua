@@ -52,6 +52,311 @@ local function get_ox_inventory()
     return exports.ox_inventory
 end
 
+local storage_swap_hook_id = nil
+
+local function is_non_empty_string(value)
+    return type(value) == 'string' and value ~= ''
+end
+
+local function get_storage_stash_prefix()
+    return Config and Config.Farm and Config.Farm.Storage and Config.Farm.Storage.StashPrefix or 'sonar_farm_silo_'
+end
+
+local function get_storage_id_from_inventory(inventory)
+    local inventory_id = nil
+
+    if type(inventory) == 'string' then
+        inventory_id = inventory
+    elseif type(inventory) == 'number' then
+        inventory_id = tostring(inventory)
+    elseif type(inventory) == 'table' then
+        if is_non_empty_string(inventory.id) then
+            inventory_id = inventory.id
+        elseif is_non_empty_string(inventory.inventory) then
+            inventory_id = inventory.inventory
+        elseif is_non_empty_string(inventory.name) then
+            inventory_id = inventory.name
+        end
+    end
+
+    local prefix = get_storage_stash_prefix()
+    if is_non_empty_string(inventory_id) and inventory_id:sub(1, #prefix) == prefix then
+        return inventory_id:sub(#prefix + 1)
+    end
+
+    return nil
+end
+
+local function get_batch_row(batch_id)
+    if not Sonar.Farm.DB or type(Sonar.Farm.DB.row) ~= 'function' then
+        return nil
+    end
+
+    return Sonar.Farm.DB.row([[
+        SELECT `batch_id`, `crop_type`, `quality`, `weight_g`, `sold_ts`
+        FROM `sonar_farm_batches`
+        WHERE `batch_id` = ?
+        LIMIT 1
+    ]], { batch_id })
+end
+
+local function get_storage_content_row(batch_id)
+    if not Sonar.Farm.DB or type(Sonar.Farm.DB.row) ~= 'function' then
+        return nil
+    end
+
+    return Sonar.Farm.DB.row([[
+        SELECT `storage_id`, `batch_id`, `player_cid`, `item_name`, `deposited_ts`
+        FROM `sonar_farm_storage_contents`
+        WHERE `batch_id` = ?
+        LIMIT 1
+    ]], { batch_id })
+end
+
+local function validate_batch_metadata(metadata)
+    if not Sonar.Farm.PhysicalItem or type(Sonar.Farm.PhysicalItem.ValidateMetadata) ~= 'function' then
+        return false, 'physical_item_unavailable'
+    end
+
+    return Sonar.Farm.PhysicalItem.ValidateMetadata(metadata)
+end
+
+local function resolve_inventory_batch(source, batch_id, crop_type)
+    local ox_inventory = get_ox_inventory()
+    if not ox_inventory then
+        return nil, nil, 'inventory_unavailable'
+    end
+
+    local item_name = 'sonar_batch_' .. tostring(crop_type)
+    local lookup_ok, slots_or_error = pcall(function()
+        return ox_inventory:Search(source, 'slots', item_name, { batch_id = batch_id })
+    end)
+
+    if not lookup_ok then
+        return nil, nil, 'inventory_lookup_failed'
+    end
+
+    local slots = type(slots_or_error) == 'table' and slots_or_error or {}
+    for index = 1, #slots do
+        local slot = slots[index]
+        if type(slot) == 'table' and type(slot.metadata) == 'table' and tostring(slot.metadata.batch_id or '') == batch_id then
+            return slot, slot.metadata, nil
+        end
+    end
+
+    return nil, nil, 'batch_not_in_inventory'
+end
+
+local function build_sale_preview(source, buyer_id, batch_id)
+    if not Sonar.Farm.NPCBuyerService or type(Sonar.Farm.NPCBuyerService.CalculatePayout) ~= 'function' then
+        return nil, 'npc_buyer_unavailable'
+    end
+
+    local batch = get_batch_row(batch_id)
+    if not batch then
+        return nil, 'batch_not_found'
+    end
+
+    if batch.sold_ts ~= nil then
+        return nil, 'batch_already_sold'
+    end
+
+    local crop_type = tostring(batch.crop_type or '')
+    if crop_type == '' then
+        return nil, 'invalid_crop_type'
+    end
+
+    local slot, metadata, slot_err = resolve_inventory_batch(source, batch_id, crop_type)
+    if slot_err then
+        return nil, slot_err
+    end
+
+    if not slot or type(metadata) ~= 'table' then
+        return nil, 'batch_not_in_inventory'
+    end
+
+    local metadata_ok, metadata_err = validate_batch_metadata(metadata)
+    if metadata_ok ~= true then
+        return nil, metadata_err or 'invalid_batch_metadata'
+    end
+
+    local quality = tostring(metadata.quality or batch.quality or '')
+    local weight_kg = (tonumber(metadata.weight_g) or tonumber(batch.weight_g) or 0) / 1000
+    local payout_ok, payout, breakdown, payout_err = pcall(Sonar.Farm.NPCBuyerService.CalculatePayout, buyer_id, crop_type, quality, weight_kg)
+    if not payout_ok then
+        return nil, tostring(payout)
+    end
+
+    if not payout then
+        return nil, payout_err
+    end
+
+    return {
+        buyer_id = buyer_id,
+        batch_id = batch_id,
+        crop_type = crop_type,
+        quality = quality,
+        weight_kg = weight_kg,
+        payout = payout,
+        breakdown = breakdown,
+    }, nil
+end
+
+local function record_storage_deposit(source, storage_id, batch_id, item_name, metadata)
+    if type(source) ~= 'number' or source <= 0 then
+        return false, 'invalid_source'
+    end
+
+    if not is_non_empty_string(storage_id) then
+        return false, 'invalid_storage_id'
+    end
+
+    if not is_non_empty_string(batch_id) then
+        return false, 'invalid_batch_id'
+    end
+
+    if not is_non_empty_string(item_name) then
+        return false, 'invalid_item_name'
+    end
+
+    if type(metadata) ~= 'table' then
+        return false, 'invalid_batch_metadata'
+    end
+
+    local player_cid = get_player_cid(source)
+    if not player_cid then
+        return false, 'player_unavailable'
+    end
+
+    if not Sonar.Farm.StorageService or type(Sonar.Farm.StorageService.GetUnit) ~= 'function' then
+        return false, 'storage_unavailable'
+    end
+
+    local unit = Sonar.Farm.StorageService.GetUnit(storage_id)
+    if not unit then
+        return false, 'storage_not_found'
+    end
+
+    local metadata_ok, metadata_err = validate_batch_metadata(metadata)
+    if metadata_ok ~= true then
+        return false, metadata_err or 'invalid_batch_metadata'
+    end
+
+    local batch = get_batch_row(batch_id)
+    if not batch then
+        return false, 'batch_not_found'
+    end
+
+    if batch.sold_ts ~= nil then
+        return false, 'batch_already_sold'
+    end
+
+    local existing = get_storage_content_row(batch_id)
+    if existing then
+        if tostring(existing.storage_id) == storage_id then
+            return true, nil
+        end
+
+        return false, 'batch_already_stored'
+    end
+
+    local deposited_ts = os.time()
+    local transaction_ok, transaction_err = pcall(function()
+        Sonar.Farm.DB.transaction({
+            {
+                query = [[
+                    INSERT INTO `sonar_farm_storage_contents` (
+                        `storage_id`,
+                        `batch_id`,
+                        `player_cid`,
+                        `item_name`,
+                        `deposited_ts`
+                    ) VALUES (?, ?, ?, ?, ?)
+                ]],
+                values = {
+                    storage_id,
+                    batch_id,
+                    player_cid,
+                    item_name,
+                    deposited_ts,
+                },
+            },
+        })
+    end)
+
+    if not transaction_ok then
+        return false, tostring(transaction_err)
+    end
+
+    TriggerEvent('sonar:farm:storage:deposited', {
+        storage_id = storage_id,
+        batch_id = batch_id,
+        player_cid = player_cid,
+        item_name = item_name,
+        deposited_ts = deposited_ts,
+    })
+
+    return true, nil
+end
+
+local function record_storage_withdraw(source, storage_id, batch_id)
+    if type(source) ~= 'number' or source <= 0 then
+        return false, 'invalid_source'
+    end
+
+    if not is_non_empty_string(storage_id) then
+        return false, 'invalid_storage_id'
+    end
+
+    if not is_non_empty_string(batch_id) then
+        return false, 'invalid_batch_id'
+    end
+
+    local player_cid = get_player_cid(source)
+    if not player_cid then
+        return false, 'player_unavailable'
+    end
+
+    if not Sonar.Farm.StorageService or type(Sonar.Farm.StorageService.GetUnit) ~= 'function' then
+        return false, 'storage_unavailable'
+    end
+
+    local unit = Sonar.Farm.StorageService.GetUnit(storage_id)
+    if not unit then
+        return false, 'storage_not_found'
+    end
+
+    local existing = get_storage_content_row(batch_id)
+    if not existing then
+        return true, nil
+    end
+
+    if tostring(existing.storage_id) ~= storage_id then
+        return false, 'batch_not_stored'
+    end
+
+    local transaction_ok, transaction_err = pcall(function()
+        Sonar.Farm.DB.transaction({
+            {
+                query = 'DELETE FROM `sonar_farm_storage_contents` WHERE `batch_id` = ? LIMIT 1',
+                values = { batch_id },
+            },
+        })
+    end)
+
+    if not transaction_ok then
+        return false, tostring(transaction_err)
+    end
+
+    TriggerEvent('sonar:farm:storage:withdrawn', {
+        storage_id = storage_id,
+        batch_id = batch_id,
+        player_cid = player_cid,
+        withdrawn_ts = os.time(),
+    })
+
+    return true, nil
+end
 local function run_finance_boot()
     if not Sonar.Farm.Finance or type(Sonar.Farm.Finance.Boot) ~= 'function' then
         log_error(locale('finance.boot.boot_failed'))
@@ -68,6 +373,24 @@ local function run_plots_boot()
     end
 
     return Sonar.Farm.Plots.Boot()
+end
+
+local function run_storage_boot()
+    if not Sonar.Farm.Storage or type(Sonar.Farm.Storage.Boot) ~= 'function' then
+        log_error(locale('storage.boot.unavailable'))
+        return false
+    end
+
+    return Sonar.Farm.Storage.Boot()
+end
+
+local function run_npc_buyer_boot()
+    if not Sonar.Farm.NPCs or type(Sonar.Farm.NPCs.Boot) ~= 'function' then
+        log_error(locale('npcs.boot.unavailable'))
+        return false
+    end
+
+    return Sonar.Farm.NPCs.Boot()
 end
 
 local function run_quality_boot()
@@ -255,6 +578,141 @@ local function register_plot_callbacks()
     end)
 end
 
+local function register_sale_callbacks()
+    if not lib or not lib.callback or type(lib.callback.register) ~= 'function' then
+        log_error('ox_lib callback registry unavailable. Sale callbacks were not registered.')
+        return
+    end
+
+    lib.callback.register('sonar:farm:storage:list_units', function()
+        return Config and Config.Farm and Config.Farm.Storage and Config.Farm.Storage.units or {}
+    end)
+
+    lib.callback.register('sonar:farm:sale:preview', function(source, buyer_id, batch_id)
+        if type(buyer_id) ~= 'string' or buyer_id == '' then
+            return { ok = false, error = 'invalid_buyer_id' }
+        end
+
+        if type(batch_id) ~= 'string' or batch_id == '' then
+            return { ok = false, error = 'invalid_batch_id' }
+        end
+
+        local preview_ok, preview, preview_err = pcall(build_sale_preview, source, buyer_id, batch_id)
+        if not preview_ok then
+            return { ok = false, error = tostring(preview) }
+        end
+
+        if not preview then
+            return { ok = false, error = tostring(preview_err) }
+        end
+
+        return {
+            ok = true,
+            payout = preview.payout,
+            data = preview,
+        }
+    end)
+    lib.callback.register('sonar:farm:sale:sell', function(source, buyer_id, batch_id)
+        if type(buyer_id) ~= 'string' or buyer_id == '' then
+            return { ok = false, error = 'invalid_buyer_id' }
+        end
+
+        if type(batch_id) ~= 'string' or batch_id == '' then
+            return { ok = false, error = 'invalid_batch_id' }
+        end
+
+        if not Sonar.Farm.NPCBuyerService or type(Sonar.Farm.NPCBuyerService.ExecuteSale) ~= 'function' then
+            return { ok = false, error = 'npc_buyer_unavailable' }
+        end
+
+        local ok, payout, err = Sonar.Farm.NPCBuyerService.ExecuteSale(source, buyer_id, batch_id)
+        if not ok then
+            return { ok = false, error = tostring(err) }
+        end
+
+        return {
+            ok = true,
+            data = {
+                buyer_id = buyer_id,
+                batch_id = batch_id,
+                payout = payout,
+            },
+        }
+    end)
+end
+
+local function register_storage_swap_hook()
+    local ox_inventory = get_ox_inventory()
+    if not ox_inventory or type(ox_inventory.registerHook) ~= 'function' then
+        return
+    end
+
+    if storage_swap_hook_id and type(ox_inventory.removeHooks) == 'function' then
+        pcall(function()
+            ox_inventory:removeHooks(storage_swap_hook_id)
+        end)
+        storage_swap_hook_id = nil
+    end
+
+    local hook_ok, hook_id_or_error = pcall(function()
+        return ox_inventory:registerHook('swapItems', function()
+            return true
+        end, {
+            inventoryFilter = { '^' .. get_storage_stash_prefix() },
+        })
+    end)
+
+    if not hook_ok then
+        log_error(('storage swap hook registration failed: %s'):format(tostring(hook_id_or_error)))
+        return
+    end
+
+    storage_swap_hook_id = hook_id_or_error
+
+    if not storage_swap_hook_id then
+        return
+    end
+
+    AddEventHandler(storage_swap_hook_id, function(success, payload)
+        if success ~= true or type(payload) ~= 'table' then
+            return
+        end
+
+        local from_storage_id = get_storage_id_from_inventory(payload.fromInventory)
+        local to_storage_id = get_storage_id_from_inventory(payload.toInventory)
+        local from_type = tostring(payload.fromType or '')
+        local to_type = tostring(payload.toType or '')
+        local from_slot = type(payload.fromSlot) == 'table' and payload.fromSlot or {}
+        local metadata = type(from_slot.metadata) == 'table' and from_slot.metadata or {}
+        local batch_id = tostring(metadata.batch_id or '')
+        local item_name = tostring(from_slot.name or '')
+
+        if batch_id == '' or item_name:match('^sonar_batch_') == nil then
+            return
+        end
+
+        if to_storage_id and from_type == 'player' and not from_storage_id then
+            local ok, err = record_storage_deposit(payload.source, to_storage_id, batch_id, item_name, metadata)
+            if not ok then
+                log_error(format_locale_message('storage.hook.deposit_failed', {
+                    batch_id = batch_id,
+                    error = tostring(err),
+                }))
+            end
+            return
+        end
+
+        if from_storage_id and to_type == 'player' and not to_storage_id then
+            local ok, err = record_storage_withdraw(payload.source, from_storage_id, batch_id)
+            if not ok then
+                log_error(format_locale_message('storage.hook.withdraw_failed', {
+                    batch_id = batch_id,
+                    error = tostring(err),
+                }))
+            end
+        end
+    end)
+end
 local function register_plot_event_relays()
     local relay_events = {
         'sonar:farm:plot:planted',
@@ -335,8 +793,12 @@ AddEventHandler('onResourceStart', function(resource_name)
     -- domain is temporarily misconfigured during development.
     run_quality_boot()
     run_lifecycle_boot()
+    run_storage_boot()
+    run_npc_buyer_boot()
 
     register_plot_callbacks()
+    register_sale_callbacks()
+    register_storage_swap_hook()
 
     if Config and Config.Farm and Config.Farm.Debug then
         log_info('debug mode ENABLED')
@@ -346,6 +808,14 @@ end)
 AddEventHandler('onResourceStop', function(resource_name)
     if resource_name ~= GetCurrentResourceName() then
         return
+    end
+
+    local ox_inventory = get_ox_inventory()
+    if storage_swap_hook_id and ox_inventory and type(ox_inventory.removeHooks) == 'function' then
+        pcall(function()
+            ox_inventory:removeHooks(storage_swap_hook_id)
+        end)
+        storage_swap_hook_id = nil
     end
 
     if Sonar.Farm.Lifecycle and Sonar.Farm.Lifecycle.Scheduler and type(Sonar.Farm.Lifecycle.Scheduler.Stop) == 'function' then

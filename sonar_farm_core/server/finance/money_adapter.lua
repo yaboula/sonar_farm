@@ -33,8 +33,18 @@ local function is_valid_account(account)
     return account == ACCOUNT_CASH or account == ACCOUNT_BANK
 end
 
+local function get_amount_precision()
+    return tonumber(Config and Config.Farm and Config.Farm.Finance and Config.Farm.Finance.AmountPrecision) or 2
+end
+
 local function is_valid_amount(amount)
-    return type(amount) == 'number' and amount > 0 and amount == math.floor(amount)
+    if type(amount) ~= 'number' or amount <= 0 then
+        return false
+    end
+
+    local multiplier = 10 ^ get_amount_precision()
+    local scaled = amount * multiplier
+    return math.abs(scaled - math.floor(scaled + 0.0001)) < 0.0001
 end
 
 local function is_present_string(value)

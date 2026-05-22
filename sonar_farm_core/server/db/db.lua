@@ -68,6 +68,10 @@ function db.transaction(queries)
         error(('DB transaction failed: %s'):format(tostring(result)), 2)
     end
 
+    if result == false or result == nil then
+        error('DB transaction failed: oxmysql returned a falsy result', 2)
+    end
+
     return result
 end
 
