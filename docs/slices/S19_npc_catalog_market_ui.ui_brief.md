@@ -79,6 +79,17 @@ Custom one-off:
 - Selling action from the UI → never (Farm Sonar Pilar 1: physical, the sale happens at the NPC ped).
 - Tablet/field counterpart of this view → out of scope, Market is Laptop-only.
 
+## v0 review outcome (2026-05-23)
+
+Mockup approved as implementation baseline. Reference repo: `https://github.com/yaboula/sonar_farm_market` (local clone in `_v0_review_market/`).
+
+Adjustments to apply during implementation (no second v0 round):
+
+- **CTA rename for Pilar 1 compliance.** Buttons currently labelled "Plan delivery" must read **"Set on map"** (or its i18n key equivalent). The action only drops a waypoint on the player's FiveM map; selling stays physical at the NPC ped.
+- **Lime usage as designed.** Founder approved the v0 lime distribution (live tick, day pill, top-match stamp, featured CTA, best-price chip, plan-arrow). Treat it as canon for this slice.
+- **Server-derived "Top match today".** The server returns buyers pre-sorted by `today_top_price` and flags the #1 as featured. No client-side ranking heuristics.
+- **Unit mapping.** v0 shows prices `€/kg` and capacity `t / kg`. Backend stores `€/g` and volume in grams. Convert at the catalog callback boundary, not in components.
+
 ## v0.dev prompt to copy / paste
 
 ```text
