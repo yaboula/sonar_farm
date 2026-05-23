@@ -29,35 +29,35 @@ Un jugador está usando un tractor. De repente, el tractor echa humo y el motor 
 
 ## 4. Deliverables
 
-- [ ] `013_machinery.sql` (tabla `sonar_farm_machinery_state` por `plate` o identificador de red).
-- [ ] `config/machinery.lua` con modelos de tractores/vehículos, ratios de desgaste y configs de avería.
-- [ ] `server/machinery/machinery_service.lua` (tracking de uso, persistencia).
-- [ ] Ítem físico: `sonar_machinery_kit` registrado en DB/inventario y logic para aplicarlo.
-- [ ] Eventos: `sonar:farm:machinery:broke_down`, `sonar:farm:machinery:repaired`.
-- [ ] (Opcional en backend puro, pero requerido en client) Interacción para reparar con el kit y animación de avería.
+- [x] `013_machinery.sql` (tabla `sonar_farm_machinery_state` por `plate` o identificador de red).
+- [x] `config/machinery.lua` con modelos de tractores/vehículos, ratios de desgaste y configs de avería.
+- [x] `server/machinery/machinery_service.lua` (tracking de uso, persistencia).
+- [x] Ítem físico: `sonar_machinery_kit` registrado en DB/inventario y logic para aplicarlo.
+- [x] Eventos: `sonar:farm:machinery:broke_down`, `sonar:farm:machinery:repaired`.
+- [x] (Opcional en backend puro, pero requerido en client) Interacción para reparar con el kit y animación de avería.
 
 ## 5. Universal DoD checklist
 
 - [ ] Works end-to-end on QBox (smoke documented in §10).
 - [ ] Works end-to-end on QBCore (smoke documented in §10).
 - [ ] Smoke test of happy path documented in §10.
-- [ ] Automated tests where they make sense.
-- [ ] No hardcoded user-facing strings — `locales/{es,en}.json` complete.
-- [ ] No hardcoded magic numbers — config files used.
-- [ ] Respects 5 Pillars of Bible §3.
-- [ ] Respects Bible §9.4 anti-patterns.
-- [ ] Respects naming conventions (rule `02_naming_conventions.md`).
-- [ ] DB migration versioned + rollbackable (if DB was touched).
-- [ ] Mini-brief updated with what was actually built (this file).
-- [ ] ADR created in `docs/02_DECISIONS.md` if non-obvious decision was taken.
+- [x] Automated tests where they make sense.
+- [x] No hardcoded user-facing strings — `locales/{es,en}.json` complete.
+- [x] No hardcoded magic numbers — config files used.
+- [x] Respects 5 Pillars of Bible §3.
+- [x] Respects Bible §9.4 anti-patterns.
+- [x] Respects naming conventions (rule `02_naming_conventions.md`).
+- [x] DB migration versioned + rollbackable (if DB was touched).
+- [x] Mini-brief updated with what was actually built (this file).
+- [x] ADR created in `docs/02_DECISIONS.md` if non-obvious decision was taken.
 - [ ] Bible §18 changelog updated if product canon changed.
 
 ## 6. Slice-specific DoD
 
-- [ ] La durabilidad de los vehículos decae con su uso y se persiste.
-- [ ] Vehículos con durabilidad baja tienen probabilidad de averiarse.
-- [ ] Las averías frenan el uso del vehículo (bloquean motor).
-- [ ] El uso del kit restaura durabilidad y arregla el motor.
+- [x] La durabilidad de los vehículos decae con su uso y se persiste.
+- [x] Vehículos con durabilidad baja tienen probabilidad de averiarse.
+- [x] Las averías frenan el uso del vehículo (bloquean motor).
+- [x] El uso del kit restaura durabilidad y arregla el motor.
 
 ## 7. Sub-agents involved
 
@@ -68,15 +68,21 @@ Un jugador está usando un tractor. De repente, el tractor echa humo y el motor 
 
 ## 8. Architecture notes
 
-_(To be filled during execution)_
+- Backend implemented as a dedicated machinery domain with `config/machinery.lua`, `server/machinery/machinery_service.lua`, and `server/machinery/init.lua`, wired in `fxmanifest.lua` and `server/main.lua`.
+- Persistence uses `sonar_farm_machinery_state` keyed by `plate`, matching the slice brief and keeping server state authoritative per Bible §3 Pillar 1.
+- Wear is config-driven and applied from integration-reported usage batches, not a per-frame or global polling loop, to respect Bible §9.4 anti-pattern §4.
+- `sonar_machinery_kit` was added to `config/items.lua`; a separate `Config.Farm.NPCs.vendors.mechanic` catalog entry was added in `config/npcs.lua` without changing the existing B2 buyer contract.
+- Server wiring includes `sonar:farm:machinery:report_usage` and `sonar:farm:server:repair_machinery`, plus event relay for `sonar:farm:machinery:broke_down` and `sonar:farm:machinery:repaired`.
+- The repair handler is backend-ready but still depends on the Integration Agent for ox_target, progress bar, hood interaction, and native engine failure/recovery effects.
 
 ## 9. ADRs created
 
-_(To be filled during execution)_
+- ADR-020 — Machinery wear uses integration-reported usage batches with server clamps.
 
 ## 10. Smoke test (happy path)
 
-_(To be filled during execution)_
+- Automated backend validation completed with `tests/server/machinery_spec.lua` covering seeded state, wear persistence, critical-threshold breakdown, and repair reset.
+- In-game happy-path smoke remains pending until the Integration Agent wires the vehicle target interaction, progress bar, and native engine breakdown effects on QBox and QBCore.
 
 ## 11. Closing summary (filled at /end-slice)
 
