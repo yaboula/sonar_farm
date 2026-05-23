@@ -21,6 +21,15 @@ Config.Farm.Crops.barley = {
     fallow_cooldown_seconds = 3600,
     freshness_decay_rate_per_h = 2,
     seed_quality_default = 70,
+    optimal_seasons = { 'autumn', 'winter' },
+    preferred_weather = {
+        clear = 78,
+        light_rain = 90,
+        torrential_rain = 60,
+        drought = 45,
+        hail = 20,
+        frost = 65,
+    },
     npk_optimal = { n = 55, p = 35, k = 45 },
     fertilization = {
         optimal_items = { 'sonar_fertilizer_npk', 'sonar_fertilizer_n' },

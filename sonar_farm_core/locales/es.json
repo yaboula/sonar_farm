@@ -87,6 +87,11 @@
             "plant_wheat": "Plantar Trigo",
             "plant_corn": "Plantar Maíz",
             "plant_barley": "Plantar Cebada",
+            "plant_tomato": "Plantar Tomate",
+            "plant_pepper": "Plantar Pimiento",
+            "plant_lettuce": "Plantar Lechuga",
+            "plant_onion": "Plantar Cebolla",
+            "plant_potato": "Plantar Patata",
             "harvest": "Cosechar"
         },
         "reload": {
@@ -134,11 +139,58 @@
             "boot_failed": "Arranque de compradores NPC fallido: %s",
             "unavailable": "NPCBuyerService no disponible. Revisa el orden de server_scripts en fxmanifest.lua."
         },
+        "mechanic": {
+            "name": "Mecánico Rural"
+        },
         "pedro": {
             "name": "Molino Pedro"
         }
     },
+    "machinery": {
+        "boot": {
+            "ready": "Servicio de maquinaria listo: %d modelos válidos registrados",
+            "boot_failed": "Arranque de maquinaria fallido: %s",
+            "unavailable": "MachineryService no disponible. Revisa el orden de server_scripts en fxmanifest.lua."
+        },
+        "interaction": {
+            "repair": "Reparar maquinaria",
+            "repairing": "Reparando maquinaria..."
+        },
+        "notify": {
+            "broken_down": "La maquinaria se ha averiado. Repárala antes de continuar.",
+            "repaired": "Maquinaria reparada correctamente."
+        },
+        "errors": {
+            "invalid_plate": "Este vehículo no tiene una matrícula válida.",
+            "invalid_machinery": "Este vehículo no es maquinaria agrícola válida.",
+            "machinery_unavailable": "El servicio de maquinaria no está disponible.",
+            "machinery_not_found": "No se encontró estado de maquinaria para este vehículo.",
+            "machinery_kit_missing": "Necesitas un kit de maquinaria.",
+            "inventory_unavailable": "El inventario no está disponible.",
+            "invalid_source": "Origen de reparación inválido.",
+            "unknown": "Error de maquinaria desconocido."
+        }
+    },
     "debug": {
+        "machinery": {
+            "ace_required": "[Farm Sonar] permiso ACE requerido: sonar.farm.admin",
+            "disabled": "[Farm Sonar] el debug de maquinaria está desactivado. Activa Config.Farm.Debug = true solo en desarrollo.",
+            "unavailable": "[Farm Sonar] MachineryService no disponible. Revisa el orden de server_scripts.",
+            "db_unavailable": "[Farm Sonar] DB no disponible para debug de maquinaria.",
+            "usage_status": "[Farm Sonar] uso: sonarfarm:debug:machinery_status <plate>",
+            "usage_use": "[Farm Sonar] uso: sonarfarm:debug:machinery_use <plate> <seconds> [model]",
+            "usage_breakdown": "[Farm Sonar] uso: sonarfarm:debug:machinery_breakdown <plate> [durability]",
+            "usage_repair": "[Farm Sonar] uso: sonarfarm:debug:machinery_repair <plate>",
+            "state_failed": "[FAIL] Falló la consulta de estado de maquinaria para %s: %s",
+            "state_line": "Matrícula: %s | Modelo: %s | Durabilidad: %s | Roto: %s",
+            "use_ok": "[PASS] Uso aplicado a %s — reported_seconds: %s, wear_delta: %s",
+            "use_failed": "[FAIL] Falló el reporte de uso para %s: %s",
+            "breakdown_ok": "[PASS] Avería forzada para %s con durabilidad %s",
+            "repair_ok": "[PASS] Maquinaria reparada para %s",
+            "repair_failed": "[FAIL] Falló la reparación de maquinaria para %s: %s",
+            "yes": "sí",
+            "no": "no"
+        },
         "fastforward": {
             "ace_required": "[Farm Sonar] permiso ACE requerido: sonar.farm.admin",
             "disabled": "[Farm Sonar] fastforward de debug desactivado. Activa Config.Farm.Debug = true solo en desarrollo.",
@@ -278,9 +330,53 @@
             "label": "Lote de Cebada",
             "desc": "Lote cosechado de cebada con calidad y origen trazables en metadata."
         },
+        "sonar_seed_tomato": {
+            "label": "Semillas de Tomate",
+            "desc": "Saco de semillas certificadas de tomate para parcelas hortícolas e invernaderos."
+        },
+        "sonar_batch_tomato": {
+            "label": "Lote de Tomate",
+            "desc": "Lote cosechado de tomate con calidad y origen trazables en metadata."
+        },
+        "sonar_seed_pepper": {
+            "label": "Semillas de Pimiento",
+            "desc": "Saco de semillas certificadas de pimiento para parcelas hortícolas e invernaderos."
+        },
+        "sonar_batch_pepper": {
+            "label": "Lote de Pimiento",
+            "desc": "Lote cosechado de pimiento con calidad y origen trazables en metadata."
+        },
+        "sonar_seed_lettuce": {
+            "label": "Semillas de Lechuga",
+            "desc": "Saco de semillas certificadas de lechuga para parcelas hortícolas e invernaderos."
+        },
+        "sonar_batch_lettuce": {
+            "label": "Lote de Lechuga",
+            "desc": "Lote cosechado de lechuga con calidad y origen trazables en metadata."
+        },
+        "sonar_seed_onion": {
+            "label": "Semillas de Cebolla",
+            "desc": "Saco de semillas certificadas de cebolla para parcelas hortícolas e invernaderos."
+        },
+        "sonar_batch_onion": {
+            "label": "Lote de Cebolla",
+            "desc": "Lote cosechado de cebolla con calidad y origen trazables en metadata."
+        },
+        "sonar_seed_potato": {
+            "label": "Tubérculos de Siembra de Patata",
+            "desc": "Tubérculos certificados para sembrar filas de patata en parcelas hortícolas e invernaderos."
+        },
+        "sonar_batch_potato": {
+            "label": "Lote de Patata",
+            "desc": "Lote cosechado de patata con calidad y origen trazables en metadata."
+        },
         "sonar_water_tank": {
             "label": "Tanque de Agua",
             "desc": "Tanque portátil para regar cultivos y rellenar en pozos."
+        },
+        "sonar_machinery_kit": {
+            "label": "Kit de Maquinaria",
+            "desc": "Kit de reparación de campo para restaurar vehículos agrícolas a estado operativo."
         },
         "sonar_fertilizer_n": {
             "label": "Fertilizante de Nitrógeno",
@@ -316,6 +412,21 @@
         },
         "barley": {
             "name": "Cebada"
+        },
+        "tomato": {
+            "name": "Tomate"
+        },
+        "pepper": {
+            "name": "Pimiento"
+        },
+        "lettuce": {
+            "name": "Lechuga"
+        },
+        "onion": {
+            "name": "Cebolla"
+        },
+        "potato": {
+            "name": "Patata"
         }
     },
     "sale": {

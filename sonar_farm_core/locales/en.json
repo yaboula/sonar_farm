@@ -87,6 +87,11 @@
             "plant_wheat": "Plant Wheat",
             "plant_corn": "Plant Corn",
             "plant_barley": "Plant Barley",
+            "plant_tomato": "Plant Tomato",
+            "plant_pepper": "Plant Pepper",
+            "plant_lettuce": "Plant Lettuce",
+            "plant_onion": "Plant Onion",
+            "plant_potato": "Plant Potato",
             "harvest": "Harvest"
         },
         "reload": {
@@ -134,11 +139,58 @@
             "boot_failed": "NPC buyer boot failed: %s",
             "unavailable": "NPCBuyerService unavailable. Check fxmanifest.lua server_scripts order."
         },
+        "mechanic": {
+            "name": "Farm Mechanic"
+        },
         "pedro": {
             "name": "Molino Pedro"
         }
     },
+    "machinery": {
+        "boot": {
+            "ready": "Machinery service ready: %d valid models registered",
+            "boot_failed": "Machinery boot failed: %s",
+            "unavailable": "MachineryService unavailable. Check fxmanifest.lua server_scripts order."
+        },
+        "interaction": {
+            "repair": "Repair Machinery",
+            "repairing": "Repairing machinery..."
+        },
+        "notify": {
+            "broken_down": "Machinery broke down. Repair it before continuing.",
+            "repaired": "Machinery repaired successfully."
+        },
+        "errors": {
+            "invalid_plate": "This vehicle has no valid plate.",
+            "invalid_machinery": "This vehicle is not valid farm machinery.",
+            "machinery_unavailable": "Machinery service is unavailable.",
+            "machinery_not_found": "Machinery state was not found for this vehicle.",
+            "machinery_kit_missing": "You need a machinery kit.",
+            "inventory_unavailable": "Inventory is unavailable.",
+            "invalid_source": "Invalid repair source.",
+            "unknown": "Unknown machinery error."
+        }
+    },
     "debug": {
+        "machinery": {
+            "ace_required": "[Farm Sonar] ACE permission required: sonar.farm.admin",
+            "disabled": "[Farm Sonar] machinery debug is disabled. Set Config.Farm.Debug = true in development only.",
+            "unavailable": "[Farm Sonar] MachineryService unavailable. Check server_scripts order.",
+            "db_unavailable": "[Farm Sonar] DB unavailable for machinery debug.",
+            "usage_status": "[Farm Sonar] usage: sonarfarm:debug:machinery_status <plate>",
+            "usage_use": "[Farm Sonar] usage: sonarfarm:debug:machinery_use <plate> <seconds> [model]",
+            "usage_breakdown": "[Farm Sonar] usage: sonarfarm:debug:machinery_breakdown <plate> [durability]",
+            "usage_repair": "[Farm Sonar] usage: sonarfarm:debug:machinery_repair <plate>",
+            "state_failed": "[FAIL] Machinery state lookup failed for %s: %s",
+            "state_line": "Plate: %s | Model: %s | Durability: %s | Broken: %s",
+            "use_ok": "[PASS] Usage applied to %s — reported_seconds: %s, wear_delta: %s",
+            "use_failed": "[FAIL] Usage report failed for %s: %s",
+            "breakdown_ok": "[PASS] Forced machinery breakdown for %s at durability %s",
+            "repair_ok": "[PASS] Machinery repaired for %s",
+            "repair_failed": "[FAIL] Machinery repair failed for %s: %s",
+            "yes": "yes",
+            "no": "no"
+        },
         "fastforward": {
             "ace_required": "[Farm Sonar] ACE permission required: sonar.farm.admin",
             "disabled": "[Farm Sonar] debug fastforward is disabled. Set Config.Farm.Debug = true in development only.",
@@ -278,9 +330,53 @@
             "label": "Barley Batch",
             "desc": "Harvested barley batch with traceable quality and origin metadata."
         },
+        "sonar_seed_tomato": {
+            "label": "Tomato Seeds",
+            "desc": "Certified tomato seed bag for horticultural plots and greenhouses."
+        },
+        "sonar_batch_tomato": {
+            "label": "Tomato Batch",
+            "desc": "Harvested tomato batch with traceable quality and origin metadata."
+        },
+        "sonar_seed_pepper": {
+            "label": "Pepper Seeds",
+            "desc": "Certified pepper seed bag for horticultural plots and greenhouses."
+        },
+        "sonar_batch_pepper": {
+            "label": "Pepper Batch",
+            "desc": "Harvested pepper batch with traceable quality and origin metadata."
+        },
+        "sonar_seed_lettuce": {
+            "label": "Lettuce Seeds",
+            "desc": "Certified lettuce seed bag for horticultural plots and greenhouses."
+        },
+        "sonar_batch_lettuce": {
+            "label": "Lettuce Batch",
+            "desc": "Harvested lettuce batch with traceable quality and origin metadata."
+        },
+        "sonar_seed_onion": {
+            "label": "Onion Seeds",
+            "desc": "Certified onion seed bag for horticultural plots and greenhouses."
+        },
+        "sonar_batch_onion": {
+            "label": "Onion Batch",
+            "desc": "Harvested onion batch with traceable quality and origin metadata."
+        },
+        "sonar_seed_potato": {
+            "label": "Potato Seed Tubers",
+            "desc": "Certified seed tubers for potato rows in horticultural plots and greenhouses."
+        },
+        "sonar_batch_potato": {
+            "label": "Potato Batch",
+            "desc": "Harvested potato batch with traceable quality and origin metadata."
+        },
         "sonar_water_tank": {
             "label": "Water Tank",
             "desc": "Portable tank used to water crops and refill at wells."
+        },
+        "sonar_machinery_kit": {
+            "label": "Machinery Kit",
+            "desc": "Field repair kit used to restore agricultural vehicles to working order."
         },
         "sonar_fertilizer_n": {
             "label": "Nitrogen Fertilizer",
@@ -316,6 +412,21 @@
         },
         "barley": {
             "name": "Barley"
+        },
+        "tomato": {
+            "name": "Tomato"
+        },
+        "pepper": {
+            "name": "Pepper"
+        },
+        "lettuce": {
+            "name": "Lettuce"
+        },
+        "onion": {
+            "name": "Onion"
+        },
+        "potato": {
+            "name": "Potato"
         }
     },
     "sale": {

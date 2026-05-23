@@ -14,7 +14,7 @@
 # would otherwise flag every usage.
 # ============================================================
 
-base: lua53+fivem+oxlib
+base: lua52+fivem+oxlib
 
 globals:
   Sonar: { any: true }

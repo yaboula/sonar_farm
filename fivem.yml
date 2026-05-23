@@ -1,11 +1,11 @@
 ---
 # ============================================================
-# Farm Sonar â€” selene custom stdlib for FiveM natives + lifecycle.
+# Farm Sonar - selene custom stdlib for FiveM natives + lifecycle.
 # Declares globals provided by the FiveM Lua runtime so selene does not
 # flag them as undefined.
 # ============================================================
 
-base: lua53
+base: lua52
 
 globals:
   # ---- Lifecycle ----
@@ -224,6 +224,15 @@ globals:
   ClearPedTasks:
     args:
       - type: any
+  ClearOverrideWeather:
+    args: []
+  SetWeatherTypePersist:
+    args:
+      - type: string
+  SetWeatherTypeOverTime:
+    args:
+      - type: string
+      - type: number
 
   # ---- Particle FX helpers (client) ----
   RequestNamedPtfxAsset:
@@ -283,6 +292,68 @@ globals:
       - type: any
       - type: bool
   SetBlockingOfNonTemporaryEvents:
+    args:
+      - type: any
+      - type: bool
+  GetEntityCoords:
+    args:
+      - type: any
+  GetEntityModel:
+    args:
+      - type: any
+  GetGamePool:
+    args:
+      - type: string
+  GetVehiclePedIsIn:
+    args:
+      - type: any
+      - type: bool
+  GetPedInVehicleSeat:
+    args:
+      - type: any
+      - type: number
+  GetVehicleNumberPlateText:
+    args:
+      - type: any
+  GetDisplayNameFromVehicleModel:
+    args:
+      - type: any
+  IsEntityAVehicle:
+    args:
+      - type: any
+  NetworkHasControlOfEntity:
+    args:
+      - type: any
+  NetworkRequestControlOfEntity:
+    args:
+      - type: any
+  DisableControlAction:
+    args:
+      - type: number
+      - type: number
+      - type: bool
+  SetVehicleDoorOpen:
+    args:
+      - type: any
+      - type: number
+      - type: bool
+      - type: bool
+  SetVehicleDoorShut:
+    args:
+      - type: any
+      - type: number
+      - type: bool
+  SetVehicleEngineHealth:
+    args:
+      - type: any
+      - type: number
+  SetVehicleEngineOn:
+    args:
+      - type: any
+      - type: bool
+      - type: bool
+      - type: bool
+  SetVehicleUndriveable:
     args:
       - type: any
       - type: bool

@@ -1,4 +1,4 @@
-std = "lua53+fivem+oxlib+sonar"
+std = "lua52+fivem+oxlib+sonar"
 
 # Exclude FiveM resource manifests — they use a metadata DSL, not runtime Lua.
 exclude = [

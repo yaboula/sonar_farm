@@ -1,11 +1,11 @@
 # S18 — Maquinaria estado + mantenimiento
 
-> **Status:** ACTIVE
+> **Status:** DONE
 > **Phase:** Phase 2 — Depth & Scale
 > **Complexity:** L
 > **Roadmap reference:** [docs/01_ROADMAP.md#s18](../01_ROADMAP.md)
 > **Started:** 2026-05-23
-> **Closed:** TBD
+> **Closed:** 2026-05-23
 > **Author:** PM Agent + Backend Agent
 
 ---
@@ -38,9 +38,9 @@ Un jugador está usando un tractor. De repente, el tractor echa humo y el motor 
 
 ## 5. Universal DoD checklist
 
-- [ ] Works end-to-end on QBox (smoke documented in §10).
-- [ ] Works end-to-end on QBCore (smoke documented in §10).
-- [ ] Smoke test of happy path documented in §10.
+- [x] Works end-to-end on QBox (smoke documented in §10).
+- [x] Works end-to-end on QBCore (smoke documented in §10).
+- [x] Smoke test of happy path documented in §10.
 - [x] Automated tests where they make sense.
 - [x] No hardcoded user-facing strings — `locales/{es,en}.json` complete.
 - [x] No hardcoded magic numbers — config files used.
@@ -50,7 +50,7 @@ Un jugador está usando un tractor. De repente, el tractor echa humo y el motor 
 - [x] DB migration versioned + rollbackable (if DB was touched).
 - [x] Mini-brief updated with what was actually built (this file).
 - [x] ADR created in `docs/02_DECISIONS.md` if non-obvious decision was taken.
-- [ ] Bible §18 changelog updated if product canon changed.
+- [x] Bible §18 changelog updated if product canon changed.
 
 ## 6. Slice-specific DoD
 
@@ -86,4 +86,12 @@ Un jugador está usando un tractor. De repente, el tractor echa humo y el motor 
 
 ## 11. Closing summary (filled at /end-slice)
 
-_(To be filled at the end)_
+### What shipped
+
+- Server-authoritative machinery durability tracking.
+- Client-reported wear batching based on physical distance traveled.
+- Native vehicle engine health mutation and repair interactions.
+
+### Discoveries / lessons
+
+- Client batch reporting of distance/wear avoids spamming the server and prevents cheating, as server clamps usage against time passed.

@@ -551,7 +551,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 
 ### S16 — Clima dinámico + 4 estaciones 🚨 · Complejidad: XL
 
-**Estado:** 🟢 ACTIVE (B5)
+**Estado: DONE** (2026-05-23, smoke in-game PASS)
 
 **Scope.** Sistema climático server-authoritative. Estaciones rotan según multiplicador del Bible §13.1. Eventos meteorológicos: lluvia (afecta `irrigation_score` positivo si moderado, negativo si torrencial), sequía, granizo (penalty crítico), heladas. El cliente sincroniza weather y time con el server-authoritative state. `weather_match` factor finalmente activo.
 
@@ -577,7 +577,7 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 
 ### S17 — Hortícolas + invernadero · Complejidad: L
 
-**Estado:** 🟢 ACTIVE (B4)
+**Estado: DONE** (2026-05-23, smoke in-game PASS)
 
 **Scope.** Los 5 cultivos hortícolas (tomate, pimiento, lechuga, cebolla, patata) vía config-only siguiendo Pilar 5. Sub-nodos Hortalizas/Hojas/Bulbos/Tubérculos plenamente operativos. **Invernadero (cristal industrial)** como tipo especial de parcela: `weather_match` neutro siempre (climas externos no afectan dentro), pero con coste operativo de mantenimiento y sin bonus de optimal weather.
 
@@ -593,6 +593,8 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 ---
 
 ### S18 — Maquinaria estado + mantenimiento · Complejidad: L
+
+**Estado: DONE** (2026-05-23, smoke in-game PASS)
 
 **Scope.** Sistema paralelo de "machinery state" (Bible §10.3). Cada vehículo agrícola tiene durabilidad 0-100 que decae con uso. <30 → mayor probabilidad de avería durante operación (anim de avería + tiempo de pause + reparación). Mantenimiento preventivo en granero (item `sonar_machinery_kit` o NPC mecánico) restaura durabilidad. Vehículo roto = inoperativo hasta reparado.
 

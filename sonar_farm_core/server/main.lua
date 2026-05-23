@@ -1,5 +1,5 @@
 -- ============================================================
--- Farm Sonar — Server entrypoint.
+-- Farm Sonar - Server entrypoint.
 -- ============================================================
 --
 -- S0 scope: just announce the boot. No game logic yet.
@@ -149,6 +149,74 @@ local function get_irrigation_max_charges()
     return math.max(tonumber(Config and Config.Farm and Config.Farm.Irrigation and Config.Farm.Irrigation.tank_max_charges) or 0, 0)
 end
 
+local function get_finance_service()
+    return Sonar and Sonar.Farm and Sonar.Farm.Finance or nil
+end
+
+local function get_machinery_service()
+    return Sonar and Sonar.Farm and Sonar.Farm.MachineryService or nil
+end
+
+local function get_machinery_kit_name()
+    return Config
+        and Config.Farm
+        and Config.Farm.Machinery
+        and Config.Farm.Machinery.Repair
+        and Config.Farm.Machinery.Repair.item_name
+        or 'sonar_machinery_kit'
+end
+
+local function build_greenhouse_maintenance_key(source, plot_id, crop_type)
+    return ('greenhouse_maintenance:%s:%s:%s:%d'):format(tostring(source), tostring(plot_id), tostring(crop_type), os.time())
+end
+
+local function charge_greenhouse_maintenance(source, plot_id, crop_type, plant_policy)
+    local amount = math.max(tonumber(plant_policy and plant_policy.maintenance_cost) or 0, 0)
+    if amount <= 0 then
+        return true, nil
+    end
+
+    local finance = get_finance_service()
+    if not finance or type(finance.Debit) ~= 'function' then
+        return false, 'greenhouse_maintenance_unavailable'
+    end
+
+    local account = tostring(plant_policy.maintenance_account or 'bank')
+    local reason = tostring(plant_policy.maintenance_reason or 'greenhouse_maintenance')
+    local idempotency_key = build_greenhouse_maintenance_key(source, plot_id, crop_type)
+    local ok, result = finance.Debit(source, account, amount, reason, idempotency_key, {
+        plot_id = plot_id,
+        crop_type = crop_type,
+    })
+
+    if not ok then
+        local error_code = type(result) == 'table' and tostring(result.error_code or 'greenhouse_maintenance_failed') or 'greenhouse_maintenance_failed'
+        return false, string.lower(error_code)
+    end
+
+    return true, {
+        amount = amount,
+        account = account,
+        reason = reason,
+        idempotency_key = idempotency_key,
+    }
+end
+
+local function refund_greenhouse_maintenance(source, charged_state)
+    if type(charged_state) ~= 'table' then
+        return
+    end
+
+    local finance = get_finance_service()
+    if not finance or type(finance.Credit) ~= 'function' then
+        return
+    end
+
+    finance.Credit(source, charged_state.account, charged_state.amount, charged_state.reason, charged_state.idempotency_key .. ':refund', {
+        refunded = true,
+    })
+end
+
 local function search_inventory_slots(source, item_name, metadata)
     local ox_inventory = get_ox_inventory()
     if not ox_inventory then
@@ -267,6 +335,55 @@ local function find_first_item_slot(source, item_name)
     end
 
     return nil, 'item_missing'
+end
+
+local function repair_machinery_with_kit(source, plate)
+    if type(source) ~= 'number' or source <= 0 then
+        return { ok = false, error = 'invalid_source' }
+    end
+
+    if type(plate) ~= 'string' or plate == '' then
+        return { ok = false, error = 'invalid_plate' }
+    end
+
+    local machinery_service = get_machinery_service()
+    if not machinery_service or type(machinery_service.Repair) ~= 'function' then
+        return { ok = false, error = 'machinery_unavailable' }
+    end
+
+    local ox_inventory = get_ox_inventory()
+    if not ox_inventory then
+        return { ok = false, error = 'inventory_unavailable' }
+    end
+
+    local kit_item_name = get_machinery_kit_name()
+    local found_slot, slot_error = find_first_item_slot(source, kit_item_name)
+    if not found_slot then
+        return {
+            ok = false,
+            error = slot_error == 'item_missing' and 'machinery_kit_missing' or tostring(slot_error),
+        }
+    end
+
+    local remove_ok, remove_result = pcall(function()
+        return ox_inventory:RemoveItem(source, kit_item_name, 1)
+    end)
+    if not remove_ok or remove_result == false then
+        return { ok = false, error = 'machinery_kit_missing' }
+    end
+
+    local repair_ok, repair_payload, repair_error = machinery_service.Repair(plate)
+    if not repair_ok then
+        pcall(function()
+            ox_inventory:AddItem(source, kit_item_name, 1)
+        end)
+        return { ok = false, error = tostring(repair_error) }
+    end
+
+    return {
+        ok = true,
+        data = repair_payload,
+    }
 end
 
 local function resolve_inventory_batch(source, batch_id, crop_type)
@@ -541,6 +658,15 @@ local function run_npc_buyer_boot()
     return Sonar.Farm.NPCs.Boot()
 end
 
+local function run_machinery_boot()
+    if not Sonar.Farm.Machinery or type(Sonar.Farm.Machinery.Boot) ~= 'function' then
+        log_error(locale('machinery.boot.unavailable'))
+        return false
+    end
+
+    return Sonar.Farm.Machinery.Boot()
+end
+
 local function run_pest_service_boot()
     if not Sonar.Farm.PestService or type(Sonar.Farm.PestService.Boot) ~= 'function' then
         log_error('[pests] boot unavailable. Check fxmanifest.lua server_scripts order.')
@@ -686,18 +812,35 @@ local function register_plot_callbacks()
             return { ok = false, error = 'player_unavailable' }
         end
 
+        local plant_policy = nil
+        if type(Sonar.Farm.CropLifecycle.GetPlantPolicy) == 'function' then
+            local policy_or_error
+            plant_policy, policy_or_error = Sonar.Farm.CropLifecycle.GetPlantPolicy(plot_id, crop_type)
+            if not plant_policy then
+                return { ok = false, error = tostring(policy_or_error) }
+            end
+        end
+
         local ox_inventory = get_ox_inventory()
         if not ox_inventory then
             return { ok = false, error = 'inventory_unavailable' }
         end
 
         local seed_item_name = ('sonar_seed_%s'):format(crop_type)
+        local charged_greenhouse = nil
+
+        local charge_ok, charge_or_error = charge_greenhouse_maintenance(source, plot_id, crop_type, plant_policy)
+        if not charge_ok then
+            return { ok = false, error = tostring(charge_or_error) }
+        end
+        charged_greenhouse = charge_or_error
 
         local remove_ok, remove_result = pcall(function()
             return ox_inventory:RemoveItem(source, seed_item_name, 1)
         end)
 
         if not remove_ok or remove_result == false then
+            refund_greenhouse_maintenance(source, charged_greenhouse)
             return { ok = false, error = 'seed_missing' }
         end
 
@@ -706,6 +849,7 @@ local function register_plot_callbacks()
             pcall(function()
                 ox_inventory:AddItem(source, seed_item_name, 1)
             end)
+            refund_greenhouse_maintenance(source, charged_greenhouse)
             return { ok = false, error = tostring(crop_or_error) }
         end
 
@@ -963,6 +1107,29 @@ local function register_plot_callbacks()
         return pest_factor.GetStatus(plot_id)
     end)
 
+    lib.callback.register('sonar:farm:climate:get_state', function()
+        local climate_service = Sonar and Sonar.Farm and Sonar.Farm.ClimateService or nil
+        if not climate_service or type(climate_service.GetState) ~= 'function' then
+            return nil
+        end
+
+        local state = climate_service.GetState()
+        if state then
+            return state
+        end
+
+        if type(climate_service.Boot) == 'function' then
+            local boot_ok = pcall(climate_service.Boot)
+            if not boot_ok then
+                return nil
+            end
+
+            return climate_service.GetState()
+        end
+
+        return nil
+    end)
+
     lib.callback.register('sonar:farm:pest:get_active', function(source)
         if source <= 0 or not Sonar.Farm.PestService or type(Sonar.Farm.PestService.GetActivePests) ~= 'function' then
             return {}
@@ -1032,6 +1199,34 @@ local function register_sale_callbacks()
                 payout = payout,
             },
         }
+    end)
+end
+
+local function register_machinery_callbacks()
+    if not lib or not lib.callback or type(lib.callback.register) ~= 'function' then
+        log_error('ox_lib callback registry unavailable. Machinery callbacks were not registered.')
+        return
+    end
+
+    lib.callback.register('sonar:farm:machinery:report_usage', function(source, plate, amount, model)
+        local machinery_service = get_machinery_service()
+        if not machinery_service or type(machinery_service.RecordUsage) ~= 'function' then
+            return { ok = false, error = 'machinery_unavailable' }
+        end
+
+        local usage_ok, state, usage_error = machinery_service.RecordUsage(plate, tonumber(amount), model)
+        if not usage_ok then
+            return { ok = false, error = tostring(usage_error) }
+        end
+
+        return {
+            ok = true,
+            data = state,
+        }
+    end)
+
+    lib.callback.register('sonar:farm:server:repair_machinery', function(source, plate)
+        return repair_machinery_with_kit(source, plate)
     end)
 end
 
@@ -1118,6 +1313,8 @@ local function register_plot_event_relays()
         'sonar:farm:pest:appeared',
         'sonar:farm:pest:treated',
         'sonar:farm:pest:severe',
+        'sonar:farm:machinery:broke_down',
+        'sonar:farm:machinery:repaired',
     }
 
     for index = 1, #relay_events do
@@ -1127,6 +1324,10 @@ local function register_plot_event_relays()
         end)
     end
 end
+
+RegisterNetEvent('sonar:farm:server:repair_machinery', function(plate)
+    repair_machinery_with_kit(source, plate)
+end)
 
 register_plot_event_relays()
 
@@ -1192,13 +1393,23 @@ AddEventHandler('onResourceStart', function(resource_name)
     -- domain is temporarily misconfigured during development.
     run_quality_boot()
     run_offline_reconcile_boot()
+    if Sonar.Farm.ClimateService and type(Sonar.Farm.ClimateService.Boot) == 'function' then
+        local climate_ok, climate_result = pcall(Sonar.Farm.ClimateService.Boot)
+        if not climate_ok or climate_result ~= true then
+            log_error(('[climate] boot failed: %s'):format(tostring(climate_result)))
+        end
+    else
+        log_error('[climate] boot unavailable. Check fxmanifest.lua server_scripts order.')
+    end
     run_lifecycle_boot()
     run_storage_boot()
     run_npc_buyer_boot()
+    run_machinery_boot()
     run_pest_service_boot()
 
     register_plot_callbacks()
     register_sale_callbacks()
+    register_machinery_callbacks()
     register_storage_swap_hook()
 
     if Config and Config.Farm and Config.Farm.Debug then

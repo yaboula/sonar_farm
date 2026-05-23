@@ -26,10 +26,15 @@ local function get_pest_service()
     return Sonar and Sonar.Farm and Sonar.Farm.PestService or nil
 end
 
+local function get_climate_service()
+    return Sonar and Sonar.Farm and Sonar.Farm.ClimateService or nil
+end
+
 local function run_tick()
     local db = get_db()
     local lifecycle = get_lifecycle()
     local pest_service = get_pest_service()
+    local climate_service = get_climate_service()
     if not db or not lifecycle or type(lifecycle.AdvanceStage) ~= 'function' then
         return
     end
@@ -49,13 +54,31 @@ local function run_tick()
         end
     end
 
+    local active_crops = db.rows([[
+        SELECT
+            c.`plot_id`,
+            c.`crop_type`,
+            c.`stage`,
+            p.`plot_type`,
+            q.`irrigation`,
+            q.`weather_match`
+        FROM `sonar_farm_crops` c
+        INNER JOIN `sonar_farm_plots` p
+            ON p.`plot_id` = c.`plot_id`
+        LEFT JOIN `sonar_farm_quality_tracking` q
+            ON q.`plot_id` = c.`plot_id`
+        WHERE c.`stage` < 4
+        ORDER BY c.`next_stage_ts` ASC
+    ]], {}) or {}
+
+    if climate_service and type(climate_service.Tick) == 'function' then
+        local ok, result = pcall(climate_service.Tick, active_crops, now_ts)
+        if not ok then
+            print(('[sonar_farm_core][lifecycle][scheduler][ERROR] %s'):format(tostring(result)))
+        end
+    end
+
     if pest_service and type(pest_service.TickCrops) == 'function' then
-        local active_crops = db.rows([[
-            SELECT `plot_id`, `crop_type`, `stage`
-            FROM `sonar_farm_crops`
-            WHERE `stage` < 4
-            ORDER BY `next_stage_ts` ASC
-        ]], {}) or {}
         local ok, result = pcall(pest_service.TickCrops, active_crops)
         if not ok then
             print(('[sonar_farm_core][lifecycle][scheduler][ERROR] %s'):format(tostring(result)))

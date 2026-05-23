@@ -21,6 +21,15 @@ Config.Farm.Crops.corn = {
     fallow_cooldown_seconds = 3600,
     freshness_decay_rate_per_h = 2,
     seed_quality_default = 70,
+    optimal_seasons = { 'spring', 'summer' },
+    preferred_weather = {
+        clear = 95,
+        light_rain = 85,
+        torrential_rain = 50,
+        drought = 25,
+        hail = 15,
+        frost = 10,
+    },
     npk_optimal = { n = 70, p = 35, k = 55 },
     fertilization = {
         optimal_items = { 'sonar_fertilizer_npk', 'sonar_fertilizer_k' },

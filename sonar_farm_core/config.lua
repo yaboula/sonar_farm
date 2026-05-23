@@ -78,9 +78,22 @@ Config.Farm.NPCs = Config.Farm.NPCs or {}
 Config.Farm.NPCs.ValidQualityGrades = Config.Farm.NPCs.ValidQualityGrades or {}
 Config.Farm.NPCs.buyers = Config.Farm.NPCs.buyers or {}
 
+Config.Farm.Greenhouse = {
+    PlotTypes = {
+        greenhouse = true,
+    },
+    WeatherNeutralScore = 70,
+    Maintenance = {
+        CostPerCycle = 25.0,
+        Account = 'bank',
+        Reason = 'greenhouse_maintenance',
+    },
+}
+
 Config.Farm.Finance = Config.Farm.Finance or {}
 Config.Farm.Finance.AmountPrecision = Config.Farm.Finance.AmountPrecision or 2
 
+Config.Farm.TimeMultiplier = Config.Farm.TimeMultiplier or 1.0
 Config.Farm.Scheduler = { TickSeconds = 30 }
 
 Config.Farm.Persistence = {

@@ -523,6 +523,7 @@ lifecycle scheduler tick in `server/lifecycle/scheduler.lua`.
 **Decision:** **B**. PestService is a passive receiver called from the lifecycle scheduler.
 
 **Consequences.**
+
 - Pest spawn probability is per 30s tick (default). If the scheduler tick rate changes, pest
   probability implicitly changes. Document `spawn_probability_per_tick` in config comment.
 - Future S16 climate events may want independent tick cadence; that slice may need its own thread
@@ -542,7 +543,7 @@ pest goes untreated beyond `Config.Farm.Pests.SeverityHours`. Two ways to persis
 **Options considered:**
 
 - **A** — Infer severity from `pest_detected_ts` age at query time: `IF(pest_detected_ts IS NOT
-  NULL AND UNIX_TIMESTAMP() - pest_detected_ts > severity_hours * 3600, 'severe', 'detected')`.
+NULL AND UNIX_TIMESTAMP() - pest_detected_ts > severity_hours * 3600, 'severe', 'detected')`.
   Pros: no migration; single source of truth. Cons: every `GetStatus` call re-evaluates severity;
   FSM transition moment is ambiguous between ticks; S11 offline reconciliation would need to
   replicate the same inference logic, creating duplication.
@@ -554,6 +555,7 @@ pest goes untreated beyond `Config.Farm.Pests.SeverityHours`. Two ways to persis
 **Decision:** **B**. Explicit column gives a clear, cheap, auditable FSM state.
 
 **Consequences.**
+
 - Migration `011_pest_severity.sql` required (already shipped in B3).
 - Any code that evaluates pest severity must write to this column, not just rely on timestamp age.
 - If the severity threshold config changes at runtime, existing 'detected' pests are re-evaluated
@@ -567,7 +569,7 @@ pest goes untreated beyond `Config.Farm.Pests.SeverityHours`. Two ways to persis
 **Status:** ACCEPTED
 **Origin slice:** S11
 
-**Context.** Bible §13.2 requires offline reconciliation on boot with capped negative accumulation for missed irrigation and untreated pests. Current B1 quality rows only stored current factor scores (`irrigation`, `pest_impact`) but not *when* an offline risk started. Inferring risk start from the score alone is ambiguous and non-idempotent.
+**Context.** Bible §13.2 requires offline reconciliation on boot with capped negative accumulation for missed irrigation and untreated pests. Current B1 quality rows only stored current factor scores (`irrigation`, `pest_impact`) but not _when_ an offline risk started. Inferring risk start from the score alone is ambiguous and non-idempotent.
 
 **Options considered:**
 
@@ -605,3 +607,65 @@ pest goes untreated beyond `Config.Farm.Pests.SeverityHours`. Two ways to persis
 - This is an explicit exception, not a lowering of the bar for future slices.
 - When QBCore smoke is later executed, both mini-briefs should be updated and this ADR can be superseded or retired by a follow-up note.
 - B3 planning/execution can proceed without keeping S11/S12 artificially active.
+
+---
+
+## ADR-018 — Model greenhouse gameplay as a lifecycle plant policy plus weather-factor override
+
+**Date:** 2026-05-22
+**Status:** ACCEPTED
+**Origin slice:** S17
+
+**Context.** Roadmap S17 requires greenhouse plots to keep `weather_match` neutral at all times, never gain an outdoor optimal-weather bonus, and apply an operating maintenance cost. Before S17, the runtime already validated `plot_types_allowed` during planting, but greenhouse behavior itself was only implicit in config and not enforced by any authoritative server rule.
+
+**Options considered:**
+
+- **A** — Scatter greenhouse checks across `server/main.lua`, `quality/calculator.lua`, and future climate code. Pros: quick local edits. Cons: policy becomes duplicated and easy to forget when more factors arrive in S16.
+- **B** — Centralize greenhouse behavior as a reusable plant policy in `crop_lifecycle_service.lua`, force the neutral score in `server/quality/factors/weather.lua`, and charge maintenance once per crop cycle at planting through the finance layer. Pros: server-authoritative, config-driven, and aligned with Roadmap S17 plus Bible §3 Pillar 5. Cons: touches both lifecycle and finance-adjacent code paths.
+- **C** — Defer all greenhouse behavior until S16 climate implementation. Pros: less code now. Cons: leaves S17 partially shipped and violates the slice scope.
+
+**Decision:** **B**. S17 introduces `Config.Farm.Greenhouse` as the single source of tunables, exposes `CropLifecycle.GetPlantPolicy(plot_id, crop_type)` for authoritative greenhouse policy lookup, seeds greenhouse quality rows with the neutral weather score during planting, clamps `WeatherFactor` track/get to that neutral score for greenhouse plots, and charges greenhouse operating cost once per planting cycle through `Finance.Debit` with refund on rollback.
+
+**Consequences.**
+
+- Greenhouse behavior is explicit and reusable before S16 dynamic weather lands.
+- The operating cost is deterministic and charged server-side through the existing finance compatibility layer, without introducing a new standalone banking dependency.
+- Future greenhouse-specific controls can extend the same policy surface instead of adding ad-hoc conditionals in callers.
+
+---
+
+## ADR-020 — Machinery wear uses integration-reported usage batches with server clamps
+
+**Date:** 2026-05-23
+**Status:** ACCEPTED
+**Origin slice:** S18
+
+**Context.** Roadmap S18 requires agricultural vehicles to lose durability with use and to become
+breakdown-prone below a critical threshold. The slice brief explicitly allowed choosing either a
+pure server-time approach or a client/integration-reported usage model. In FiveM, the server is
+authoritative for gameplay state, but only the client reliably knows short-interval driving time,
+distance, and whether the local player is actually operating a specific vehicle at that moment.
+
+**Options considered:**
+
+- **A** — Decrement durability on a pure server timer for all registered machinery. Pros: simpler
+  backend contract; no client report event needed. Cons: inaccurate for parked vehicles; adds a
+  polling loop or scheduled scan that punishes idle machinery; weak match for Bible §3 Pillar 1
+  because the server would still be guessing real usage.
+- **B** — Let the integration layer batch real driving usage and report it to the server, while the
+  server validates plate/model, clamps the accepted report size, applies config-driven wear, and is
+  the only authority that persists durability / broken state. Pros: accurate to real usage; no
+  per-frame or global server polling; aligned with Bible §3 Pillar 1 and anti-pattern §4. Cons:
+  requires an explicit client→server contract for S18 integration.
+
+**Decision:** **B**. S18 backend accepts batched usage reports through the machinery service. The
+server clamps accepted report sizes via `Config.Farm.Machinery.Usage`, validates the machinery
+model against the config registry, persists durability by `plate`, and emits the canonical
+`sonar:farm:machinery:broke_down` / `sonar:farm:machinery:repaired` events.
+
+**Consequences.**
+
+- Integration should report coarse batched usage, not per-frame spam.
+- The server remains authoritative for durability, breakdown, and repair state.
+- If a vehicle has never been seen before, the first usage report must include a valid machinery
+  model so the backend can seed authoritative state without trusting arbitrary downstream callers.

@@ -6,7 +6,7 @@ use_experimental_fxv2_oal 'yes'
 name        'sonar_farm_core'
 author      'Gusto (Farm Sonar)'
 version     '0.1.0'
-description 'Farm Sonar — premium farming simulation core (server + client logic). Part of the Sonar product family.'
+description 'Farm Sonar Ã¢â‚¬â€ premium farming simulation core (server + client logic). Part of the Sonar product family.'
 repository  'https://github.com/yaboula/sonar_farm'
 
 -- ============================================================
@@ -46,12 +46,20 @@ shared_scripts {
     'config/plots.lua',
     'config/storage.lua',
     'config/npcs.lua',
+    'config/machinery.lua',
     'config/irrigation.lua',
+    'config/climate.lua',
+    'config/climate_client.lua',
     'config/items.lua',
     'config/verified_props.lua',
     'config/crops/wheat.lua',
     'config/crops/corn.lua',
     'config/crops/barley.lua',
+    'config/crops/tomato.lua',
+    'config/crops/pepper.lua',
+    'config/crops/lettuce.lua',
+    'config/crops/onion.lua',
+    'config/crops/potato.lua',
     'shared/items/item_registry.lua',
 }
 
@@ -62,13 +70,13 @@ server_scripts {
     '@oxmysql/lib/MySQL.lua',
     'server/db/db.lua',
     'server/db/migrator.lua',
-    -- Finance domain: adapter registry → movement ledger → facade → boot coordinator.
+    -- Finance domain: adapter registry Ã¢â€ â€™ movement ledger Ã¢â€ â€™ facade Ã¢â€ â€™ boot coordinator.
     -- All four must load before server/main.lua (the boot orchestrator).
     'server/finance/adapters/native_bridge.lua',
     'server/finance/movement_service.lua',
     'server/finance/money_adapter.lua',
     'server/finance/init.lua',
-    -- Plots domain: service first → boot coordinator second.
+    -- Plots domain: service first Ã¢â€ â€™ boot coordinator second.
     -- Both must load before server/main.lua so it can call
     -- Sonar.Farm.Plots.Boot() after run_persistence_boot().
     'server/plots/plot_service.lua',
@@ -77,7 +85,10 @@ server_scripts {
     'server/storage/init.lua',
     'server/npcs/npc_buyer_service.lua',
     'server/npcs/init.lua',
-    -- Quality domain: factors first → calculator → boot.
+    'server/machinery/machinery_service.lua',
+    'server/machinery/init.lua',
+    'server/climate/climate_service.lua',
+    -- Quality domain: factors first Ã¢â€ â€™ calculator Ã¢â€ â€™ boot.
     'server/quality/factors/soil.lua',
     'server/quality/factors/irrigation.lua',
     'server/quality/factors/pest.lua',
@@ -91,7 +102,7 @@ server_scripts {
     'server/persistence/boot_reconciler.lua',
     -- Items domain.
     'server/items/physical_item.lua',
-    -- Lifecycle domain: service → scheduler.
+    -- Lifecycle domain: service Ã¢â€ â€™ scheduler.
     'server/lifecycle/crop_lifecycle_service.lua',
     'server/lifecycle/scheduler.lua',
     'server/pests/pest_service.lua',
@@ -107,6 +118,9 @@ server_scripts {
     'server/admin/debug_reset_plot.lua',
     'server/admin/debug_plot_status.lua',
     'server/admin/debug_simulate_offline.lua',
+    'server/admin/debug_machinery_breakdown.lua',
+    'server/admin/debug_climate.lua',
+    'server/admin/debug_give_batch.lua',
 }
 
 -- ============================================================
@@ -114,6 +128,10 @@ server_scripts {
 -- ============================================================
 client_scripts {
     'client/main.lua',
+    'client/machinery/breakdown.lua',
+    'client/machinery/interactions.lua',
+    'client/machinery/wear_tracker.lua',
+    'client/climate/weather_sync.lua',
     'client/plot_renderer.lua',
     'client/plot_interactions.lua',
     'client/irrigation_interactions.lua',
@@ -143,6 +161,8 @@ sonar_farm_migration 'database/migrations/008_storage.sql'
 sonar_farm_migration 'database/migrations/009_finance_amount_decimal.sql'
 sonar_farm_migration 'database/migrations/010_quality_offline_tracking.sql'
 sonar_farm_migration 'database/migrations/011_pest_severity.sql'
+sonar_farm_migration 'database/migrations/012_climate.sql'
+sonar_farm_migration 'database/migrations/013_machinery.sql'
 
 -- ============================================================
 -- Lua language server: opt-in to safer globals

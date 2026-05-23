@@ -21,6 +21,15 @@ Config.Farm.Crops.wheat = {
     fallow_cooldown_seconds = 3600,
     freshness_decay_rate_per_h = 2,
     seed_quality_default = 70,
+    optimal_seasons = { 'autumn', 'winter' },
+    preferred_weather = {
+        clear = 80,
+        light_rain = 95,
+        torrential_rain = 55,
+        drought = 40,
+        hail = 20,
+        frost = 70,
+    },
     npk_optimal = { n = 60, p = 40, k = 50 },
     fertilization = {
         optimal_items = { 'sonar_fertilizer_npk', 'sonar_fertilizer_n' },

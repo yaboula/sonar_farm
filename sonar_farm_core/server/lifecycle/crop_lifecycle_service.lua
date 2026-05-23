@@ -41,6 +41,49 @@ local function get_physical_item()
     return Sonar and Sonar.Farm and Sonar.Farm.PhysicalItem or nil
 end
 
+local function get_greenhouse_config()
+    return Config and Config.Farm and Config.Farm.Greenhouse or {}
+end
+
+local function is_greenhouse_plot_type(plot_type)
+    local greenhouse_config = get_greenhouse_config()
+    local plot_types = greenhouse_config.PlotTypes or {}
+    return plot_types[plot_type] == true
+end
+
+local function get_greenhouse_weather_score()
+    local greenhouse_config = get_greenhouse_config()
+    local configured_score = tonumber(greenhouse_config.WeatherNeutralScore)
+    if configured_score then
+        if configured_score < 0 then
+            return 0
+        end
+        if configured_score > 100 then
+            return 100
+        end
+        return math.floor(configured_score + 0.5)
+    end
+
+    local quality_config = Config and Config.Farm and Config.Farm.Quality or {}
+    local defaults = quality_config.NeutralDefaults or {}
+    return math.floor((tonumber(defaults.weather_match) or 70) + 0.5)
+end
+
+local function build_plot_policy(plot)
+    local greenhouse_config = get_greenhouse_config()
+    local maintenance = greenhouse_config.Maintenance or {}
+    local greenhouse = type(plot) == 'table' and is_greenhouse_plot_type(plot.plot_type)
+
+    return {
+        plot_type = plot and plot.plot_type or nil,
+        greenhouse = greenhouse == true,
+        weather_override = greenhouse and get_greenhouse_weather_score() or nil,
+        maintenance_cost = greenhouse and math.max(tonumber(maintenance.CostPerCycle) or 0, 0) or 0,
+        maintenance_account = greenhouse and tostring(maintenance.Account or 'bank') or nil,
+        maintenance_reason = greenhouse and tostring(maintenance.Reason or 'greenhouse_maintenance') or nil,
+    }
+end
+
 local function safe_trigger(event_name, payload)
     if type(TriggerEvent) == 'function' then
         TriggerEvent(event_name, payload)
@@ -103,11 +146,12 @@ end
 local function quality_tracking_defaults(plot, crop_config)
     local quality_config = Config and Config.Farm and Config.Farm.Quality or {}
     local defaults = quality_config.NeutralDefaults or {}
+    local plot_policy = build_plot_policy(plot)
     return {
         soil_score = plot.soil_score or 50,
         irrigation = defaults.irrigation or 70,
         pest_impact = defaults.pest_impact or 100,
-        weather_match = defaults.weather_match or 70,
+        weather_match = plot_policy.weather_override or defaults.weather_match or 70,
         seed_quality = crop_config.seed_quality_default or defaults.seed_quality or 70,
         fertilization = defaults.fertilization or 70,
         harvest_timing = 100,
@@ -141,6 +185,32 @@ function CropLifecycle.GetActiveCrop(plot_id)
     end
 
     return fetch_active_crop(plot_id)
+end
+
+function CropLifecycle.GetPlantPolicy(plot_id, crop_type)
+    if not is_string_non_empty(plot_id) then
+        return nil, 'plot_id must be a non-empty string'
+    end
+
+    if not is_string_non_empty(crop_type) then
+        return nil, 'crop_type must be a non-empty string'
+    end
+
+    local crop_config = get_crop_config(crop_type)
+    if not crop_config then
+        return nil, ('crop_type "%s" is not configured'):format(crop_type)
+    end
+
+    local plot = get_plot_service().GetPlot(plot_id)
+    if not plot then
+        return nil, ('plot "%s" not found'):format(plot_id)
+    end
+
+    if not crop_allows_plot_type(crop_config, plot.plot_type) then
+        return nil, ('crop_type "%s" cannot be planted on plot_type "%s"'):format(crop_type, plot.plot_type)
+    end
+
+    return build_plot_policy(plot), nil
 end
 
 function CropLifecycle.Plant(plot_id, player_cid, crop_type)

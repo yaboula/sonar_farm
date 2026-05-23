@@ -5,6 +5,7 @@ Sonar.Farm.Items = Sonar.Farm.Items or {}
 local function build_registry()
     local registry = {}
     local crops = Config and Config.Farm and Config.Farm.Crops or {}
+    local item_crops = Config and Config.Farm and Config.Farm.Items and Config.Farm.Items.crops or {}
     local item_tools = Config and Config.Farm and Config.Farm.Items and Config.Farm.Items.tools or {}
 
     for crop_type, crop_config in pairs(crops) do
@@ -13,24 +14,28 @@ local function build_registry()
             local batch_name = ('sonar_batch_%s'):format(crop_type)
             local seed_weight_g = math.floor(tonumber(crop_config.seed_weight_g) or 0)
             local batch_weight_g = math.floor(tonumber(crop_config.harvest_yield_g) or 0)
+            local crop_item_config = type(item_crops[crop_type]) == 'table' and item_crops[crop_type] or {}
+            local seed_item_config = type(crop_item_config.seed) == 'table' and crop_item_config.seed or {}
+            local batch_item_config = type(crop_item_config.batch) == 'table' and crop_item_config.batch or {}
 
             registry[seed_name] = {
                 name = seed_name,
-                label = ('items.%s.label'):format(seed_name),
+                label = seed_item_config.label or ('items.%s.label'):format(seed_name),
                 weight = seed_weight_g,
-                stack = true,
-                close = true,
-                description = ('items.%s.desc'):format(seed_name),
+                stack = seed_item_config.stack ~= false,
+                close = seed_item_config.close ~= false,
+                description = seed_item_config.description or ('items.%s.desc'):format(seed_name),
+                client = seed_item_config.client,
             }
 
             registry[batch_name] = {
                 name = batch_name,
-                label = ('items.%s.label'):format(batch_name),
+                label = batch_item_config.label or ('items.%s.label'):format(batch_name),
                 weight = batch_weight_g,
-                stack = false,
-                close = false,
-                description = ('items.%s.desc'):format(batch_name),
-                client = {
+                stack = batch_item_config.stack == true,
+                close = batch_item_config.close == true,
+                description = batch_item_config.description or ('items.%s.desc'):format(batch_name),
+                client = batch_item_config.client or {
                     image = batch_name,
                 },
             }
