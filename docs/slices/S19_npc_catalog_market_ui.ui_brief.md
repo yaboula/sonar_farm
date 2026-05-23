@@ -82,37 +82,85 @@ Custom one-off:
 ## v0.dev prompt to copy / paste
 
 ```text
-Design a "Market" dashboard screen for a FiveM farming management app called Farm Sonar.
+You are designing a single screen of a premium product called **Farm Sonar**, a calm-tech management OS for farmers in a roleplay world. Think of the visual quality bar as: an iOS native app, a Vercel dashboard, a Linear project view, a Climate FieldView pro panel. Quiet, confident, intentional. NOT a "generic AI dashboard" with random gradients, glassy cards, neon stats and emoji.
 
-VIEWPORT: 1920x1080 laptop fullscreen, with a fixed left sidebar (240px) and topbar (64px) already provided by the shell — design only the inner content area.
+# THE PRODUCT IN ONE PARAGRAPH
 
-VISUAL CANON (mandatory):
-- AgriSphere Light Mode, calm-tech, iPad-like.
-- Background: #D9EAE3. Surface (card bg): #FFFFFF.
-- Foreground text: #050505. Muted: #969C9C. Border: rgba(150,156,156,0.2) at 1px.
-- The ONLY saturated accent is lime #B6FB63 — use it sparingly, only on the refresh button and the LimePulse refresh ring.
-- Surfaces are flat minimalist: NO shadows, NO glassmorphism, NO blur. Subtle 1px border only.
-- Typography: Geist Sans for UI, JetBrains Mono for IDs and timestamps. Weights 400/500/600 only. Never 700+.
-- Bento layout: 12-col grid, 16px gap, rounded-2xl corners (16-20px).
-- Quality letters S/A/B/C/D color-coded as paired bg+text: S #E8F7E0/#2F6B1F, A #E8F7E0/#2F6B1F, B #FFF4D6/#7A5200, C #FDE3E3/#8A1F1F, D #FDE3E3/#8A1F1F. Use them as small chips.
-- Icons: Lucide React, stroke-width 1.5, size 16 or 20.
+Farm Sonar is the management OS a serious farmer opens on their laptop at 7am with their coffee. It tracks plots, crops, climate, machinery, sales, and contracts. The product feels like Apple-Notes-meets-Bloomberg-for-agriculture: minimalist, dense when it needs to be, beautiful in stillness. The farmer trusts it the way they trust their tractor.
 
-CONTENT:
-- Top strip: full-width card showing "Day 47 · Spring" with a small leaf icon, plus "8 buyers active · 2 offline" right-aligned, plus a refresh button on the far right (ghost button with refresh-cw icon, lime accent on hover).
-- Bento grid of 8 NPC cards (3 columns at 1920px). Each card shows:
-  - Top row: NPC name in 16px semibold + role tag chip ("Mill", "Supermarket", "Restaurant", "Distributor", "Cannery") + a small distance hint in mono ("Sandy Shores · 320m").
-  - Middle: list of up to 3 accepted crops, each row = crop icon (Lucide wheat/leaf/etc) + crop name + quality min chip + today's price in mono right-aligned ("$0.42/g").
-  - Bottom: a thin Progress bar labelled "Volume today" with mono numbers "1240g / 5000g" and a "Contracts: Coming Soon" disabled badge.
-- Inside the card, last-update mono timestamp tucked bottom-right ("12:42:08").
+# THIS SCREEN
 
-STATES TO SHOW (3 separate frames):
-1. Loaded state with 8 NPC cards populated.
-2. Loading state with 8 Skeleton cards.
-3. Empty state: full-grid centered illustration + "All buyers are offline right now" + "Check back at next in-game day".
+The "Market" view. The farmer's morning check-in. They want to answer ONE question in under 5 seconds: "where should I sell my harvest today, and to whom?".
 
-OUT OF SCOPE: do not design contract listing, no charts, no Tablet variant.
+There are roughly 6 to 10 NPC buyers in the city (a mill, a supermarket chain, a fine-dining restaurant, a regional distributor, a cannery, etc.). Each buyer has its own personality: which crops it accepts, the minimum quality it tolerates, the price it pays today, how much volume it can absorb today, and whether it offers recurring contracts.
 
-Output: a clean v0.dev React + Tailwind component using shadcn/ui primitives where possible (Card, Badge, Button, Progress, Skeleton, Tooltip). Use placeholder data.
+The farmer compares them, picks one, mentally commits, closes the laptop, and walks out to the field. They will physically drive to the NPC to sell (that happens out of this screen). So this view is purely informational + planning. No selling, no signing, no charts (those come in later product iterations).
+
+# WHO THIS SCREEN SERVES
+
+A 30-something player who already has muscle memory for SaaS products. They appreciate restraint. They will use this screen every single in-game day for hundreds of hours. It must hold up under repetition. It must reward a second look.
+
+# BRAND (NON-NEGOTIABLE)
+
+Use these tokens exactly. Do not invent colors, do not "improve" them, do not add gradients.
+
+- Background canvas: #D9EAE3 (a soft sage green, our signature).
+- Surface (cards, panels): #FFFFFF.
+- Foreground text: #050505. Muted text: #969C9C.
+- Borders: rgba(150, 156, 156, 0.2) at 1px. No shadows. No glass. No blur.
+- Single accent: lime #B6FB63. Use it ONCE or TWICE on the whole screen, on the single most important affordance or the single live signal. Never as decoration.
+- Quality grade chips (when a quality letter appears): S and A use #E8F7E0 background with #2F6B1F text. B uses #FFF4D6 / #7A5200. C and D use #FDE3E3 / #8A1F1F.
+
+Typography:
+- UI: Geist Sans. Weights 400, 500, 600 only. Never 700+.
+- IDs, numbers, prices, timestamps, batch codes: JetBrains Mono.
+
+Geometry:
+- Generous whitespace. Comfortable density, not cramped, not airy-empty.
+- Corner radius 16 to 20px on surfaces.
+- Icons: Lucide React, stroke 1.5, size 16 or 20.
+
+# WHAT THE SCREEN MUST COMMUNICATE
+
+It must let the farmer:
+1. Sense the overall state of the market today, in one glance. Is the day busy? Are there premium opportunities?
+2. Scan buyers and find the best fit for what they have in their silo right now.
+3. Get a feel for each buyer's personality: are they picky? generous? high volume? premium?
+4. Notice changes since the last time they checked (something updated, something is new).
+
+Per buyer the farmer eventually needs to see: name, what kind of business they are, where they are, which crops they accept with which minimum quality and at which price today, how much they can still buy today, and whether contracts are offered. How you compose that is your call.
+
+# THREE STATES
+
+Design all three:
+1. Loaded — populated with 8 buyers (mix of types).
+2. Loading — your interpretation of a calm, on-brand skeleton.
+3. Empty — when no buyer is online right now (it can happen between in-game days).
+
+# CREATIVE FREEDOM
+
+I am NOT prescribing the layout. Surprise me.
+
+- You can use a grid, a list, a hybrid, a mosaic — whatever serves the farmer best.
+- You can introduce one signature visual element (a subtle texture, a hairline, a typographic move, a way of laying out numbers) that becomes the screen's identity. Make it feel like a screen designed by a senior product designer who cares.
+- You can vary card sizes if it helps hierarchy (some buyers may deserve more space, e.g. the top match today).
+- You can introduce a single ambient micro-detail (a tiny live tick, a discreet pulse) — but only one, and only on the lime accent.
+
+# AVOID THE "AI DASHBOARD" LOOK
+
+Do not produce:
+- Big rainbow gradient hero blocks.
+- Glass-morphism / frosted blur cards.
+- Card grids where every card looks identical and dead.
+- "Insight cards" with giant numbers and emojis.
+- Decorative dotted backgrounds, decorative arrows, decorative anything.
+- Two competing accent colors. There is exactly one (lime), used once.
+
+# DELIVERABLE
+
+React + Tailwind, using shadcn/ui primitives where they earn their place (Card, Badge, Button, Progress, Skeleton, Tooltip, Drawer). Use realistic Spanish/English-mixed placeholder buyer names that sound like a roleplay city (Molino Pedro, Supermercado Casals, Restaurante La Plaza, Distribuidora Vega, Conservera del Sur, etc.). Realistic crop names: wheat, corn, barley, tomato, pepper, lettuce, onion, potato.
+
+Make me want to use this screen every morning.
 ```
 
 ## Review checklist (before approving v0 mockup)
