@@ -621,6 +621,8 @@ Todo slice, sin excepción, debe cumplir antes de marcarse `DONE`:
 
 ### S19 — Catálogo completo NPCs + UI Mercado ⭐ · Complejidad: L
 
+**Estado:** 🟢 ACTIVE (Fase 3)
+
 **Scope.** Los 6-10 NPCs compradores del Bible §12. Personalidad (cultivos preferidos, calidad mínima, volumen, frecuencia, rango precio) en `config/npcs.lua`. Cada NPC con vendor marker físico distintivo (ped + ubicación). App **Market** en Laptop con cards Bento por NPC: lo que paga hoy por cada cultivo × calidad, su threshold, su disponibilidad para contratos.
 
 **Deliverables.**
