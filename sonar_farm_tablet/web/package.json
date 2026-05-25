@@ -1,5 +1,5 @@
 {
-    "name": "@sonar/farm-tablet-web",
+    "name": "@farm/tablet",
     "private": true,
     "version": "0.0.1",
     "type": "module",
@@ -12,7 +12,8 @@
         "lint:fix": "eslint . --fix",
         "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\"",
         "format:check": "prettier --check \"src/**/*.{ts,tsx,css,json}\"",
-        "type-check": "tsc --noEmit"
+        "type-check": "tsc --noEmit",
+        "typecheck": "tsc --noEmit"
     },
     "dependencies": {
         "lucide-react": "^1.16.0",

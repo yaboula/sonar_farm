@@ -81,6 +81,192 @@
             "retry": "Try again"
         }
     },
+    "crops": {
+        "wheat": {
+            "name": "Wheat"
+        },
+        "corn": {
+            "name": "Corn"
+        },
+        "barley": {
+            "name": "Barley"
+        },
+        "tomato": {
+            "name": "Tomato"
+        },
+        "pepper": {
+            "name": "Pepper"
+        },
+        "lettuce": {
+            "name": "Lettuce"
+        },
+        "onion": {
+            "name": "Onion"
+        },
+        "potato": {
+            "name": "Potato"
+        }
+    },
+    "npcs": {
+        "buyers": {
+            "byr_molino_pedro": {
+                "name": "Molino Pedro"
+            },
+            "byr_supermercado_casals": {
+                "name": "Casals Supermarket"
+            },
+            "byr_restaurante_la_plaza": {
+                "name": "La Plaza Restaurant"
+            },
+            "byr_distribuidora_vega": {
+                "name": "Vega Distribution"
+            },
+            "byr_conservera_del_sur": {
+                "name": "Southern Cannery"
+            },
+            "byr_mercado_verde": {
+                "name": "Mercado Verde"
+            },
+            "byr_granero_ortega": {
+                "name": "Ortega Feed Barn"
+            },
+            "byr_hotel_aurora": {
+                "name": "Aurora Hotel"
+            }
+        },
+        "kinds": {
+            "buyer": "Buyer",
+            "mill": "Mill",
+            "supermarket": "Supermarket",
+            "restaurant": "Restaurant",
+            "distributor": "Distributor",
+            "canner": "Cannery",
+            "greengrocer": "Greengrocer",
+            "feed_wholesaler": "Feed wholesaler",
+            "hospitality": "Hospitality"
+        },
+        "districts": {
+            "grapeseed_industrial": "Grapeseed Industrial",
+            "paleto_commercial": "Paleto Commercial",
+            "sandy_central": "Sandy Central",
+            "harmony_logistics": "Harmony Logistics",
+            "cypress_flats_food": "Cypress Flats Food District",
+            "chumash_market": "Chumash Market",
+            "senora_feed": "Senora Feed Route",
+            "vinewood_hospitality": "Vinewood Hospitality"
+        }
+    },
+    "market": {
+        "refresh": "Refresh market",
+        "contracts_open": "Contracts open",
+        "contracts_closed": "Contracts closed",
+        "units": {
+            "eur_per_kg": "€/kg"
+        },
+        "cta": {
+            "set_on_map": "Set on map",
+            "set_on_map_short": "Set on map"
+        },
+        "pulse": {
+            "live": "Live",
+            "day": "Day {{day}}",
+            "no_movements": "No fresh deltas in the last sweep"
+        },
+        "seasons": {
+            "day": "Day {{day}}",
+            "unknown": "Standby"
+        },
+        "delta": {
+            "price_up": "price ↑",
+            "price_down": "price ↓",
+            "volume_up": "capacity ↑",
+            "volume_down": "capacity ↓",
+            "new_contract": "new contract",
+            "stable": "stable"
+        },
+        "header": {
+            "wordmark": "Market.",
+            "description": "Live buyer board for today's harvest. Compare price, quality floor and remaining capacity before you send a batch out.",
+            "stats": {
+                "online": "Online buyers",
+                "premium": "Premium buyers",
+                "contracts": "Contracts open",
+                "top_price": "Top price"
+            }
+        },
+        "featured": {
+            "badge": "Featured buyer",
+            "top_match": "Top match"
+        },
+        "filters": {
+            "search_placeholder": "Search buyer, district or crop",
+            "search_label": "Search buyers",
+            "crops_label": "Crop filters",
+            "all": "All crops"
+        },
+        "grid": {
+            "all_buyers": "{{count}} buyers on the board",
+            "sorted_by": "Sorted by live price signal."
+        },
+        "cards": {
+            "min_quality_tooltip": "Minimum quality {{grade}}",
+            "top_price_today": "Top today for {{crop}}",
+            "accepts_today": "Accepts today",
+            "crops_count": "{{count}} crops",
+            "capacity_remaining_of_total": "{{remaining}} left of {{total}}",
+            "aggregated_capacity_remaining": "Aggregate capacity remaining: {{pct}}%",
+            "ago": "ago",
+            "top_price": "Top price · {{crop}}",
+            "capacity_short": "{{remaining}} left",
+            "capacity_today": "Capacity today",
+            "contracts": "Contracts",
+            "spot_only": "Spot only",
+            "best_price": "Best",
+            "set_on_map_aria": "Set route to {{buyer}}"
+        },
+        "kind_abbr": {
+            "buyer": "BUY",
+            "mill": "MLL",
+            "supermarket": "SUP",
+            "restaurant": "RST",
+            "distributor": "DST",
+            "canner": "CAN",
+            "greengrocer": "GRN",
+            "feed_wholesaler": "FED",
+            "hospitality": "HSP"
+        },
+        "copy": {
+            "buyer_notes": {
+                "byr_molino_pedro": "Pedro keeps the mill running all day. Wheat gets the cleanest fills here and contract windows tend to open early.",
+                "byr_supermercado_casals": "Casals buys steady supermarket volume. Reliable for mixed truckloads when you need predictable turnover.",
+                "byr_restaurante_la_plaza": "La Plaza pays for presentation and freshness. Best suited for premium vegetables on short delivery windows.",
+                "byr_distribuidora_vega": "Vega consolidates for larger routes. Good price bursts appear when logistics lanes open.",
+                "byr_conservera_del_sur": "The cannery absorbs industrial quantities. Lower grades can still move when capacity opens up.",
+                "byr_mercado_verde": "Mercado Verde favors crisp produce and same-day turnover. Strong option for horticultural harvests.",
+                "byr_granero_ortega": "Ortega secures feed supply. Cereals move fast here when other channels cool down.",
+                "byr_hotel_aurora": "Aurora rewards premium kitchen stock. Smaller quotas, but the top-end price can lead the board."
+            }
+        },
+        "empty": {
+            "title": "Market board resting",
+            "body": "The buyer board is between sessions. Fresh offers will light up again at the next market open.",
+            "reopens": "Reopens",
+            "last_close": "Last close",
+            "tip": "Tip: refresh after the next reset or switch crop filters to inspect the last active board.",
+            "next_open_fallback": "06:00",
+            "last_close_fallback": "21:00"
+        },
+        "no_results": {
+            "search_title": "No buyers match this search",
+            "crop_title": "No {{crop}} buyers visible",
+            "crop_body": "Try another crop filter or refresh the board.",
+            "search_body": "We could not match “{{query}}” in buyers, crops or districts."
+        },
+        "footer": {
+            "version": "Buyer signal board",
+            "snapshot": "Snapshot {{snapshot}}"
+        }
+    },
     "demo": {
         "dashboard": {
             "harvestReady": "Harvest ready",

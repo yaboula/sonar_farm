@@ -144,6 +144,53 @@
         },
         "pedro": {
             "name": "Molino Pedro"
+        },
+        "buyers": {
+            "byr_molino_pedro": {
+                "name": "Molino Pedro"
+            },
+            "byr_supermercado_casals": {
+                "name": "Casals Supermarket"
+            },
+            "byr_restaurante_la_plaza": {
+                "name": "La Plaza Restaurant"
+            },
+            "byr_distribuidora_vega": {
+                "name": "Vega Distribution"
+            },
+            "byr_conservera_del_sur": {
+                "name": "Southern Cannery"
+            },
+            "byr_mercado_verde": {
+                "name": "Mercado Verde"
+            },
+            "byr_granero_ortega": {
+                "name": "Ortega Feed Barn"
+            },
+            "byr_hotel_aurora": {
+                "name": "Aurora Hotel"
+            }
+        },
+        "kinds": {
+            "buyer": "Buyer",
+            "mill": "Mill",
+            "supermarket": "Supermarket",
+            "restaurant": "Restaurant",
+            "distributor": "Distributor",
+            "canner": "Cannery",
+            "greengrocer": "Greengrocer",
+            "feed_wholesaler": "Feed Wholesaler",
+            "hospitality": "Hospitality"
+        },
+        "districts": {
+            "grapeseed_industrial": "Grapeseed Industrial",
+            "paleto_commercial": "Paleto Commercial",
+            "sandy_central": "Sandy Central",
+            "harmony_logistics": "Harmony Logistics",
+            "cypress_flats_food": "Cypress Flats Food District",
+            "chumash_market": "Chumash Market",
+            "senora_feed": "Senora Feed Route",
+            "vinewood_hospitality": "Vinewood Hospitality"
         }
     },
     "machinery": {
@@ -429,9 +476,26 @@
             "name": "Potato"
         }
     },
+    "market": {
+        "title": "Market",
+        "subtitle": "Live buyer catalog for today",
+        "featured": "Featured buyer",
+        "contracts_open": "Contracts open",
+        "contracts_closed": "Contracts closed",
+        "volume_remaining": "Volume remaining",
+        "min_quality": "Min. quality",
+        "top_price": "Top price",
+        "distance": "Distance",
+        "refresh": "Refresh market",
+        "no_buyers": "No buyers available right now.",
+        "cta": {
+            "set_on_map": "Show route"
+        }
+    },
     "sale": {
         "interaction": {
             "sell_wheat": "Sell Wheat",
+            "sell_harvest": "Sell harvest",
             "sell_batches": "Sell Batches",
             "unloading": "Unloading..."
         },
@@ -444,14 +508,22 @@
             "batch_not_found": "Batch not found.",
             "batch_already_sold": "This batch was already sold.",
             "invalid_buyer_id": "Invalid buyer.",
+            "buyer_not_found": "Buyer not found.",
             "invalid_batch_id": "Invalid batch.",
             "invalid_crop_type": "Invalid crop type.",
+            "invalid_weight_kg": "Invalid batch weight.",
+            "invalid_quality_grade": "Invalid quality grade.",
             "player_unavailable": "Player is unavailable.",
             "inventory_unavailable": "Inventory is unavailable.",
             "inventory_lookup_failed": "Could not inspect inventory.",
+            "inventory_remove_failed": "Could not remove the batch from inventory.",
             "invalid_batch_metadata": "Batch metadata is invalid.",
+            "physical_item_unavailable": "Physical item service is unavailable.",
             "crop_not_accepted": "This buyer does not accept that crop.",
+            "quality_below_threshold": "This buyer requires a higher quality grade.",
+            "volume_exceeded": "This buyer has no daily capacity left for that batch.",
             "npc_buyer_unavailable": "Buyer service is unavailable.",
+            "finance_credit_failed": "Could not credit the sale payout.",
             "sale_failed": "Sale could not be completed.",
             "unknown": "Unknown sale error."
         }

@@ -144,6 +144,53 @@
         },
         "pedro": {
             "name": "Molino Pedro"
+        },
+        "buyers": {
+            "byr_molino_pedro": {
+                "name": "Molino Pedro"
+            },
+            "byr_supermercado_casals": {
+                "name": "Supermercado Casals"
+            },
+            "byr_restaurante_la_plaza": {
+                "name": "Restaurante La Plaza"
+            },
+            "byr_distribuidora_vega": {
+                "name": "Distribuidora Vega"
+            },
+            "byr_conservera_del_sur": {
+                "name": "Conservera del Sur"
+            },
+            "byr_mercado_verde": {
+                "name": "Mercado Verde"
+            },
+            "byr_granero_ortega": {
+                "name": "Granero Ortega"
+            },
+            "byr_hotel_aurora": {
+                "name": "Hotel Aurora"
+            }
+        },
+        "kinds": {
+            "buyer": "Comprador",
+            "mill": "Molino",
+            "supermarket": "Supermercado",
+            "restaurant": "Restaurante",
+            "distributor": "Distribuidor",
+            "canner": "Conservera",
+            "greengrocer": "Mercado verde",
+            "feed_wholesaler": "Mayorista de pienso",
+            "hospitality": "Hostelería"
+        },
+        "districts": {
+            "grapeseed_industrial": "Industrial de Grapeseed",
+            "paleto_commercial": "Comercial de Paleto",
+            "sandy_central": "Centro de Sandy",
+            "harmony_logistics": "Logística de Harmony",
+            "cypress_flats_food": "Distrito alimentario de Cypress Flats",
+            "chumash_market": "Mercado de Chumash",
+            "senora_feed": "Ruta de pienso de Senora",
+            "vinewood_hospitality": "Hostelería de Vinewood"
         }
     },
     "machinery": {
@@ -429,9 +476,26 @@
             "name": "Patata"
         }
     },
+    "market": {
+        "title": "Mercado",
+        "subtitle": "Catálogo vivo de compradores para hoy",
+        "featured": "Comprador destacado",
+        "contracts_open": "Contratos abiertos",
+        "contracts_closed": "Contratos cerrados",
+        "volume_remaining": "Volumen restante",
+        "min_quality": "Calidad mín.",
+        "top_price": "Precio tope",
+        "distance": "Distancia",
+        "refresh": "Refrescar mercado",
+        "no_buyers": "No hay compradores disponibles ahora mismo.",
+        "cta": {
+            "set_on_map": "Mostrar ruta"
+        }
+    },
     "sale": {
         "interaction": {
             "sell_wheat": "Vender trigo",
+            "sell_harvest": "Vender cosecha",
             "sell_batches": "Vender lotes",
             "unloading": "Descargando..."
         },
@@ -444,14 +508,22 @@
             "batch_not_found": "Lote no encontrado.",
             "batch_already_sold": "Este lote ya fue vendido.",
             "invalid_buyer_id": "Comprador inválido.",
+            "buyer_not_found": "Comprador no encontrado.",
             "invalid_batch_id": "Lote inválido.",
             "invalid_crop_type": "Tipo de cultivo inválido.",
+            "invalid_weight_kg": "Peso de lote inválido.",
+            "invalid_quality_grade": "Grado de calidad inválido.",
             "player_unavailable": "El jugador no está disponible.",
             "inventory_unavailable": "El inventario no está disponible.",
             "inventory_lookup_failed": "No se pudo inspeccionar el inventario.",
+            "inventory_remove_failed": "No se pudo retirar el lote del inventario.",
             "invalid_batch_metadata": "La metadata del lote es inválida.",
+            "physical_item_unavailable": "El servicio de item físico no está disponible.",
             "crop_not_accepted": "Este comprador no acepta ese cultivo.",
+            "quality_below_threshold": "Este comprador exige una calidad más alta.",
+            "volume_exceeded": "Este comprador no tiene capacidad diaria restante para ese lote.",
             "npc_buyer_unavailable": "El servicio de comprador no está disponible.",
+            "finance_credit_failed": "No se pudo abonar el cobro de la venta.",
             "sale_failed": "No se pudo completar la venta.",
             "unknown": "Error de venta desconocido."
         }

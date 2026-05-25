@@ -35,6 +35,10 @@ function Sonar.Farm.NPCs.Boot()
         end
     end
 
+    TriggerEvent('sonar:farm:npc:catalog_reloaded', {
+        buyer_count = count,
+    })
+
     log_info(locale('npcs.boot.ready'):format(count))
     return true
 end

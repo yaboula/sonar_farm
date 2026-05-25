@@ -139,7 +139,7 @@ client_scripts {
     'client/pest_interactions.lua',
     'client/inventory_render.lua',
     'client/silo_interactions.lua',
-    'client/npc_vendor_interaction.lua',
+    'client/npcs/npc_spawner.lua',
 }
 
 -- ============================================================
@@ -163,6 +163,7 @@ sonar_farm_migration 'database/migrations/010_quality_offline_tracking.sql'
 sonar_farm_migration 'database/migrations/011_pest_severity.sql'
 sonar_farm_migration 'database/migrations/012_climate.sql'
 sonar_farm_migration 'database/migrations/013_machinery.sql'
+sonar_farm_migration 'database/migrations/014_npc_buyers.sql'
 
 -- ============================================================
 -- Lua language server: opt-in to safer globals

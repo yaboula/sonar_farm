@@ -23,10 +23,11 @@ empty_if = "warn"
 multiple_statements = "deny"
 unused_variable = "warn"
 global_usage = "warn"
+unscoped_variables = "allow"
 
 # Per-lint config passes (struct configs go in [config.<lint>] tables).
 [config.unused_variable]
 allow_unused_self = true
 
 [config.global_usage]
-ignore_pattern = "^(Config|Sonar|Locales|lib|locale)$"
+ignore_pattern = "^(Config|Sonar|Locales|lib|locale|_G)$"

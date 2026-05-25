@@ -1200,7 +1200,66 @@ local function register_sale_callbacks()
             },
         }
     end)
+
+    lib.callback.register('sonar:farm:market:get_catalog', function(source)
+        if not Sonar.Farm.NPCBuyerService or type(Sonar.Farm.NPCBuyerService.GetCatalogSnapshot) ~= 'function' then
+            return {
+                day = 0,
+                season_key = 'spring',
+                server_now_ts = os.time(),
+                buyers = {},
+            }
+        end
+
+        local ok, snapshot = pcall(Sonar.Farm.NPCBuyerService.GetCatalogSnapshot, source)
+        if not ok or type(snapshot) ~= 'table' then
+            return {
+                day = 0,
+                season_key = 'spring',
+                server_now_ts = os.time(),
+                buyers = {},
+            }
+        end
+
+        return snapshot
+    end)
 end
+
+RegisterNetEvent('sonar:farm:market:request_waypoint', function(buyer_id)
+    if type(buyer_id) ~= 'string' or buyer_id == '' then
+        return
+    end
+
+    if not Sonar.Farm.NPCBuyerService or type(Sonar.Farm.NPCBuyerService.GetBuyer) ~= 'function' then
+        return
+    end
+
+    local buyer = Sonar.Farm.NPCBuyerService.GetBuyer(buyer_id)
+    if type(buyer) ~= 'table' then
+        return
+    end
+
+    local coords = buyer.coords
+    local world_coords = buyer.world_coords
+    local x = tonumber(coords and coords.x) or tonumber(world_coords and world_coords.x)
+    local y = tonumber(coords and coords.y) or tonumber(world_coords and world_coords.y)
+    local z = tonumber(coords and coords.z) or tonumber(world_coords and world_coords.z) or 0.0
+    local w = tonumber(coords and coords.w) or tonumber(buyer.heading) or 0.0
+
+    if x == nil or y == nil then
+        return
+    end
+
+    TriggerClientEvent('sonar:farm:market:set_waypoint', source, {
+        buyer_id = buyer_id,
+        coords = {
+            x = x,
+            y = y,
+            z = z,
+            w = w,
+        },
+    })
+end)
 
 local function register_machinery_callbacks()
     if not lib or not lib.callback or type(lib.callback.register) ~= 'function' then
@@ -1315,6 +1374,7 @@ local function register_plot_event_relays()
         'sonar:farm:pest:severe',
         'sonar:farm:machinery:broke_down',
         'sonar:farm:machinery:repaired',
+        'sonar:farm:npc:catalog_reloaded',
     }
 
     for index = 1, #relay_events do

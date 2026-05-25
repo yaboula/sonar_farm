@@ -15,14 +15,15 @@
         "pnpm": ">=9.0.0"
     },
     "scripts": {
-        "dev": "pnpm --filter @sonar/farm-tablet-web dev",
-        "build": "pnpm --filter @sonar/farm-tablet-web build",
+        "dev": "pnpm --filter @farm/tablet dev",
+        "build": "pnpm --filter @farm/tablet build",
         "lint:lua": "node scripts/run-selene.mjs sonar_farm_core sonar_farm_tablet",
-        "lint:ts": "pnpm --filter @sonar/farm-tablet-web lint",
+        "lint:ts": "pnpm --filter @farm/tablet lint",
         "lint": "pnpm run lint:lua && pnpm run lint:ts",
         "format": "prettier --write \"**/*.{ts,tsx,json,md,css}\" --ignore-path .gitignore",
         "format:check": "prettier --check \"**/*.{ts,tsx,json,md,css}\" --ignore-path .gitignore",
-        "type-check": "pnpm --filter @sonar/farm-tablet-web type-check",
+        "type-check": "pnpm --filter @farm/tablet type-check",
+        "typecheck": "pnpm --filter @farm/tablet typecheck",
         "prepare": "husky"
     },
     "devDependencies": {

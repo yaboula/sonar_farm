@@ -52,6 +52,17 @@ end
 -- NUI close callback — triggered by React when user presses
 -- Escape or clicks the topbar close button.
 -- ============================================================
+RegisterNUICallback('sonar:farm:market:set_waypoint', function(data, cb)
+    local buyer_id = type(data) == 'table' and tostring(data.buyer_id or '') or ''
+    if buyer_id == '' then
+        cb({ ok = false, error = 'invalid_buyer_id' })
+        return
+    end
+
+    TriggerServerEvent('sonar:farm:market:request_waypoint', buyer_id)
+    cb({ ok = true })
+end)
+
 RegisterNUICallback('close', function(_, cb)
     SetNuiFocus(false, false)
     is_nui_open = false

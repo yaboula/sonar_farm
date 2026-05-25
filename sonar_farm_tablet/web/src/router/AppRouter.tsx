@@ -12,14 +12,15 @@
 // remounts the MemoryRouter so the in-memory history resets.
 // ============================================================
 
+import type { ReactNode } from 'react';
 import { MemoryRouter, Navigate, Route, Routes } from 'react-router-dom';
 
+import { MarketApp } from '@/apps/Market/MarketApp';
 import { BatchesPage } from '@/pages/BatchesPage';
 import { ContractsPage } from '@/pages/ContractsPage';
 import { DashboardPage } from '@/pages/DashboardPage';
 import { FinancePage } from '@/pages/FinancePage';
 import { LogPage } from '@/pages/LogPage';
-import { MarketPage } from '@/pages/MarketPage';
 import { MessagesPage } from '@/pages/MessagesPage';
 import { PersonnelPage } from '@/pages/PersonnelPage';
 import { PlotsPage } from '@/pages/PlotsPage';
@@ -28,7 +29,7 @@ import type { NuiRoute } from '@/types/nui';
 
 interface AppRouterProps {
     initialRoute: NuiRoute;
-    children?: React.ReactNode;
+    children?: ReactNode;
 }
 
 /**
@@ -42,7 +43,7 @@ export function AppRoutes(): JSX.Element {
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/plots" element={<PlotsPage />} />
             <Route path="/batches" element={<BatchesPage />} />
-            <Route path="/market" element={<MarketPage />} />
+            <Route path="/market" element={<MarketApp />} />
             <Route path="/contracts" element={<ContractsPage />} />
             <Route path="/personnel" element={<PersonnelPage />} />
             <Route path="/finance" element={<FinancePage />} />

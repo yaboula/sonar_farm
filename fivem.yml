@@ -208,11 +208,59 @@ globals:
     args:
       - type: any
       - type: number
+  AddBlipForCoord:
+    args:
+      - type: number
+      - type: number
+      - type: number
+  DoesBlipExist:
+    args:
+      - type: any
+  RemoveBlip:
+    args:
+      - type: any
+  SetBlipSprite:
+    args:
+      - type: any
+      - type: number
+  SetBlipColour:
+    args:
+      - type: any
+      - type: number
+  SetBlipScale:
+    args:
+      - type: any
+      - type: number
+  SetBlipDisplay:
+    args:
+      - type: any
+      - type: number
+  SetBlipAsShortRange:
+    args:
+      - type: any
+      - type: bool
+  BeginTextCommandSetBlipName:
+    args:
+      - type: string
+  AddTextComponentString:
+    args:
+      - type: string
+  EndTextCommandSetBlipName:
+    args:
+      - type: any
+  SetNewWaypoint:
+    args:
+      - type: number
+      - type: number
 
   # ---- Animation / ped helpers (client) ----
   RequestAnimDict:
     args:
       - type: string
+  SetPedCanRagdoll:
+    args:
+      - type: any
+      - type: bool
   HasAnimDictLoaded:
     args:
       - type: string
@@ -298,6 +346,23 @@ globals:
   GetEntityCoords:
     args:
       - type: any
+  GetPlayerPed:
+    args:
+      - type: any
+  json:
+    any: true
+  vec4:
+    args:
+      - type: number
+      - type: number
+      - type: number
+      - type: number
+  vector4:
+    args:
+      - type: number
+      - type: number
+      - type: number
+      - type: number
   GetEntityModel:
     args:
       - type: any

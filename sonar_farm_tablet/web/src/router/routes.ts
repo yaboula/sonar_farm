@@ -18,6 +18,7 @@
 // ============================================================
 
 import {
+    BarChart3,
     FileSignature,
     LayoutDashboard,
     ListChecks,
@@ -25,7 +26,6 @@ import {
     Package,
     ScrollText,
     Sprout,
-    Store,
     Users,
     Wallet,
     type LucideIcon,
@@ -62,7 +62,7 @@ export const ROUTES: ReadonlyArray<RouteDescriptor> = [
     {
         path: '/market',
         labelKey: 'nav.market',
-        icon: Store,
+        icon: BarChart3,
         modes: ['manager'],
     },
     {
